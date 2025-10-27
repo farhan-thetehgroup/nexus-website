@@ -28,7 +28,7 @@ const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 const contactInfo = {
-  name: "Jeffrey TEH",
+  name: "Nexus Team",
   location: "Hong Kong",
   email: "Jeffrey.Teh@thetehgroup.com",
   phone: "+852 68019775",

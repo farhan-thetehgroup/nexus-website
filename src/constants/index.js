@@ -217,7 +217,7 @@ export const PARTNERS = [
   },
 ];
 
-export const EMAIL = "Jeffrey.Teh@thetehgroup.com";
+export const EMAIL = "hello@thetehgroup.com";
 export const MAILTO_URL = `mailto:${EMAIL}?subject=Become a Sponsor Nexus 2026&body=Hello, I am interested in becoming a sponsor for Nexus 2026 event. Could we discuss further details about the event? `;
 export const PHONE_WHATSAPP = "+852 68019775";
 export const WHATSAPP_MESSAGE =
