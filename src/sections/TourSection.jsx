@@ -274,16 +274,23 @@ export const TourSection = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {TOUR_CITIES.map((city, idx) => (
-            <CityCard
-              city={city}
-              img={city.img}
-              index={idx}
-              isActive={activeCity === idx}
+            <div
               key={idx}
-              onClick={setActiveCity}
-              pattern={city.pattern}
-              setShowGallery={setShowGallery}
-            />
+              className={
+                TOUR_CITIES.length % 3 === 1 && idx === TOUR_CITIES.length - 1 ?
+                  "lg:col-start-2"
+                : ""
+              }>
+              <CityCard
+                city={city}
+                img={city.img}
+                index={idx}
+                isActive={activeCity === idx}
+                onClick={setActiveCity}
+                pattern={city.pattern}
+                setShowGallery={setShowGallery}
+              />
+            </div>
           ))}
         </div>
 

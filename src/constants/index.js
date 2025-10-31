@@ -125,6 +125,16 @@ export const TOUR_CITIES = [
     pattern: "/images/pattern/malaysia.webp",
   },
   {
+    city: "Bangkok",
+    date: "June 25, 2026",
+    country: "Thailand",
+    attendees: "400+",
+    gradient: "from-blue-500 to-cyan-600",
+    position: { top: "40%", left: "68%" },
+    gallery: GALLERY_COLLAB,
+    pattern: "/images/pattern/thailand.webp",
+  },
+  {
     city: "Shenzhen",
     date: "July 10, 2026",
     country: "China",
