@@ -83,6 +83,7 @@ export const TOUR_CITIES = [
     position: { top: "55%", left: "65%" },
     gallery: GALLERY_ID,
     pattern: "/images/pattern/jakarta.webp",
+    url: "https://id.nexus-apac.com",
   },
   {
     city: "Singapore",
@@ -93,6 +94,7 @@ export const TOUR_CITIES = [
     position: { top: "45%", left: "70%" },
     gallery: GALLERY_SG,
     pattern: "/images/pattern/singapore.webp",
+    url: "",
   },
   {
     city: "Manila",
@@ -103,6 +105,7 @@ export const TOUR_CITIES = [
     position: { top: "35%", left: "75%" },
     gallery: GALLERY,
     pattern: "/images/pattern/manila.webp",
+    url: "",
   },
   {
     city: "Ho Chi Minh",
@@ -113,6 +116,7 @@ export const TOUR_CITIES = [
     position: { top: "35%", left: "65%" },
     gallery: GALLERY_COLLAB,
     pattern: "/images/pattern/hochiminh.webp",
+    url: "",
   },
   {
     city: "Kuala Lumpur",
@@ -123,6 +127,7 @@ export const TOUR_CITIES = [
     position: { top: "50%", left: "62%" },
     gallery: GALLERY_MY,
     pattern: "/images/pattern/malaysia.webp",
+    url: "",
   },
   {
     city: "Bangkok",
@@ -133,6 +138,7 @@ export const TOUR_CITIES = [
     position: { top: "40%", left: "68%" },
     gallery: GALLERY_COLLAB,
     pattern: "/images/pattern/thailand.webp",
+    url: "",
   },
   {
     city: "Shenzhen",
@@ -143,6 +149,7 @@ export const TOUR_CITIES = [
     position: { top: "40%", left: "60%" },
     gallery: GALLERY_CN,
     pattern: "/images/pattern/shenzhen.webp",
+    url: "",
   },
 ];
 

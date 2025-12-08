@@ -153,11 +153,13 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
           <motion.button
             className={`w-full py-3 rounded-xl bg-gradient-to-r ${city.gradient} text-white font-bold shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 group/btn`}
             onClick={() => {
-              // setShowGallery({ images: city.gallery, gradient: city.gradient });
+              if (city.url && city.url.trim() !== "") {
+                window.open(city.url, "_blank", "noopener,noreferrer");
+              }
             }}
             whileHover={{ scale: 1.05, x: 5 }}
             whileTap={{ scale: 0.95 }}>
-            <span>Coming Soon</span>
+            <span>{city.url && city.url.trim() !== "" ? "Register Now" : "Coming Soon"}</span>
             <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
           </motion.button>
 
