@@ -94,7 +94,7 @@ export const TOUR_CITIES = [
     position: { top: "45%", left: "70%" },
     gallery: GALLERY_SG,
     pattern: "/images/pattern/singapore.webp",
-    url: "",
+    url: "https://sg.nexus-apac.com",
   },
   {
     city: "Manila",
