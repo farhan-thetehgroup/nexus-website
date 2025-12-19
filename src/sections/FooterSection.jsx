@@ -225,7 +225,7 @@ export const FooterSection = () => {
     },
     {
       icon: Phone,
-      href: "https://wa.me/1234567890",
+      href: "https://wa.me/+85268019775",
       label: "WhatsApp",
     },
     {
