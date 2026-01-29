@@ -128,7 +128,7 @@ export const HeroSection = ({ containerVariants }) => {
     <AnimatedSection containerVariants={containerVariants} id="hero">
       <div className="relative min-h-screen flex items-center justify-center pt-20 px-4 overflow-hidden bg-gradient-to-br from-brand-800 via-tech-green-900 to-brand-800">
         {/* Animated Background Elements */}
-        <GridBackground />
+        {/* <GridBackground /> */}
         <FloatingParticles />
 
         {/* Glowing Orbs */}

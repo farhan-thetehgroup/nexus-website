@@ -98,7 +98,7 @@ export const TOUR_CITIES = [
   },
   {
     city: "Manila",
-    date: "April 9, 2026",
+    date: "April 23, 2026",
     country: "Philippines",
     attendees: "400+",
     gradient: "from-yellow-500 to-orange-600",
