@@ -105,7 +105,7 @@ export const TOUR_CITIES = [
     position: { top: "35%", left: "75%" },
     gallery: GALLERY,
     pattern: "/images/pattern/manila.webp",
-    url: "",
+    url: "https://ph.nexus-apac.com",
   },
   {
     city: "Kuala Lumpur",
