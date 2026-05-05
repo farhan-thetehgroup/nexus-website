@@ -5,6 +5,7 @@ import { TechParticleField } from "../components/TechParticleField";
 import { AdvancedNavbar } from "../components/AdvancedNavbar";
 import { HeroSection } from "../sections/HeroSection";
 import { PastSponsorSection } from "../sections/PastSponsorSection";
+import { EventVideoSection } from "../sections/EventVideoSection";
 import { WhySponsorSection } from "../sections/WhySponsorSection";
 import { TourSection } from "../sections/TourSection";
 import { AudienceSection } from "../sections/AudienceSection";
@@ -31,6 +32,7 @@ export const HomePage = () => {
       <AdvancedNavbar scrollToSection={scrollToSection} />
       <HeroSection scrollToSection={scrollToSection} />
       <PastSponsorSection />
+      {/* <EventVideoSection /> */}
       <WhySponsorSection />
       <TourSection />
       <AudienceSection />

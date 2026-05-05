@@ -1,5 +1,6 @@
 export const MENU_ITEMS = [
   { name: "Sponsors", id: "sponsors" },
+  { name: "Event Video", id: "event-video" },
   { name: "Why", id: "why" },
   { name: "Tour", id: "tours" },
   { name: "Target Audience", id: "audience" },
@@ -17,6 +18,39 @@ export const TEASER_URL =
 
 export const TEASER_URL_2 =
   "https://cyberattack-event.com/wp-content/uploads/2024/03/Cyberattack-Nexus_3-1.mp4";
+
+export const EVENT_VIDEO = {
+  videoUrl: TEASER_URL_2,
+  title: "Nexus APAC 2026",
+  sectionBadge: "Watch",
+  sectionTitle: "Event Highlights",
+  sectionSubtitle:
+    "See what Nexus is about and what you can expect from the event",
+  description:
+    "Nexus brings together innovators, security leaders, and enterprise technology partners across the Asia-Pacific. Join us for a full day of keynotes, live demos, one-on-one meetings, and networking—all designed to connect you with the right people and solutions.",
+  keyPoints: [
+    {
+      text: "Full-day event with keynotes, demos, and curated meetings",
+      icon: "CalendarDays",
+    },
+    {
+      text: "Connect with 400+ C-level and decision-makers in your city",
+      icon: "Users",
+    },
+    {
+      text: "One-on-one matchmaking with qualified prospects",
+      icon: "Handshake",
+    },
+    {
+      text: "Live product showcases and technical deep-dives",
+      icon: "Monitor",
+    },
+    {
+      text: "Regional tour: Jakarta, Singapore, Manila, Kuala Lumpur, Bangkok, and more",
+      icon: "Globe",
+    },
+  ],
+};
 
 export const GALLERY = [
   { src: "/images/gallery/ev1.png", alt: "Keynote session" },
@@ -116,7 +150,7 @@ export const TOUR_CITIES = [
     position: { top: "50%", left: "62%" },
     gallery: GALLERY_MY,
     pattern: "/images/pattern/malaysia.webp",
-    url: "",
+    url: "https://my.nexus-apac.com",
   },
   {
     city: "Bangkok",
