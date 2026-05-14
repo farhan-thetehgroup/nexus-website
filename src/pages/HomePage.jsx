@@ -27,12 +27,13 @@ export const HomePage = () => {
   return (
     <main
       className="
-   bg-gradient-to-br from-brand-800 via-tech-green-900 to-brand-800 text-white min-h-screen relative overflow-hidden">
+   bg-gradient-to-br from-brand-800 via-tech-green-900 to-brand-800 text-white min-h-screen relative overflow-hidden"
+    >
       <TechParticleField />
       <AdvancedNavbar scrollToSection={scrollToSection} />
       <HeroSection scrollToSection={scrollToSection} />
       <PastSponsorSection />
-      {/* <EventVideoSection /> */}
+      <EventVideoSection />
       <WhySponsorSection />
       <TourSection />
       <AudienceSection />

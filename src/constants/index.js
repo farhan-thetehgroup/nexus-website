@@ -1,6 +1,6 @@
 export const MENU_ITEMS = [
   { name: "Sponsors", id: "sponsors" },
-  // { name: "Event Video", id: "event-video" },
+  { name: "Event Video", id: "event-video" },
   { name: "Why", id: "why" },
   { name: "Tour", id: "tours" },
   { name: "Target Audience", id: "audience" },
@@ -20,7 +20,7 @@ export const TEASER_URL_2 =
   "https://cyberattack-event.com/wp-content/uploads/2024/03/Cyberattack-Nexus_3-1.mp4";
 
 export const EVENT_VIDEO = {
-  videoUrl: TEASER_URL_2,
+  videoUrl: "https://youtu.be/ZdBv9bx7di0",
   title: "Nexus APAC 2026",
   sectionBadge: "Watch",
   sectionTitle: "Event Highlights",
