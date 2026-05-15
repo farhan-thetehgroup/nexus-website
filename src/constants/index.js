@@ -1,6 +1,6 @@
 export const MENU_ITEMS = [
   { name: "Sponsors", id: "sponsors" },
-  { name: "Event Video", id: "event-video" },
+  { name: "Highlights", id: "event-video" },
   { name: "Why", id: "why" },
   { name: "Tour", id: "tours" },
   { name: "Target Audience", id: "audience" },
@@ -27,7 +27,7 @@ export const EVENT_VIDEO = {
   sectionSubtitle:
     "See what Nexus is about and what you can expect from the event",
   description:
-    "Nexus brings together innovators, security leaders, and enterprise technology partners across the Asia-Pacific. Join us for a full day of keynotes, live demos, one-on-one meetings, and networking—all designed to connect you with the right people and solutions.",
+    "Nexus brings together innovators, security leaders, and enterprise technology partners across the Asia-Pacific. Join us for a full day of keynotes, live demos, one-on-one meetings, and networking. Our event is designed to connect you with the right people and solutions.",
   keyPoints: [
     {
       text: "Full-day event with keynotes, demos, and curated meetings",
