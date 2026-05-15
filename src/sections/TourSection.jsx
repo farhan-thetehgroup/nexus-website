@@ -36,6 +36,8 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
     [0.8, 1, 1, 0.8]
   );
 
+  const isPastEvent = new Date(city.date) < new Date(new Date().setHours(0, 0, 0, 0));
+
   return (
     <motion.div
       animate={
@@ -159,7 +161,13 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
             }}
             whileHover={{ scale: 1.05, x: 5 }}
             whileTap={{ scale: 0.95 }}>
-            <span>{city.url && city.url.trim() !== "" ? "Register Now" : "Coming Soon"}</span>
+            <span>
+              {isPastEvent ?
+                "Revisit Experience"
+              : city.url && city.url.trim() !== "" ?
+                "Register Now"
+              : "Coming Soon"}
+            </span>
             <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
           </motion.button>
 
