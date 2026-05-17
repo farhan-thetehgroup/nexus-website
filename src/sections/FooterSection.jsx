@@ -396,7 +396,7 @@ export const FooterSection = () => {
       <motion.button
         animate={{ opacity: 1, y: 0 }}
         aria-label="Scroll to top"
-        className="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center shadow-xl z-50 group"
+        className="fixed right-5 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] w-12 h-12 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center shadow-xl z-50 group sm:right-8"
         initial={{ opacity: 0, y: 20 }}
         onClick={scrollToTop}
         transition={{ delay: 1 }}
