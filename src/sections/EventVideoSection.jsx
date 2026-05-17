@@ -2,6 +2,7 @@
 /* eslint-disable prettier/prettier */
 import { motion } from "framer-motion";
 import { Video, Sparkles } from "lucide-react";
+
 import { EVENT_VIDEO } from "../constants";
 
 export const EventVideoSection = () => {
@@ -39,7 +40,7 @@ export const EventVideoSection = () => {
             </motion.div>
 
             <motion.h2
-              className="text-4xl md:text-5xl lg:text-7xl font-extrabold mb-4 md:mb-6 tracking-tight bg-gradient-to-br from-white via-emerald-100 to-cyan-200 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl lg:text-7xl font-extrabold mb-4 md:mb-6 pb-2 tracking-tight bg-gradient-to-br from-white via-emerald-100 to-cyan-200 bg-clip-text text-transparent"
               initial={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               whileInView={{ opacity: 1, y: 0 }}
