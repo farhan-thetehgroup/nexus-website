@@ -32,5 +32,3 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to view the 
 
 - Production build output is in the `dist/` folder.
 - Deploy easily to Vercel, Netlify, or any static server (Nginx, Apache, etc).
-
----
