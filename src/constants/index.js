@@ -153,17 +153,6 @@ export const TOUR_CITIES = [
     url: "https://my.nexus-apac.com",
   },
   {
-    city: "Bangkok",
-    date: "September 16, 2026",
-    country: "Thailand",
-    attendees: "400+",
-    gradient: "from-blue-500 to-cyan-600",
-    position: { top: "40%", left: "68%" },
-    gallery: GALLERY_COLLAB,
-    pattern: "/images/pattern/thailand.webp",
-    url: "https://event.thetehgroup.com/-nexus-ft-bfsi-tech-ai-risk-for-digital-economy/overview?token=ZT0yZDUwMTRhZS04MzA5LTRkMTMtYTYzZi04ZWQ0NGFmZjBlODkmcmM9QjBKNUoyNU4xNw%3d%3d",
-  },
-  {
     city: "Hong Kong",
     date: "September 4, 2026",
     country: "Hong Kong",
@@ -173,6 +162,17 @@ export const TOUR_CITIES = [
     gallery: GALLERY_CN,
     pattern: "/images/pattern/city-line.svg",
     url: "",
+  },
+  {
+    city: "Bangkok",
+    date: "September 16, 2026",
+    country: "Thailand",
+    attendees: "400+",
+    gradient: "from-blue-500 to-cyan-600",
+    position: { top: "40%", left: "68%" },
+    gallery: GALLERY_COLLAB,
+    pattern: "/images/pattern/thailand.webp",
+    url: "https://event.thetehgroup.com/-nexus-ft-bfsi-tech-ai-risk-for-digital-economy/overview?token=ZT0yZDUwMTRhZS04MzA5LTRkMTMtYTYzZi04ZWQ0NGFmZjBlODkmcmM9QjBKNUoyNU4xNw%3d%3d",
   },
 ];
 
