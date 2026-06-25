@@ -122,6 +122,12 @@ export const HeroSection = ({ containerVariants }) => {
       color: "blue",
       gradient: "from-tech-green-400 to-indigo-600",
     },
+    {
+      icon: "/icons/fintech-3-left.png",
+      text: "Financial Technology",
+      color: "emerald",
+      gradient: "from-brand-400 to-cyan-400",
+    },
   ];
 
   return (
@@ -180,7 +186,7 @@ export const HeroSection = ({ containerVariants }) => {
           </h2>
 
           {/* Tech Cards with 3D Effect */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 px-4">
             {techItems.map((item, idx) => (
               <TiltCard item={item} key={idx} />
             ))}

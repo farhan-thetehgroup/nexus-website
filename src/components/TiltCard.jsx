@@ -83,7 +83,7 @@ export const TiltCard = ({ item }) => {
           <img
             src={item.icon}
             alt={item.text}
-            className="w-40 h-w-40 object-contain mx-auto"
+            className="w-40 h-40 object-contain mx-auto"
           />
         </div>
 
