@@ -153,17 +153,6 @@ export const TOUR_CITIES = [
     url: "https://my.nexus-apac.com",
   },
   {
-    city: "Hong Kong",
-    date: "September 4, 2026",
-    country: "Hong Kong",
-    attendees: "400+",
-    gradient: "from-purple-500 to-pink-600",
-    position: { top: "40%", left: "60%" },
-    gallery: GALLERY_CN,
-    pattern: "/images/pattern/city-line.svg",
-    url: "",
-  },
-  {
     city: "Bangkok",
     date: "September 16, 2026",
     country: "Thailand",

@@ -277,7 +277,7 @@ export const TourSection = () => {
             initial={{ opacity: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
             whileInView={{ opacity: 1 }}>
-            A roadshow across 6 major APAC cities connecting innovators and
+            A roadshow across 5 major APAC cities connecting innovators and
             decision-makers
           </motion.p>
         </motion.div>
@@ -316,7 +316,7 @@ export const TourSection = () => {
                 Total Expected C-Level Attendees
               </p>
               <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                3000+
+                2000+
               </p>
             </div>
           </div>
