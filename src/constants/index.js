@@ -161,7 +161,7 @@ export const TOUR_CITIES = [
     position: { top: "40%", left: "68%" },
     gallery: GALLERY_COLLAB,
     pattern: "/images/pattern/thailand.webp",
-    url: "https://event.thetehgroup.com/-nexus-ft-bfsi-tech-ai-risk-for-digital-economy/overview?token=ZT0yZDUwMTRhZS04MzA5LTRkMTMtYTYzZi04ZWQ0NGFmZjBlODkmcmM9QjBKNUoyNU4xNw%3d%3d",
+    url: "https://th.nexus-apac.com/",
   },
 ];
 
