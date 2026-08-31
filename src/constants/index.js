@@ -163,6 +163,17 @@ export const TOUR_CITIES = [
     pattern: "/images/pattern/thailand.webp",
     url: "https://th.nexus-apac.com/",
   },
+  {
+    city: "Hong Kong",
+    date: "October 27, 2026",
+    country: "Hong Kong",
+    attendees: "200+",
+    gradient: "from-purple-500 to-pink-600",
+    position: { top: "40%", left: "60%" },
+    gallery: GALLERY_COLLAB,
+    pattern: "/images/pattern/city-line.svg",
+    url: "https://hk.nexus-apac.com",
+  },
 ];
 
 export const PARTNERS = [
