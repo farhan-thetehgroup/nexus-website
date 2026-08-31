@@ -172,7 +172,7 @@ export const TOUR_CITIES = [
     position: { top: "40%", left: "60%" },
     gallery: GALLERY_COLLAB,
     pattern: "/images/pattern/city-line.svg",
-    url: "https://hk.nexus-apac.com",
+    url: "",
   },
 ];
 
