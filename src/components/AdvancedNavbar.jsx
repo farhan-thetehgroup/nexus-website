@@ -6,7 +6,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 
 import { BRAND_LOGO_WHITE, MENU_ITEMS } from "../constants";
 
-export const AdvancedNavbar = ({ scrollToSection }) => {
+export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
   const { scrollY } = useScroll();
   const scrollYProgress = useTransform(scrollY, [0, 300], [0, 1]);
   const navBackground = useTransform(
@@ -26,7 +26,7 @@ export const AdvancedNavbar = ({ scrollToSection }) => {
     window.addEventListener("scroll", handleScroll);
 
     // IntersectionObserver untuk update activeSection
-    const sectionIds = MENU_ITEMS.map((item) => item.id);
+    const sectionIds = items.map((item) => item.id);
     const sections = sectionIds
       .map((id) => document.getElementById(id))
       .filter(Boolean);
@@ -56,7 +56,7 @@ export const AdvancedNavbar = ({ scrollToSection }) => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("scroll", handleSectionScroll);
     };
-  }, [MENU_ITEMS]);
+  }, [items]);
 
   const handleNavClick = (id) => {
     scrollToSection(id);
@@ -105,7 +105,7 @@ export const AdvancedNavbar = ({ scrollToSection }) => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-2">
-              {MENU_ITEMS.map((item, idx) => (
+              {items.map((item, idx) => (
                 <div
                   className="relative"
                   key={item.id}
@@ -204,7 +204,7 @@ export const AdvancedNavbar = ({ scrollToSection }) => {
           }`}>
           <div className="px-4 py-6 bg-gradient-to-b from-gray-900 to-gray-800 border-t border-emerald-400/20">
             <div className="space-y-2">
-              {MENU_ITEMS.map((item, idx) => (
+              {items.map((item, idx) => (
                 <button
                   className={`group w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-300 ${
                     activeSection === item.id ?
