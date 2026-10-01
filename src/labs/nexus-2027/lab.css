@@ -1,0 +1,49 @@
+/* ============================================================
+   NEXUS 2027 — Design study lab chrome.
+   The aurora system itself lives in src/components/aurora.
+   ============================================================ */
+
+.nx-lab {
+  min-height: 100vh;
+  background: var(--nx-bg, #03101a);
+  color: var(--nx-ink, #eaf6f4);
+}
+
+.nx-concept {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.nx-panel {
+  background: rgba(3, 16, 26, 0.66);
+  border: 1px solid rgba(159, 196, 212, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.nx-tab {
+  font-family: var(--nx-mono, monospace);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(159, 196, 212, 0.62);
+  padding: 0.4rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.nx-tab:hover {
+  color: #eaf6f4;
+}
+
+.nx-tab[data-active="true"] {
+  color: #eafff5;
+  border-color: rgba(61, 255, 162, 0.35);
+  background: rgba(61, 255, 162, 0.07);
+}

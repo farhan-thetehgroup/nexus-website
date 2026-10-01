@@ -209,7 +209,7 @@ const FooterLink = ({ href, children }) => {
   );
 };
 
-export const FooterSection = () => {
+export const FooterSection = ({ items = MENU_ITEMS }) => {
   const [currentYear] = useState(new Date().getFullYear());
 
   const socialLinks = [
@@ -297,7 +297,7 @@ export const FooterSection = () => {
               Quick Links
             </h3>
             <ul className="space-y-3">
-              {MENU_ITEMS.map((link, idx) => (
+              {items.map((link, idx) => (
                 <motion.li
                   initial={{ opacity: 0, x: -20 }}
                   key={idx}
