@@ -11,7 +11,7 @@ import { EventFormatSection } from "../sections/EventFormatSection";
 import { FooterSection } from "../sections/FooterSection";
 import { HeroNexus2027Section } from "../sections/HeroNexus2027Section";
 import { PastSponsorSection } from "../sections/PastSponsorSection";
-import { SponsorHorizon2027Section } from "../sections/SponsorHorizon2027Section";
+import { WhySponsorSection } from "../sections/WhySponsorSection";
 
 const pageClasses = [
   "nx-aurora-theme",
@@ -22,10 +22,9 @@ const pageClasses = [
 
 /**
  * NEXUS 2027 — full page.
- * The 2027 hero (Polar Drift) and sponsor layer, then the reused
- * content-safe sections (past sponsors, audience, event formats, contact,
- * footer). The 2026 tour and highlights sections stay out until 2027
- * programme details land.
+ * The 2027 hero (Polar Drift), then the shared content sections (past
+ * sponsors, why sponsor, audience, event formats, contact, footer). The
+ * 2026 tour/highlights sections stay out until 2027 programme details land.
  */
 export const HomePage2027 = () => {
   const motion = useMotionPreference();
@@ -47,7 +46,7 @@ export const HomePage2027 = () => {
       />
       <HeroNexus2027Section motion={motion} />
       <PastSponsorSection />
-      <SponsorHorizon2027Section motion={motion} />
+      <WhySponsorSection />
       <AudienceSection />
       <EventFormatSection />
       <ContactFormSection />
