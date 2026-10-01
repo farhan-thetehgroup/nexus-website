@@ -20,6 +20,7 @@ const FRAGMENT = /* glsl */ `
   uniform vec2 uPointer;
   uniform float uMode;
   uniform float uIntensity;
+  uniform float uWarp;
   uniform vec3 uBg;
   uniform vec3 uC1;
   uniform vec3 uC2;
@@ -63,10 +64,26 @@ const FRAGMENT = /* glsl */ `
   }
 
   void main() {
-    vec2 uv = gl_FragCoord.xy / uRes.xy;
-    vec2 p = uv - 0.5;
-    p.x *= uRes.x / uRes.y;
+    vec2 uv0 = gl_FragCoord.xy / uRes.xy;
+    float aspect = uRes.x / uRes.y;
+
+    vec2 p = uv0 - 0.5;
+    p.x *= aspect;
     p += (uPointer - 0.5) * 0.05;
+
+    // Pointer-driven water distortion — a soft refractive lens with
+    // outgoing rings around the cursor, plus a touch of turbulence.
+    vec2 uv = uv0;
+    if (uWarp > 0.001) {
+      vec2 pd = uv0 - uPointer;
+      pd.x *= aspect;
+      float pdist = length(pd);
+      float plens = exp(-pdist * pdist * 14.0);
+      float pring = sin(pdist * 46.0 - uTime * 2.6);
+      uv += (pd / max(pdist, 1e-4)) * pring * plens * 0.02 * uWarp;
+      float pturb = fbm(uv0 * 5.0 + uTime * 0.5) - 0.5;
+      uv += vec2(pturb, -pturb) * plens * 0.03 * uWarp;
+    }
 
     float t = uTime;
     float breathe = 0.9 + 0.1 * sin(t * 0.35 + 1.7);
@@ -120,8 +137,18 @@ const FRAGMENT = /* glsl */ `
     col += uC3 * core * 0.5;
 
     // Starfield, kept away from the bright curtain cores.
-    float star = step(0.9976, hash(floor(uv * uRes / 3.0)));
+    float star = step(0.9976, hash(floor(uv0 * uRes / 3.0)));
     col += vec3(star) * 0.26 * (1.0 - green);
+
+    // Water glint — a faint specular catch on the ripple crests.
+    if (uWarp > 0.001) {
+      vec2 gd = uv0 - uPointer;
+      gd.x *= aspect;
+      float gdist = length(gd);
+      float glens = exp(-gdist * gdist * 14.0);
+      float crest = pow(max(sin(gdist * 46.0 - uTime * 2.6), 0.0), 3.0);
+      col += uC3 * crest * glens * 0.1 * uWarp;
+    }
 
     // Vignette + ordered-ish dither to kill banding on dark gradients.
     float vig = smoothstep(1.3, 0.3, length(p * vec2(1.0, 1.25)));
@@ -173,6 +200,7 @@ export const AuroraShader = ({
   mode = "drift",
   intensity,
   motion = true,
+  water = 0,
   className = "",
   style,
 }) => {
@@ -221,6 +249,7 @@ export const AuroraShader = ({
       uPointer: { value: new THREE.Vector2(0.5, 0.5) },
       uMode: { value: MODES[mode] ?? 0 },
       uIntensity: { value: intensity ?? palette.intensity },
+      uWarp: { value: 0 },
       uBg: { value: new THREE.Color(palette.bg) },
       uC1: { value: new THREE.Color(palette.c1) },
       uC2: { value: new THREE.Color(palette.c2) },
@@ -237,25 +266,37 @@ export const AuroraShader = ({
     const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
     scene.add(quad);
 
+    let rect = canvas.getBoundingClientRect();
+    const updateRect = () => {
+      rect = canvas.getBoundingClientRect();
+    };
+
     const resize = () => {
       const parent = canvas.parentElement;
       const width = parent?.clientWidth || window.innerWidth;
       const height = parent?.clientHeight || window.innerHeight;
       renderer.setSize(width, height, false);
       uniforms.uRes.value.set(width, height);
+      updateRect();
     };
     resize();
 
     const observer = new ResizeObserver(resize);
     if (canvas.parentElement) observer.observe(canvas.parentElement);
 
-    const pointer = { x: 0.5, y: 0.5 };
+    const pointer = { x: 0.5, y: 0.5, active: false };
     const onPointerMove = (event) => {
-      pointer.x = event.clientX / window.innerWidth;
-      pointer.y = 1 - event.clientY / window.innerHeight;
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
+      pointer.x = Math.min(1, Math.max(0, x));
+      pointer.y = 1 - Math.min(1, Math.max(0, y));
+      pointer.active = true;
     };
     if (motion) {
       window.addEventListener("pointermove", onPointerMove, { passive: true });
+      window.addEventListener("scroll", updateRect, { passive: true });
+      window.addEventListener("resize", updateRect, { passive: true });
     }
 
     let raf = 0;
@@ -267,6 +308,8 @@ export const AuroraShader = ({
         (pointer.x - uniforms.uPointer.value.x) * 0.04;
       uniforms.uPointer.value.y +=
         (pointer.y - uniforms.uPointer.value.y) * 0.04;
+      const targetWarp = motion && pointer.active ? water : 0;
+      uniforms.uWarp.value += (targetWarp - uniforms.uWarp.value) * 0.05;
       renderer.render(scene, camera);
     };
 
@@ -289,11 +332,13 @@ export const AuroraShader = ({
       cancelAnimationFrame(raf);
       observer.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("scroll", updateRect);
+      window.removeEventListener("resize", updateRect);
       quad.geometry.dispose();
       material.dispose();
       renderer.dispose();
     };
-  }, [mode, motion, intensity, palette]);
+  }, [mode, motion, intensity, water, palette]);
 
   if (!canUseWebGL) {
     return (

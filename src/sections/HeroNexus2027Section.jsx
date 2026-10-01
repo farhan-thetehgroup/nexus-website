@@ -3,13 +3,13 @@ import { DotWorldMap } from "../components/aurora/DotWorldMap";
 import { NexusWordmark } from "../components/aurora/NexusWordmark";
 import { NEXUS_2027 as EVENT } from "../constants/nexus2027";
 
-const MAP_MASK =
-  "radial-gradient(78% 78% at 50% 46%, black 32%, transparent 78%)";
+// The aurora keeps a low profile on the hero; the pointer stirs it like water.
+const AURORA_INTENSITY = 0.6;
 
 /**
  * NEXUS INDONESIA 2027 — production hero.
- * Polar Drift: aurora curtains drifting behind the halftone map, with the
- * wordmark's light streak from the key visual.
+ * Polar Drift: aurora curtains drift behind the full-bleed halftone map,
+ * with a pointer-driven water distortion across the aurora.
  */
 export const HeroNexus2027Section = ({ motion = true }) => (
   <section
@@ -17,21 +17,21 @@ export const HeroNexus2027Section = ({ motion = true }) => (
     id="hero"
   >
     <div className="absolute inset-0">
-      <AuroraShader mode="drift" motion={motion} />
+      <AuroraShader
+        intensity={AURORA_INTENSITY}
+        mode="drift"
+        motion={motion}
+        water={1}
+      />
     </div>
 
-    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-      <div
-        className="w-[min(1500px,96vw)]"
-        style={{ maskImage: MAP_MASK, WebkitMaskImage: MAP_MASK }}
-      >
-        <DotWorldMap
-          baseAlpha={0.3}
-          className="aspect-[200/68] w-full min-w-[900px] -translate-y-[7%] opacity-70"
-          focusAlpha={0.72}
-          motion={motion}
-        />
-      </div>
+    <div className="pointer-events-none absolute inset-0">
+      <DotWorldMap
+        baseAlpha={0.3}
+        className="block h-full w-full opacity-70"
+        focusAlpha={0.72}
+        motion={motion}
+      />
     </div>
 
     <div className="nx-vignette pointer-events-none absolute inset-0" />
@@ -57,6 +57,7 @@ export const HeroNexus2027Section = ({ motion = true }) => (
         <NexusWordmark
           className="nx-rise text-[clamp(2.9rem,12.5vw,10.5rem)]"
           motion={motion}
+          streak={false}
         />
 
         <p
