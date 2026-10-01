@@ -4,6 +4,8 @@
  */
 export const NEXUS_2027 = {
   name: "NEXUS",
+  scope: "ASIA-PACIFIC",
+  headline: "Connecting Innovation Across the Asia-Pacific",
   chapter: "INDONESIA",
   year: "2027",
   themeLine1: "THE MODERN ENTERPRISE:",
@@ -56,4 +58,14 @@ export const AURORA_PALETTES = {
     c3: "#c4ffe4",
     intensity: 0.86,
   },
+};
+
+// NEXUS 2027 hero art direction: a blue wash drifting into green cores,
+// spread wide across the frame (two-tone aurora).
+export const NEXUS_2027_AURORA = {
+  bg: "#04141f",
+  c1: "#1b5fc4",
+  c2: "#2fe98d",
+  c3: "#adfff0",
+  intensity: 0.78,
 };

@@ -2,15 +2,14 @@ import { AuroraShader } from "../components/aurora/AuroraShader";
 import { DotWorldMap } from "../components/aurora/DotWorldMap";
 import dotMapDense from "../components/aurora/dotMapDense.json";
 import { NexusWordmark } from "../components/aurora/NexusWordmark";
-import { NEXUS_2027 as EVENT } from "../constants/nexus2027";
-
-// The aurora keeps a low profile on the hero; the pointer stirs it like water.
-const AURORA_INTENSITY = 0.6;
+import { Typewriter } from "../components/common/ui/Typewriter";
+import { NEXUS_2027 as EVENT, NEXUS_2027_AURORA } from "../constants/nexus2027";
 
 /**
- * NEXUS INDONESIA 2027 — production hero.
- * Polar Drift: aurora curtains drift behind the full-bleed halftone map,
- * with a pointer-driven water distortion across the aurora.
+ * NEXUS 2027 — production hero.
+ * APAC-wide brand hero: Polar Drift aurora (blue drifting into green) over
+ * the full-bleed halftone map, with a pointer-driven water wave and the
+ * typewriter headline from the home hero.
  */
 export const HeroNexus2027Section = ({ motion = true }) => (
   <section
@@ -19,9 +18,9 @@ export const HeroNexus2027Section = ({ motion = true }) => (
   >
     <div className="absolute inset-0">
       <AuroraShader
-        intensity={AURORA_INTENSITY}
         mode="drift"
         motion={motion}
+        palette={NEXUS_2027_AURORA}
         water={1}
       />
     </div>
@@ -43,8 +42,7 @@ export const HeroNexus2027Section = ({ motion = true }) => (
 
     <div className="relative z-10 flex min-h-[100svh] flex-col px-6 pt-28 pb-8 sm:px-10 sm:pt-32">
       <h1 className="sr-only">
-        NEXUS Indonesia 2027 — {EVENT.dateShort}, {EVENT.city}.{" "}
-        {EVENT.themeLine}
+        NEXUS Asia-Pacific 2027 — {EVENT.headline}
       </h1>
 
       <div
@@ -55,7 +53,7 @@ export const HeroNexus2027Section = ({ motion = true }) => (
           className="nx-meta nx-rise mb-5 sm:mb-7"
           style={{ "--nx-delay": "0ms" }}
         >
-          {EVENT.chapter} — {EVENT.year}
+          {EVENT.scope} — {EVENT.year}
         </p>
 
         <NexusWordmark
@@ -64,25 +62,15 @@ export const HeroNexus2027Section = ({ motion = true }) => (
           streak={false}
         />
 
-        <p
-          className="nx-rise mt-4 text-[clamp(0.95rem,3vw,2.4rem)] tracking-[0.42em] text-white/95 sm:mt-6"
-          style={{
-            fontFamily: "var(--nx-display)",
-            textIndent: "0.42em",
-            "--nx-delay": "140ms",
-          }}
+        <div
+          className="nx-rise mt-5 min-h-[3.2rem] sm:mt-7 sm:min-h-[3.4rem]"
+          style={{ "--nx-delay": "220ms" }}
         >
-          {EVENT.chapter}
-        </p>
-
-        <p
-          className="nx-rise nx-mono mt-6 text-[0.58rem] tracking-[0.32em] text-[#9fc4d4] uppercase sm:mt-8 sm:text-xs"
-          style={{ "--nx-delay": "270ms" }}
-        >
-          {EVENT.themeLine1}
-          <br />
-          {EVENT.themeLine2}
-        </p>
+          <Typewriter
+            className="text-[clamp(1.05rem,2.6vw,1.85rem)] font-light tracking-[0.03em] text-[#eafaf4]"
+            text={EVENT.headline}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col items-center gap-6">
@@ -106,13 +94,6 @@ export const HeroNexus2027Section = ({ motion = true }) => (
         >
           {EVENT.tagline}
         </p>
-
-        <div className="nx-hairline w-full" />
-
-        <div className="nx-meta nx-meta--bright flex w-full items-end justify-between sm:pr-24">
-          <p>{EVENT.dateShort}</p>
-          <p>{EVENT.city}</p>
-        </div>
       </div>
     </div>
   </section>

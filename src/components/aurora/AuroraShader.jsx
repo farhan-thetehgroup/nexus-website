@@ -57,7 +57,7 @@ const FRAGMENT = /* glsl */ `
     float warp = fbm(q * 1.7 + t * 0.05);
     float n = fbm(q + vec2(warp * 0.8, warp * 0.3));
     float rays = fbm(vec2(uv.x * 5.5 + seed * 3.3 - t * 0.02, uv.y * 0.5));
-    float center = 0.3 + seed * 0.13 + (n - 0.5) * 0.5;
+    float center = 0.35 + seed * 0.15 + (n - 0.5) * 0.5;
     float d = abs(uv.y - center);
     float band = smoothstep(width, 0.0, d);
     return band * (0.35 + 0.9 * rays);
@@ -80,13 +80,13 @@ const FRAGMENT = /* glsl */ `
       vec2 pd = uv0 - uPointer;
       pd.x *= aspect;
       float pdist = length(pd);
-      float fall = exp(-pdist * pdist * 9.0);
+      float fall = exp(-pdist * pdist * 7.5);
       float ripple = sin(pdist * 34.0 - uTime * 6.0);
       uv +=
         (pd / max(pdist, 1e-4) + normalize(uWave + vec2(1e-5)) * 0.45) *
         ripple *
         fall *
-        0.018 *
+        0.022 *
         wave;
     }
 
@@ -97,10 +97,11 @@ const FRAGMENT = /* glsl */ `
 
     if (uMode < 0.5) {
       // 01 POLAR DRIFT - wide curtains travelling across the frame.
-      float weight = mix(0.28, 1.0, smoothstep(1.3, 0.0, uv.y));
-      glow += ribbon(uv, t, 0.0, 0.3);
-      glow += ribbon(uv - vec2(0.0, 0.09), t + 21.0, 1.0, 0.2) * 0.8;
-      glow += ribbon(uv + vec2(0.0, 0.12), t + 47.0, 2.0, 0.34) * 0.5;
+      // Broad vertical spread: curtains stay visible well into the upper half.
+      float weight = mix(0.5, 1.0, smoothstep(1.6, 0.0, uv.y));
+      glow += ribbon(uv, t, 0.0, 0.34);
+      glow += ribbon(uv - vec2(0.0, 0.09), t + 21.0, 1.0, 0.24) * 0.8;
+      glow += ribbon(uv + vec2(0.0, 0.12), t + 47.0, 2.0, 0.38) * 0.5;
       glow *= weight;
       core += smoothstep(0.3, 0.0, uv.y) * 0.16;
     } else if (uMode < 1.5) {
@@ -196,16 +197,18 @@ export const AuroraShader = ({
   intensity,
   motion = true,
   water = 0,
+  palette: paletteOverride,
   className = "",
   style,
 }) => {
   const canvasRef = useRef(null);
   const visibleRef = useRef(true);
 
-  const palette = useMemo(
+  const modePalette = useMemo(
     () => AURORA_PALETTES[mode] ?? AURORA_PALETTES.drift,
     [mode],
   );
+  const palette = paletteOverride ?? modePalette;
 
   // Pause the shader whenever the canvas leaves the viewport or the tab is hidden.
   useEffect(() => {
@@ -319,19 +322,19 @@ export const AuroraShader = ({
     const renderFrame = (now) => {
       uniforms.uTime.value = (now - startedAt) / 1000;
       uniforms.uPointer.value.x +=
-        (pointer.x - uniforms.uPointer.value.x) * 0.04;
+        (pointer.x - uniforms.uPointer.value.x) * 0.06;
       uniforms.uPointer.value.y +=
-        (pointer.y - uniforms.uPointer.value.y) * 0.04;
+        (pointer.y - uniforms.uPointer.value.y) * 0.06;
       // Pointer velocity (uv/s) drives the wave; with no movement the
       // accumulated delta is zero and uWave eases back to still water.
       const dt = Math.min(0.12, Math.max(0.008, (now - prevNow) / 1000));
       prevNow = now;
-      const targetX = motion && water ? (accumX / dt) * 1.2 : 0;
-      const targetY = motion && water ? (accumY / dt) * 1.2 : 0;
+      const targetX = motion && water ? (accumX / dt) * 1.5 : 0;
+      const targetY = motion && water ? (accumY / dt) * 1.5 : 0;
       accumX = 0;
       accumY = 0;
       // Rise fast while moving, settle gently when the pointer rests.
-      const waveK = targetX !== 0 || targetY !== 0 ? 0.3 : 0.14;
+      const waveK = targetX !== 0 || targetY !== 0 ? 0.35 : 0.14;
       uniforms.uWave.value.x += (targetX - uniforms.uWave.value.x) * waveK;
       uniforms.uWave.value.y += (targetY - uniforms.uWave.value.y) * waveK;
       renderer.render(scene, camera);
