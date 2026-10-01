@@ -142,10 +142,6 @@ const FRAGMENT = /* glsl */ `
     col += uC3 * pow(green, 2.5) * 0.34;
     col += uC3 * core * 0.5;
 
-    // Starfield, kept away from the bright curtain cores.
-    float star = step(0.9976, hash(floor(uv0 * uRes / 3.0)));
-    col += vec3(star) * 0.26 * (1.0 - green);
-
     // Vignette + ordered-ish dither to kill banding on dark gradients.
     float vig = smoothstep(1.3, 0.3, length(p * vec2(1.0, 1.25)));
     col *= 0.62 + 0.38 * vig;
