@@ -5,7 +5,13 @@ import { useMotionPreference } from "../components/aurora/useMotionPreference";
 import { AdvancedNavbar } from "../components/AdvancedNavbar";
 import WhatsappFab from "../components/WhatsappFab";
 import { NEXUS_2027_MENU_ITEMS } from "../constants/nexus2027";
+import { AudienceSection } from "../sections/AudienceSection";
+import ContactFormSection from "../sections/ContactFormSection";
+import { EventFormatSection } from "../sections/EventFormatSection";
+import { FooterSection } from "../sections/FooterSection";
 import { HeroNexus2027Section } from "../sections/HeroNexus2027Section";
+import { PastSponsorSection } from "../sections/PastSponsorSection";
+import { SponsorHorizon2027Section } from "../sections/SponsorHorizon2027Section";
 
 const pageClasses = [
   "nx-aurora-theme",
@@ -15,10 +21,11 @@ const pageClasses = [
 ].join(" ");
 
 /**
- * NEXUS INDONESIA 2027 — header only for now.
- * The navbar and the 2027 hero (Polar Drift); the content sections (past
- * sponsors, why, audience, event formats, contact, footer) come back as the
- * 2027 programme lands.
+ * NEXUS 2027 — full page.
+ * The 2027 hero (Polar Drift) and sponsor layer, then the reused
+ * content-safe sections (past sponsors, audience, event formats, contact,
+ * footer). The 2026 tour and highlights sections stay out until 2027
+ * programme details land.
  */
 export const HomePage2027 = () => {
   const motion = useMotionPreference();
@@ -39,6 +46,12 @@ export const HomePage2027 = () => {
         scrollToSection={scrollToSection}
       />
       <HeroNexus2027Section motion={motion} />
+      <PastSponsorSection />
+      <SponsorHorizon2027Section motion={motion} />
+      <AudienceSection />
+      <EventFormatSection />
+      <ContactFormSection />
+      <FooterSection items={NEXUS_2027_MENU_ITEMS} />
       <WhatsappFab />
     </main>
   );
