@@ -50,7 +50,7 @@ export const HeroNexus2027Section = ({ motion = true }) => (
         className="flex flex-1 flex-col items-center justify-center py-10 text-center"
       >
         <p
-          className="nx-meta nx-rise mb-5 sm:mb-7"
+          className="nx-meta nx-meta--hero nx-rise mb-5 sm:mb-7"
           style={{ "--nx-delay": "0ms" }}
         >
           {EVENT.scope} — {EVENT.year}
