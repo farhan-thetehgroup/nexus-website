@@ -1,5 +1,6 @@
 import { AuroraShader } from "../components/aurora/AuroraShader";
 import { DotWorldMap } from "../components/aurora/DotWorldMap";
+import dotMapDense from "../components/aurora/dotMapDense.json";
 import { NexusWordmark } from "../components/aurora/NexusWordmark";
 import { NEXUS_2027 as EVENT } from "../constants/nexus2027";
 
@@ -27,8 +28,11 @@ export const HeroNexus2027Section = ({ motion = true }) => (
 
     <div className="pointer-events-none absolute inset-0">
       <DotWorldMap
+        anchorX={1}
         baseAlpha={0.3}
         className="block h-full w-full opacity-70"
+        dotMapData={dotMapDense}
+        fit="cover"
         focusAlpha={0.72}
         motion={motion}
       />

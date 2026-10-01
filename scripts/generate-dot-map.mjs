@@ -5,9 +5,9 @@
  * Usage:
  *   curl -sL -o /tmp/countries.geo.json \
  *     https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json
- *   node scripts/generate-dot-map.mjs /tmp/countries.geo.json
+ *   node scripts/generate-dot-map.mjs /tmp/countries.geo.json [outputPath] [cols]
  *
- * Output: src/labs/nexus-2027/data/dotMap.json
+ * Output (default): src/components/aurora/dotMap.json
  * Each dot is [gridX, gridY, region] where region is
  *   0 = rest of world, 1 = Asia-Pacific, 2 = Indonesia.
  */
@@ -21,10 +21,13 @@ const root = resolve(__dirname, "..");
 const input = resolve(
   process.argv[2] ?? resolve(root, "tmp/countries.geo.json")
 );
-const output = resolve(root, "src/labs/nexus-2027/data/dotMap.json");
+const output = resolve(
+  root,
+  process.argv[3] ?? "src/components/aurora/dotMap.json"
+);
 
 // Grid + projection window (equirectangular, Antarctica trimmed away).
-const COLS = 200;
+const COLS = Number(process.argv[4]) || 200;
 const LAT_TOP = 72;
 const LAT_BOTTOM = -50;
 const ROWS = Math.round((COLS * (LAT_TOP - LAT_BOTTOM)) / 360);

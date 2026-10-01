@@ -20,7 +20,7 @@ const FRAGMENT = /* glsl */ `
   uniform vec2 uPointer;
   uniform float uMode;
   uniform float uIntensity;
-  uniform float uWarp;
+  uniform vec2 uWave;
   uniform vec3 uBg;
   uniform vec3 uC1;
   uniform vec3 uC2;
@@ -71,18 +71,23 @@ const FRAGMENT = /* glsl */ `
     p.x *= aspect;
     p += (uPointer - 0.5) * 0.05;
 
-    // Pointer-driven water distortion — a soft refractive lens with
-    // outgoing rings around the cursor, plus a touch of turbulence.
+    // Movement-driven waves — moving the pointer stirs the aurora like
+    // water; uWave decays to zero when the pointer rests, so still water
+    // stays perfectly still.
     vec2 uv = uv0;
-    if (uWarp > 0.001) {
+    float wave = min(length(uWave), 1.0);
+    if (wave > 0.004) {
       vec2 pd = uv0 - uPointer;
       pd.x *= aspect;
       float pdist = length(pd);
-      float plens = exp(-pdist * pdist * 14.0);
-      float pring = sin(pdist * 46.0 - uTime * 2.6);
-      uv += (pd / max(pdist, 1e-4)) * pring * plens * 0.02 * uWarp;
-      float pturb = fbm(uv0 * 5.0 + uTime * 0.5) - 0.5;
-      uv += vec2(pturb, -pturb) * plens * 0.03 * uWarp;
+      float fall = exp(-pdist * pdist * 9.0);
+      float ripple = sin(pdist * 34.0 - uTime * 6.0);
+      uv +=
+        (pd / max(pdist, 1e-4) + normalize(uWave + vec2(1e-5)) * 0.45) *
+        ripple *
+        fall *
+        0.018 *
+        wave;
     }
 
     float t = uTime;
@@ -139,16 +144,6 @@ const FRAGMENT = /* glsl */ `
     // Starfield, kept away from the bright curtain cores.
     float star = step(0.9976, hash(floor(uv0 * uRes / 3.0)));
     col += vec3(star) * 0.26 * (1.0 - green);
-
-    // Water glint — a faint specular catch on the ripple crests.
-    if (uWarp > 0.001) {
-      vec2 gd = uv0 - uPointer;
-      gd.x *= aspect;
-      float gdist = length(gd);
-      float glens = exp(-gdist * gdist * 14.0);
-      float crest = pow(max(sin(gdist * 46.0 - uTime * 2.6), 0.0), 3.0);
-      col += uC3 * crest * glens * 0.1 * uWarp;
-    }
 
     // Vignette + ordered-ish dither to kill banding on dark gradients.
     float vig = smoothstep(1.3, 0.3, length(p * vec2(1.0, 1.25)));
@@ -249,7 +244,7 @@ export const AuroraShader = ({
       uPointer: { value: new THREE.Vector2(0.5, 0.5) },
       uMode: { value: MODES[mode] ?? 0 },
       uIntensity: { value: intensity ?? palette.intensity },
-      uWarp: { value: 0 },
+      uWave: { value: new THREE.Vector2(0, 0) },
       uBg: { value: new THREE.Color(palette.bg) },
       uC1: { value: new THREE.Color(palette.c1) },
       uC2: { value: new THREE.Color(palette.c2) },
@@ -284,14 +279,32 @@ export const AuroraShader = ({
     const observer = new ResizeObserver(resize);
     if (canvas.parentElement) observer.observe(canvas.parentElement);
 
-    const pointer = { x: 0.5, y: 0.5, active: false };
+    // Track pointer motion in canvas-uv space so the shader can turn
+    // movement into waves: accumulate deltas, then convert to velocity
+    // per frame. No movement → zero velocity → still water.
+    const pointer = { x: 0.5, y: 0.5 };
+    let lastX = null;
+    let lastY = null;
+    let accumX = 0;
+    let accumY = 0;
     const onPointerMove = (event) => {
       if (rect.width <= 0 || rect.height <= 0) return;
-      const x = (event.clientX - rect.left) / rect.width;
-      const y = (event.clientY - rect.top) / rect.height;
-      pointer.x = Math.min(1, Math.max(0, x));
-      pointer.y = 1 - Math.min(1, Math.max(0, y));
-      pointer.active = true;
+      const x = Math.min(
+        1,
+        Math.max(0, (event.clientX - rect.left) / rect.width),
+      );
+      const y = Math.min(
+        1,
+        Math.max(0, (event.clientY - rect.top) / rect.height),
+      );
+      if (lastX !== null) {
+        accumX += x - lastX;
+        accumY += lastY - y;
+      }
+      lastX = x;
+      lastY = y;
+      pointer.x = x;
+      pointer.y = 1 - y;
     };
     if (motion) {
       window.addEventListener("pointermove", onPointerMove, { passive: true });
@@ -301,6 +314,7 @@ export const AuroraShader = ({
 
     let raf = 0;
     let lastRendered = 0;
+    let prevNow = 0;
     const startedAt = performance.now();
     const renderFrame = (now) => {
       uniforms.uTime.value = (now - startedAt) / 1000;
@@ -308,8 +322,18 @@ export const AuroraShader = ({
         (pointer.x - uniforms.uPointer.value.x) * 0.04;
       uniforms.uPointer.value.y +=
         (pointer.y - uniforms.uPointer.value.y) * 0.04;
-      const targetWarp = motion && pointer.active ? water : 0;
-      uniforms.uWarp.value += (targetWarp - uniforms.uWarp.value) * 0.05;
+      // Pointer velocity (uv/s) drives the wave; with no movement the
+      // accumulated delta is zero and uWave eases back to still water.
+      const dt = Math.min(0.12, Math.max(0.008, (now - prevNow) / 1000));
+      prevNow = now;
+      const targetX = motion && water ? (accumX / dt) * 1.2 : 0;
+      const targetY = motion && water ? (accumY / dt) * 1.2 : 0;
+      accumX = 0;
+      accumY = 0;
+      // Rise fast while moving, settle gently when the pointer rests.
+      const waveK = targetX !== 0 || targetY !== 0 ? 0.3 : 0.14;
+      uniforms.uWave.value.x += (targetX - uniforms.uWave.value.x) * waveK;
+      uniforms.uWave.value.y += (targetY - uniforms.uWave.value.y) * waveK;
       renderer.render(scene, camera);
     };
 
