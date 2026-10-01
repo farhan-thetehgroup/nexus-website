@@ -15,7 +15,7 @@ const CONCEPTS = [
     position:
       "The poster, breathing. Aurora curtains drift behind the halftone map and the wordmark keeps its light streak.",
     rationale:
-      "Shipped as the production hero on the 2027 page — open ?year=2027 to see it in place, or use the capture kit below for stills.",
+      "Shipped as the production hero on the 2027 page — open /2027 to see it in place, or use the capture kit below for stills.",
     use: "Hero / event site",
   },
   {
@@ -66,7 +66,7 @@ export const DesignLab = () => {
   const ActiveConcept = active.Component;
 
   const openStage = (id, width, height) => {
-    const url = `${window.location.pathname}?lab=nexus-2027&stage=${id}`;
+    const url = `${window.location.origin}/lab/nexus-2027?stage=${id}`;
     window.open(url, `nexus-2027-${id}`, `width=${width},height=${height}`);
   };
 
@@ -161,7 +161,7 @@ export const DesignLab = () => {
               {active.rationale}
             </p>
             <p className="nx-meta">
-              Keys 1 / 2 / 3 or ← → to switch · URL: ?lab=nexus-2027
+              Keys 1 / 2 / 3 or ← → to switch · URL: /lab/nexus-2027
             </p>
 
             <div className="border-t border-white/10 pt-5">

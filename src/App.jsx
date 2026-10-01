@@ -21,27 +21,25 @@ const LoadingScreen = () => (
   </div>
 );
 
-// Opt-in routes: /?lab=nexus-2027 (design study) and /?year=2027 (2027 page).
+// Path routes: /2027 (Nexus 2027 page) and /lab/nexus-2027 (design study).
+// Static hosts (Vercel/Netlify/nginx) need a rewrite of these paths to
+// index.html — single-page app fallback.
+const normalize = (path) =>
+  path.replace(/\/+$/, "").toLowerCase() || "/";
+
 function App() {
-  const params = new URLSearchParams(window.location.search);
+  const path = normalize(window.location.pathname);
 
-  if (params.get("lab") === "nexus-2027") {
-    return (
-      <Suspense fallback={<LoadingScreen />}>
-        <DesignLab />
-      </Suspense>
+  const page =
+    path === "/2027" ? (
+      <HomePage2027 />
+    ) : path === "/lab/nexus-2027" ? (
+      <DesignLab />
+    ) : (
+      <HomePage />
     );
-  }
 
-  if (params.get("year") === "2027") {
-    return (
-      <Suspense fallback={<LoadingScreen />}>
-        <HomePage2027 />
-      </Suspense>
-    );
-  }
-
-  return <HomePage />;
+  return <Suspense fallback={<LoadingScreen />}>{page}</Suspense>;
 }
 
 export default App;
