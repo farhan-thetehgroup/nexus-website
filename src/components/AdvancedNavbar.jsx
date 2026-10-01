@@ -128,11 +128,6 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
                       }`}
                     />
 
-                    {/* Active Indicator */}
-                    {activeSection === item.id && (
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" />
-                    )}
-
                     {/* Text with Icon */}
                     <span className="relative flex items-center gap-2">
                       {item.name}
