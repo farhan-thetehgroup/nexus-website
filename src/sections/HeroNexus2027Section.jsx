@@ -1,7 +1,7 @@
 import { AuroraShader } from "../components/aurora/AuroraShader";
 import { DotWorldMap } from "../components/aurora/DotWorldMap";
 import dotMapDense from "../components/aurora/dotMapDense.json";
-import { NexusWordmark } from "../components/aurora/NexusWordmark";
+import { NexusWordmarkSvg } from "../components/aurora/NexusWordmarkSvg";
 import { Typewriter } from "../components/common/ui/Typewriter";
 import { NEXUS_2027 as EVENT, NEXUS_2027_AURORA } from "../constants/nexus2027";
 
@@ -56,10 +56,9 @@ export const HeroNexus2027Section = ({ motion = true }) => (
           {EVENT.scope} — {EVENT.year}
         </p>
 
-        <NexusWordmark
-          className="nx-rise text-[clamp(2.9rem,12.5vw,10.5rem)]"
+        <NexusWordmarkSvg
+          className="nx-rise"
           motion={motion}
-          streak={false}
         />
 
         <div
