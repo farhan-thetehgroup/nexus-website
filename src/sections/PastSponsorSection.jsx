@@ -29,7 +29,8 @@ export const PastSponsorSection = () => {
     <section
       className="relative min-h-screen flex items-center overflow-hidden py-20 md:py-28"
       id="sponsors"
-      ref={sectionRef}>
+      ref={sectionRef}
+    >
       {/* Animated Background Blobs */}
       <motion.div className="pointer-events-none absolute inset-0">
         <motion.div
@@ -81,10 +82,12 @@ export const PastSponsorSection = () => {
             initial={{ scale: 0, rotate: -180 }}
             transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
             viewport={{ once: false }}
-            whileInView={{ scale: 1, rotate: 0 }}>
+            whileInView={{ scale: 1, rotate: 0 }}
+          >
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}>
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            >
               <Handshake className="w-5 h-5 text-emerald-400" />
             </motion.div>
             <span className="text-emerald-400 font-semibold text-sm md:text-base">
@@ -102,7 +105,8 @@ export const PastSponsorSection = () => {
             initial={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: false }}
-            whileInView={{ opacity: 1, y: 0 }}>
+            whileInView={{ opacity: 1, y: 0 }}
+          >
             <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
               Our Past Sponsors
             </span>
@@ -113,7 +117,8 @@ export const PastSponsorSection = () => {
             initial={{ opacity: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
             viewport={{ once: false }}
-            whileInView={{ opacity: 1 }}>
+            whileInView={{ opacity: 1 }}
+          >
             Join a prestigious group of sponsors and partners who are shaping
             the future of technology and innovation. Elevate your brand by
             collaborating with us.
@@ -126,7 +131,8 @@ export const PastSponsorSection = () => {
           initial={{ opacity: 0, y: 20 }}
           transition={{ delay: 0.8 }}
           viewport={{ once: false }}
-          whileInView={{ opacity: 1, y: 0 }}>
+          whileInView={{ opacity: 1, y: 0 }}
+        >
           <PartnersMarquee logos={PARTNERS} speedMs={SPEED_PARTNERS_MARQUEE} />
         </motion.div>
       </div>
@@ -135,105 +141,87 @@ export const PastSponsorSection = () => {
 };
 
 const PartnersMarquee = ({ logos = [], speedMs = 40000 }) => {
-  const [isPausedTop, setIsPausedTop] = useState(false);
-  const [isPausedBottom, setIsPausedBottom] = useState(false);
+  // Spread logos round-robin into 4 rows so each row stays near-equal and
+  // the drop order is preserved. Alternating rows scroll opposite ways:
+  // row 1 right-to-left, row 2 left-to-right, and so on.
+  const rowsCount = 4;
+  const rowDirections = ["rtl", "ltr", "rtl", "ltr"];
+  // Slight speed detunes so rows never look mechanically synchronized.
+  const rowSpeedFactors = [1, 1.08, 0.94, 1.04];
 
-  const trackTop = [...logos, ...logos];
-  const offset = 1;
-  const trackBottom = [
-    ...logos.slice(offset),
-    ...logos.slice(0, offset),
-    ...logos.slice(offset),
-    ...logos.slice(0, offset),
-  ];
+  const rows = Array.from({ length: rowsCount }, () => []);
+  logos.forEach((logo, i) => rows[i % rowsCount].push(logo));
 
   return (
-    <div className="relative overflow-hidden py-4 max-w-7xl mx-auto">
-      {/* Top Row */}
-      <div
-        className="mb-8 relative"
-        onMouseEnter={() => setIsPausedTop(true)}
-        onMouseLeave={() => setIsPausedTop(false)}
-        style={{
-          maskImage:
-            "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-        }}>
+    // One elliptical fog mask wraps all four rows (instead of a per-row
+    // linear fade): the band fades out toward every edge with a curved,
+    // circular vignette ~ a third deep on each side.
+    <div
+      className="relative overflow-hidden max-w-7xl mx-auto"
+      style={{
+        maskImage:
+          "radial-gradient(ellipse 48% 78% at 50% 50%, black 40%, rgba(0, 0, 0, 0.55) 70%, transparent 100%)",
+        WebkitMaskImage:
+          "radial-gradient(ellipse 48% 78% at 50% 50%, black 40%, rgba(0, 0, 0, 0.55) 70%, transparent 100%)",
+      }}
+    >
+      {rows.map((row, index) => (
+        <MarqueeRow
+          key={index}
+          direction={rowDirections[index]}
+          index={index}
+          logos={row}
+          speedMs={speedMs * rowSpeedFactors[index]}
+        />
+      ))}
+    </div>
+  );
+};
+
+const MarqueeRow = ({ direction, index, logos = [], speedMs }) => {
+  const [isPaused, setIsPaused] = useState(false);
+  const track = [...logos, ...logos];
+
+  return (
+    <div
+      className={`relative ${index > 0 ? "mt-6" : ""}`}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <motion.div
+        animate={{ scale: isPaused ? 1.05 : 1 }}
+        className="flex"
+        transition={{ duration: 0.3 }}
+      >
         <motion.div
-          animate={{ scale: isPausedTop ? 1.05 : 1 }}
-          className="flex gap-6"
-          transition={{ duration: 0.3 }}>
-          <motion.div
-            animate={{
-              x: isPausedTop ? undefined : [0, "-50%"],
-            }}
-            className="flex gap-6 will-change-transform"
-            style={{
-              display: "flex",
-              minWidth: "max-content",
-            }}
-            transition={
-              isPausedTop ?
-                {}
+          animate={{
+            x: isPaused
+              ? undefined
+              : direction === "rtl"
+                ? [0, "-50%"]
+                : ["-50%", 0],
+          }}
+          className="flex gap-6 will-change-transform"
+          style={{
+            display: "flex",
+            minWidth: "max-content",
+          }}
+          transition={
+            isPaused
+              ? {}
               : {
                   duration: speedMs / 1000,
                   repeat: Infinity,
                   ease: "linear",
                   repeatType: "loop",
                 }
-            }>
-            {trackTop.map((logo, i) => (
-              <LogoCard isPaused={isPausedTop} key={`top-${i}`} logo={logo} />
-            ))}
-          </motion.div>
+          }
+        >
+          {track.map((logo, i) => (
+            <LogoCard key={`row${index}-${i}`} logo={logo} />
+          ))}
         </motion.div>
-      </div>
-
-      {/* Bottom Row */}
-      <div
-        className="relative"
-        onMouseEnter={() => setIsPausedBottom(true)}
-        onMouseLeave={() => setIsPausedBottom(false)}
-        style={{
-          maskImage:
-            "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-        }}>
-        <motion.div
-          animate={{ scale: isPausedBottom ? 1.05 : 1 }}
-          className="flex gap-6"
-          transition={{ duration: 0.3 }}>
-          <motion.div
-            animate={{
-              x: isPausedBottom ? undefined : ["-50%", 0],
-            }}
-            className="flex gap-6 will-change-transform"
-            style={{
-              display: "flex",
-              minWidth: "max-content",
-            }}
-            transition={
-              isPausedBottom ?
-                {}
-              : {
-                  duration: (speedMs * 1.1) / 1000,
-                  repeat: Infinity,
-                  ease: "linear",
-                  repeatType: "loop",
-                }
-            }>
-            {trackBottom.map((logo, i) => (
-              <LogoCard
-                isPaused={isPausedBottom}
-                key={`bottom-${i}`}
-                logo={logo}
-              />
-            ))}
-          </motion.div>
-        </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 };
@@ -259,7 +247,8 @@ const LogoCard = ({ logo }) => {
         y: -4,
         borderColor: "rgba(16, 185, 129, 0.6)",
         boxShadow: "0 20px 40px rgba(16, 185, 129, 0.3)",
-      }}>
+      }}
+    >
       {/* Glow Effect */}
       <motion.div
         animate={{ opacity: isHovered ? 1 : 0 }}
@@ -279,9 +268,8 @@ const LogoCard = ({ logo }) => {
       <motion.img
         alt={logo.alt}
         animate={{
-          filter:
-            isHovered ?
-              "grayscale(0%) brightness(1.15) contrast(1.1)"
+          filter: isHovered
+            ? "grayscale(0%) brightness(1.15) contrast(1.1)"
             : "grayscale(100%) brightness(0.95) opacity(0.8)",
         }}
         className="relative z-10 h-auto max-h-12 w-auto max-w-[130px] object-contain"
@@ -292,16 +280,18 @@ const LogoCard = ({ logo }) => {
       {/* Corner Accents */}
       <motion.div
         animate={{
-          borderColor:
-            isHovered ? "rgba(16, 185, 129, 0.6)" : "rgba(16, 185, 129, 0)",
+          borderColor: isHovered
+            ? "rgba(16, 185, 129, 0.6)"
+            : "rgba(16, 185, 129, 0)",
         }}
         className="absolute top-1 right-1 w-6 h-6 border-t-2 border-r-2 border-emerald-400/0 rounded-tr-3xl"
         transition={{ duration: 0.3 }}
       />
       <motion.div
         animate={{
-          borderColor:
-            isHovered ? "rgba(6, 182, 212, 0.6)" : "rgba(6, 182, 212, 0)",
+          borderColor: isHovered
+            ? "rgba(6, 182, 212, 0.6)"
+            : "rgba(6, 182, 212, 0)",
         }}
         className="absolute bottom-1 left-1 w-6 h-6 border-b-2 border-l-2 border-cyan-400/0 rounded-bl-3xl"
         transition={{ duration: 0.3 }}
