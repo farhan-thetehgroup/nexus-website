@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 
@@ -12,12 +12,23 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
   const navBackground = useTransform(
     scrollYProgress,
     [0, 1],
-    ["rgba(30, 58, 138, 0)", "rgba(30, 58, 138, 0)"]
+    ["rgba(30, 58, 138, 0)", "rgba(30, 58, 138, 0)"],
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [, setHoveredItem] = useState(null);
+
+  // Cursor spotlight: a soft light that follows the pointer inside the nav.
+  // The layer is inset-0, so the gradient is clipped exactly at the nav edges.
+  const spotRef = useRef(null);
+  const handleNavPointerMove = (e) => {
+    const el = spotRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty("--nx-spot-x", `${e.clientX - rect.left}px`);
+    el.style.setProperty("--nx-spot-y", `${e.clientY - rect.top}px`);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,20 +79,30 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
     <>
       <motion.nav
         className={`fixed w-full z-50 backdrop-blur-xl border-b transition-all duration-500 ${
-          scrolled ?
-            "border-emerald-400/20 shadow-lg shadow-emerald-500/10"
-          : "border-transparent"
+          scrolled
+            ? "border-emerald-400/20 shadow-lg shadow-emerald-500/10"
+            : "border-transparent"
         }`}
-        style={{ backgroundColor: navBackground }}>
+        onMouseMove={handleNavPointerMove}
+        style={{ backgroundColor: navBackground }}
+      >
+        {/* Cursor-following subtle light, clipped at the nav edges */}
+        <div
+          ref={spotRef}
+          aria-hidden="true"
+          className="nx-nav-spot pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(160px circle at var(--nx-spot-x, 50%) var(--nx-spot-y, 50%), rgba(61, 255, 162, 0.16), rgba(61, 255, 162, 0.06) 42%, transparent 72%)",
+          }}
+        />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo Section with Advanced Animation */}
             <div
               className="flex items-center space-x-3 group cursor-pointer"
-              onClick={() => handleNavClick("hero")}>
-              {/* Animated Border */}
-              <div className="absolute left-4 w-16 h-16 border-2 border-emerald-400/30 rounded-full animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity" />
-
+              onClick={() => handleNavClick("hero")}
+            >
               {/* Logo Container */}
               <div className="relative z-10">
                 <div className="relative">
@@ -110,17 +131,19 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
                   className="relative"
                   key={item.id}
                   onMouseEnter={() => setHoveredItem(item.id)}
-                  onMouseLeave={() => setHoveredItem(null)}>
+                  onMouseLeave={() => setHoveredItem(null)}
+                >
                   <button
                     className={`group relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                      activeSection === item.id ?
-                        "text-emerald-400"
-                      : "text-gray-300 hover:text-white"
+                      activeSection === item.id
+                        ? "text-emerald-400"
+                        : "text-gray-300 hover:text-white"
                     }`}
                     onClick={() => handleNavClick(item.id)}
                     style={{
                       animationDelay: `${idx * 0.1}s`,
-                    }}>
+                    }}
+                  >
                     {/* Hover Background */}
                     <div
                       className={`absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
@@ -144,7 +167,8 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
             <div className="hidden lg:block">
               <button
                 className="group relative px-6 py-2.5 rounded-full font-semibold text-sm overflow-hidden"
-                onClick={() => handleNavClick("contact")}>
+                onClick={() => handleNavClick("contact")}
+              >
                 {/* Animated Background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-500 transition-transform duration-300 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -161,7 +185,8 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
                     className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
                     fill="none"
                     stroke="currentColor"
-                    viewBox="0 0 24 24">
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       d="M13 7l5 5m0 0l-5 5m5-5H6"
                       strokeLinecap="round"
@@ -176,12 +201,14 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
             {/* Mobile Menu Button */}
             <button
               className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg border border-emerald-400/30 hover:border-emerald-400 hover:bg-emerald-400/10 transition-all group"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
               <div className="relative w-6 h-6">
-                {isMenuOpen ?
+                {isMenuOpen ? (
                   <X className="w-6 h-6 text-emerald-400 transform rotate-90 transition-transform duration-300" />
-                : <Menu className="w-6 h-6 text-emerald-400 transform group-hover:scale-110 transition-transform duration-300" />
-                }
+                ) : (
+                  <Menu className="w-6 h-6 text-emerald-400 transform group-hover:scale-110 transition-transform duration-300" />
+                )}
               </div>
 
               {/* Ping Effect */}
@@ -196,44 +223,46 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
         <div
           className={`lg:hidden overflow-hidden transition-all duration-500 ${
             isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
-          }`}>
+          }`}
+        >
           <div className="px-4 py-6 bg-gradient-to-b from-gray-900 to-gray-800 border-t border-emerald-400/20">
             <div className="space-y-2">
               {items.map((item, idx) => (
                 <button
                   className={`group w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-300 ${
-                    activeSection === item.id ?
-                      "bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-400/30"
-                    : "hover:bg-gray-800 border border-transparent"
+                    activeSection === item.id
+                      ? "bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-400/30"
+                      : "hover:bg-gray-800 border border-transparent"
                   }`}
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   style={{
                     animationDelay: `${idx * 0.05}s`,
-                    animation:
-                      isMenuOpen ?
-                        "slideInRight 0.3s ease-out forwards"
+                    animation: isMenuOpen
+                      ? "slideInRight 0.3s ease-out forwards"
                       : "none",
-                  }}>
+                  }}
+                >
                   <span className="flex items-center gap-3">
                     <span className="text-2xl transform group-hover:scale-110 transition-transform">
                       {item.icon}
                     </span>
                     <span
                       className={`font-medium ${
-                        activeSection === item.id ?
-                          "text-emerald-400"
-                        : "text-gray-300"
-                      }`}>
+                        activeSection === item.id
+                          ? "text-emerald-400"
+                          : "text-gray-300"
+                      }`}
+                    >
                       {item.name}
                     </span>
                   </span>
 
                   <ChevronDown
                     className={`w-5 h-5 text-gray-500 transform transition-transform ${
-                      activeSection === item.id ?
-                        "rotate-180 text-emerald-400"
-                      : ""
+                      activeSection === item.id
+                        ? "rotate-180 text-emerald-400"
+                        : ""
                     }`}
                   />
                 </button>
@@ -244,13 +273,15 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
             <div className="mt-6 pt-6 border-t border-gray-700">
               <button
                 className="w-full px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 rounded-lg font-semibold text-gray-900 flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/50"
-                onClick={() => handleNavClick("contact")}>
+                onClick={() => handleNavClick("contact")}
+              >
                 Join Us
                 <svg
                   className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24">
+                  viewBox="0 0 24 24"
+                >
                   <path
                     d="M13 7l5 5m0 0l-5 5m5-5H6"
                     strokeLinecap="round"
@@ -265,9 +296,14 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
       </motion.nav>
 
       <style>{`
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+        /* Cursor spotlight: visible while the pointer is over the nav */
+        .nx-nav-spot {
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        nav:hover .nx-nav-spot {
+          opacity: 1;
         }
 
         @keyframes shine {
@@ -283,10 +319,6 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
         @keyframes slideInRight {
           from { opacity: 0; transform: translateX(-20px); }
           to { opacity: 1; transform: translateX(0); }
-        }
-
-        .animate-spin-slow {
-          animation: spin-slow 10s linear infinite;
         }
 
         .animate-shine {
