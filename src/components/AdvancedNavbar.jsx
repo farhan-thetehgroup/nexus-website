@@ -6,6 +6,8 @@ import { Menu, X, ChevronDown } from "lucide-react";
 
 import { BRAND_LOGO_WHITE, MENU_ITEMS } from "../constants";
 
+import { GlassButton } from "./common/ui/GlassButton";
+
 export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
   const { scrollY } = useScroll();
   const scrollYProgress = useTransform(scrollY, [0, 300], [0, 1]);
@@ -165,21 +167,11 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
 
             {/* CTA Button - Desktop */}
             <div className="hidden lg:block">
-              <button
-                className="group relative px-6 py-2.5 rounded-full font-semibold text-sm overflow-hidden"
+              <GlassButton
+                className="px-6 py-2.5 font-semibold text-sm"
                 onClick={() => handleNavClick("contact")}
               >
-                {/* Animated Background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-500 transition-transform duration-300 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                {/* Shine Effect */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 animate-shine" />
-                </div>
-
-                {/* Button Text */}
-                <span className="relative flex items-center gap-2 text-gray-900">
+                <span className="relative flex items-center gap-2 text-white">
                   Join Us
                   <svg
                     className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
@@ -195,7 +187,7 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
                     />
                   </svg>
                 </span>
-              </button>
+              </GlassButton>
             </div>
 
             {/* Mobile Menu Button */}
@@ -271,25 +263,27 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
 
             {/* Mobile CTA */}
             <div className="mt-6 pt-6 border-t border-gray-700">
-              <button
-                className="w-full px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 rounded-lg font-semibold text-gray-900 flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/50"
+              <GlassButton
+                className="w-full justify-center px-6 py-3 rounded-lg font-semibold text-white"
                 onClick={() => handleNavClick("contact")}
               >
-                Join Us
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                  />
-                </svg>
-              </button>
+                <span className="flex items-center gap-2">
+                  Join Us
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                    />
+                  </svg>
+                </span>
+              </GlassButton>
             </div>
           </div>
         </div>
@@ -306,11 +300,6 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
           opacity: 1;
         }
 
-        @keyframes shine {
-          from { transform: translateX(-100%) skewX(-12deg); }
-          to { transform: translateX(200%) skewX(-12deg); }
-        }
-
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }
@@ -319,10 +308,6 @@ export const AdvancedNavbar = ({ scrollToSection, items = MENU_ITEMS }) => {
         @keyframes slideInRight {
           from { opacity: 0; transform: translateX(-20px); }
           to { opacity: 1; transform: translateX(0); }
-        }
-
-        .animate-shine {
-          animation: shine 2s ease-in-out infinite;
         }
 
         .animate-fadeIn {

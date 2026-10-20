@@ -2,6 +2,7 @@ import { DotWorldMap } from "../components/aurora/DotWorldMap";
 import dotMapDense from "../components/aurora/dotMapDense.json";
 import { NexusWordmarkSvg } from "../components/aurora/NexusWordmarkSvg";
 import { Typewriter } from "../components/common/ui/Typewriter";
+import { GlassButton } from "../components/common/ui/GlassButton";
 import { NEXUS_2027 as EVENT } from "../constants/nexus2027";
 
 /**
@@ -58,9 +59,11 @@ export const HeroNexus2027Section = ({ motion = true }) => (
       </div>
 
       <div className="flex flex-col items-center gap-6">
-        <a
-          className="nx-rise group inline-flex items-center gap-3 rounded-full border border-[#3dffa2]/40 bg-[#3dffa2]/10 px-8 py-4 shadow-[0_0_45px_rgba(61,255,162,0.16)] transition-colors duration-300 hover:border-[#3dffa2]/80 hover:bg-[#3dffa2]/20"
+        <GlassButton
+          as="a"
+          className="nx-rise px-8 py-4 gap-3"
           href={EVENT.mailto}
+          tone="emerald"
           style={{ "--nx-delay": "380ms" }}
         >
           <span className="nx-meta nx-meta--bright">Be Our Sponsor</span>
@@ -70,7 +73,7 @@ export const HeroNexus2027Section = ({ motion = true }) => (
           >
             →
           </span>
-        </a>
+        </GlassButton>
 
         <p
           className="nx-rise nx-mono text-center text-[0.58rem] tracking-[0.3em] text-[#cdeae2] uppercase sm:text-[0.7rem]"
