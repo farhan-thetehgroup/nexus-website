@@ -162,7 +162,7 @@
 }
 
 .nx-wordmark-svg--solid .nx-wordmark-svg__letters {
-  fill: #d3ffe7;
+  fill: #27ff5f;
   filter:
     drop-shadow(0 0 14px rgba(61, 255, 162, 0.55))
     drop-shadow(0 0 48px rgba(61, 255, 162, 0.32))
@@ -200,6 +200,24 @@
   to {
     opacity: 1;
     transform: scaleX(1);
+  }
+}
+
+/* After the entrance stretch, the beam breathes: dims and re-brightens in a
+   continuous pulse so the horizontal panacaran stays alive. */
+.nx-wordmark-svg__beam-pulse--motion {
+  animation: nx-beam-pulse 3.4s ease-in-out 2.2s infinite;
+}
+
+@keyframes nx-beam-pulse {
+  0% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
@@ -371,6 +389,7 @@
 
 [data-motion="off"] .nx-wordmark__streak,
 [data-motion="off"] .nx-wordmark-svg__beam--motion,
+[data-motion="off"] .nx-wordmark-svg__beam-pulse--motion,
 [data-motion="off"] .nx-scan,
 [data-motion="off"] .nx-ring {
   animation: none;
@@ -381,6 +400,10 @@
 [data-motion="off"] .nx-wordmark-svg__beam--motion {
   opacity: 1;
   transform: none;
+}
+
+[data-motion="off"] .nx-wordmark-svg__beam-pulse--motion {
+  opacity: 1;
 }
 
 [data-motion="off"] .nx-blink {
@@ -396,6 +419,7 @@
 @media (prefers-reduced-motion: reduce) {
   .nx-wordmark__streak,
   .nx-wordmark-svg__beam--motion,
+  .nx-wordmark-svg__beam-pulse--motion,
   .nx-scan,
   .nx-ring {
     animation: none;
@@ -405,6 +429,10 @@
   .nx-wordmark-svg__beam--motion {
     opacity: 1;
     transform: none;
+  }
+
+  .nx-wordmark-svg__beam-pulse--motion {
+    opacity: 1;
   }
 
   .nx-rise,

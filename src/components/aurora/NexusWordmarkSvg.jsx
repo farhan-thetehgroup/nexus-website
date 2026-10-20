@@ -27,7 +27,9 @@ export const NexusWordmarkSvg = ({
   const beamHotId = `nx-beam-hot-${uid}`;
 
   return (
-    <span className={`nx-wordmark-svg nx-wordmark-svg--${variant} ${className}`}>
+    <span
+      className={`nx-wordmark-svg nx-wordmark-svg--${variant} ${className}`}
+    >
       <svg
         aria-hidden="true"
         focusable="false"
@@ -57,70 +59,76 @@ export const NexusWordmarkSvg = ({
               motion ? " nx-wordmark-svg__beam--motion" : ""
             }`}
           >
-            <defs>
-              <linearGradient
-                gradientUnits="userSpaceOnUse"
-                id={beamGradId}
-                x1="0"
-                x2={BEAM_WIDTH}
-                y1="0"
-                y2="0"
-              >
-                <stop offset="0" stopColor="#d6ffec" stopOpacity="0" />
-                <stop offset="0.14" stopColor="#d6ffec" stopOpacity="0.3" />
-                <stop
-                  offset={E_BAR_CENTER_X / BEAM_WIDTH}
-                  stopColor="#f4fffb"
-                  stopOpacity="0.95"
-                />
-                <stop offset="0.52" stopColor="#d6ffec" stopOpacity="0.4" />
-                <stop offset="0.85" stopColor="#d6ffec" stopOpacity="0.14" />
-                <stop offset="1" stopColor="#d6ffec" stopOpacity="0" />
-              </linearGradient>
-              <radialGradient
+            <g
+              className={`nx-wordmark-svg__beam-pulse${
+                motion ? " nx-wordmark-svg__beam-pulse--motion" : ""
+              }`}
+            >
+              <defs>
+                <linearGradient
+                  gradientUnits="userSpaceOnUse"
+                  id={beamGradId}
+                  x1="0"
+                  x2={BEAM_WIDTH}
+                  y1="0"
+                  y2="0"
+                >
+                  <stop offset="0" stopColor="#d6ffec" stopOpacity="0" />
+                  <stop offset="0.14" stopColor="#d6ffec" stopOpacity="0.3" />
+                  <stop
+                    offset={E_BAR_CENTER_X / BEAM_WIDTH}
+                    stopColor="#f4fffb"
+                    stopOpacity="0.95"
+                  />
+                  <stop offset="0.52" stopColor="#d6ffec" stopOpacity="0.4" />
+                  <stop offset="0.85" stopColor="#d6ffec" stopOpacity="0.14" />
+                  <stop offset="1" stopColor="#d6ffec" stopOpacity="0" />
+                </linearGradient>
+                <radialGradient
+                  cx={E_BAR_CENTER_X}
+                  cy={E_BAR_CENTER_Y}
+                  gradientUnits="userSpaceOnUse"
+                  id={beamHotId}
+                  r="60"
+                >
+                  <stop offset="0" stopColor="#f4fffb" stopOpacity="0.9" />
+                  <stop offset="0.5" stopColor="#d6ffec" stopOpacity="0.35" />
+                  <stop offset="1" stopColor="#d6ffec" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+
+              {/* soft outer glow, hot core, then the emanation point on the bar */}
+              <rect
+                fill={`url(#${beamGradId})`}
+                height="20"
+                opacity="0.4"
+                width={BEAM_WIDTH}
+                x="0"
+                y={E_BAR_CENTER_Y - 10}
+              />
+              <rect
+                fill={`url(#${beamGradId})`}
+                height="10"
+                opacity="0.7"
+                width={BEAM_WIDTH}
+                x="0"
+                y={E_BAR_CENTER_Y - 5}
+              />
+              <rect
+                fill={`url(#${beamGradId})`}
+                height="1.6"
+                width={BEAM_WIDTH}
+                x="0"
+                y={E_BAR_CENTER_Y - 0.8}
+              />
+              <ellipse
                 cx={E_BAR_CENTER_X}
                 cy={E_BAR_CENTER_Y}
-                gradientUnits="userSpaceOnUse"
-                id={beamHotId}
-                r="60"
-              >
-                <stop offset="0" stopColor="#f4fffb" stopOpacity="0.9" />
-                <stop offset="0.5" stopColor="#d6ffec" stopOpacity="0.35" />
-                <stop offset="1" stopColor="#d6ffec" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-
-            {/* soft outer glow, hot core, then the emanation point on the bar */}
-            <rect
-              fill={`url(#${beamGradId})`}
-              height="20"
-              opacity="0.4"
-              width={BEAM_WIDTH}
-              x="0"
-              y={E_BAR_CENTER_Y - 10}
-            />
-            <rect
-              fill={`url(#${beamGradId})`}
-              height="10"
-              opacity="0.7"
-              width={BEAM_WIDTH}
-              x="0"
-              y={E_BAR_CENTER_Y - 5}
-            />
-            <rect
-              fill={`url(#${beamGradId})`}
-              height="1.6"
-              width={BEAM_WIDTH}
-              x="0"
-              y={E_BAR_CENTER_Y - 0.8}
-            />
-            <ellipse
-              cx={E_BAR_CENTER_X}
-              cy={E_BAR_CENTER_Y}
-              fill={`url(#${beamHotId})`}
-              rx="60"
-              ry="14"
-            />
+                fill={`url(#${beamHotId})`}
+                rx="60"
+                ry="14"
+              />
+            </g>
           </g>
         )}
       </svg>

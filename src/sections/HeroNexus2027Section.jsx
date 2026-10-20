@@ -1,30 +1,20 @@
-import { AuroraShader } from "../components/aurora/AuroraShader";
 import { DotWorldMap } from "../components/aurora/DotWorldMap";
 import dotMapDense from "../components/aurora/dotMapDense.json";
 import { NexusWordmarkSvg } from "../components/aurora/NexusWordmarkSvg";
 import { Typewriter } from "../components/common/ui/Typewriter";
-import { NEXUS_2027 as EVENT, NEXUS_2027_AURORA } from "../constants/nexus2027";
+import { NEXUS_2027 as EVENT } from "../constants/nexus2027";
 
 /**
  * NEXUS 2027 — production hero.
- * APAC-wide brand hero: Polar Drift aurora (blue drifting into green) over
- * the full-bleed halftone map, with a pointer-driven water wave and the
- * typewriter headline from the home hero.
+ * APAC-wide brand hero: the exact brand-letterform SVG wordmark with a
+ * pulsing horizontal light beam on the E's second bar, over the full-bleed
+ * halftone map. The AuroraShader layer is parked for a later section.
  */
 export const HeroNexus2027Section = ({ motion = true }) => (
   <section
     className="nx-aurora-theme relative isolate min-h-[100svh] overflow-hidden"
     id="hero"
   >
-    <div className="absolute inset-0">
-      <AuroraShader
-        mode="drift"
-        motion={motion}
-        palette={NEXUS_2027_AURORA}
-        water={1}
-      />
-    </div>
-
     <div className="pointer-events-none absolute inset-0">
       <DotWorldMap
         anchorX={1}
@@ -41,9 +31,7 @@ export const HeroNexus2027Section = ({ motion = true }) => (
     <div className="nx-grain pointer-events-none absolute inset-0" />
 
     <div className="relative z-10 flex min-h-[100svh] flex-col px-6 pt-28 pb-8 sm:px-10 sm:pt-32">
-      <h1 className="sr-only">
-        NEXUS Asia-Pacific 2027 — {EVENT.headline}
-      </h1>
+      <h1 className="sr-only">NEXUS Asia-Pacific 2027 — {EVENT.headline}</h1>
 
       <div
         aria-hidden="true"
@@ -56,10 +44,7 @@ export const HeroNexus2027Section = ({ motion = true }) => (
           {EVENT.scope} — {EVENT.year}
         </p>
 
-        <NexusWordmarkSvg
-          className="nx-rise"
-          motion={motion}
-        />
+        <NexusWordmarkSvg className="nx-rise" motion={motion} />
 
         <div
           className="nx-rise mt-5 min-h-[3.2rem] sm:mt-7 sm:min-h-[3.4rem]"

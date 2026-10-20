@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import { useState } from "react";
 
+import "../components/aurora/aurora.css";
 import { useMotionPreference } from "../components/aurora/useMotionPreference";
 import { AdvancedNavbar } from "../components/AdvancedNavbar";
 import WhatsappFab from "../components/WhatsappFab";
