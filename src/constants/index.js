@@ -177,84 +177,43 @@ export const TOUR_CITIES = [
 ];
 
 export const PARTNERS = [
+  // NEXUS 2026 (this year's event) sponsor set — old sponsors dropped by the
+  // client; logo text verified by OCR/vision reads of each dropped file.
+  // url fields intentionally omitted until the client supplies official URLs.
+  { src: "/images/sponsors/agilitec.jpg", alt: "Agilitec" },
+  { src: "/images/sponsors/beyondtrust.webp", alt: "BeyondTrust" },
+  { src: "/images/sponsors/bitdefender.webp", alt: "Bitdefender" },
+  { src: "/images/sponsors/cardinal.webp", alt: "Cardinal" },
+  { src: "/images/sponsors/clinkit.webp", alt: "ClinkIT" },
+  { src: "/images/sponsors/cloudflare.webp", alt: "Cloudflare" },
+  { src: "/images/sponsors/commvault.webp", alt: "Commvault" },
+  { src: "/images/sponsors/darktrace.webp", alt: "Darktrace" },
+  { src: "/images/sponsors/equinix.webp", alt: "Equinix" },
+  { src: "/images/sponsors/everpure.webp", alt: "Everpure" },
+  { src: "/images/sponsors/gigamon.webp", alt: "Gigamon" },
+  { src: "/images/sponsors/h2oai.webp", alt: "H2O.ai" },
+  { src: "/images/sponsors/lark.webp", alt: "Lark" },
+  { src: "/images/sponsors/lmntrix.webp", alt: "LMNTRIX" },
+  { src: "/images/sponsors/mimecast.webp", alt: "Mimecast" },
+  { src: "/images/sponsors/mtech.webp", alt: "M.Tech" },
+  { src: "/images/sponsors/netron-datadog.webp", alt: "Netron / Datadog" },
+  { src: "/images/sponsors/okta-techdirect.webp", alt: "Okta / Techdirect" },
+  { src: "/images/sponsors/pointwest.jpg", alt: "Pointwest" },
+  { src: "/images/sponsors/proofpoint.webp", alt: "Proofpoint" },
+  { src: "/images/sponsors/redrock.webp", alt: "Redrock IT Security" },
+  { src: "/images/sponsors/rsa.webp", alt: "RSA" },
+  { src: "/images/sponsors/silverfort.webp", alt: "Silverfort" },
+  { src: "/images/sponsors/skyhigh.webp", alt: "Skyhigh Security" },
+  { src: "/images/sponsors/tanium.webp", alt: "Tanium" },
+  { src: "/images/sponsors/technow.webp", alt: "Technow" },
+  { src: "/images/sponsors/tenable.webp", alt: "Tenable" },
+  { src: "/images/sponsors/trend-ai.webp", alt: "TrendAI" },
+  { src: "/images/sponsors/tlr-global.png", alt: "TLR Global" },
   {
-    src: "/images/sponsors/akamai.png",
-    alt: "Akamai",
-    url: "https://www.akamai.com/",
+    src: "/images/sponsors/viettel-cybersecurity.webp",
+    alt: "Viettel Cybersecurity",
   },
-  {
-    src: "/images/sponsors/alibaba.png",
-    alt: "Alibaba",
-    url: "https://www.alibabacloud.com/",
-  },
-  {
-    src: "/images/sponsors/aws.png",
-    alt: "AWS",
-    url: "https://aws.amazon.com/",
-  },
-  {
-    src: "/images/sponsors/cintegrity.png",
-    alt: "Cintegrity",
-    url: "https://www.cintegrity.com/",
-  },
-  {
-    src: "/images/sponsors/cloudflare.png",
-    alt: "Cloudflare",
-    url: "https://www.cloudflare.com/",
-  },
-  {
-    src: "/images/sponsors/coupa.png",
-    alt: "Coupa",
-    url: "https://www.coupa.com/",
-  },
-  {
-    src: "/images/sponsors/fortinet.png",
-    alt: "Fortinet",
-    url: "https://www.fortinet.com/",
-  },
-  {
-    src: "/images/sponsors/googlecloud.png",
-    alt: "Google Cloud",
-    url: "https://cloud.google.com/",
-  },
-  { src: "/images/sponsors/ibm.png", alt: "IBM", url: "https://www.ibm.com/" },
-  {
-    src: "/images/sponsors/infoblox.png",
-    alt: "Infoblox",
-    url: "https://www.infoblox.com/",
-  },
-  {
-    src: "/images/sponsors/nutanix.png",
-    alt: "Nutanix",
-    url: "https://www.nutanix.com/",
-  },
-  {
-    src: "/images/sponsors/paypal.webp",
-    alt: "PayPal",
-    url: "https://www.paypal.com/",
-  },
-  { src: "/images/sponsors/pwc.svg", alt: "PwC", url: "https://www.pwc.com/" },
-  {
-    src: "/images/sponsors/searce.png",
-    alt: "Searce",
-    url: "https://www.searce.com/",
-  },
-  {
-    src: "/images/sponsors/senitalone.png",
-    alt: "SentinelOne",
-    url: "https://www.sentinelone.com/",
-  },
-  {
-    src: "/images/sponsors/servicenow.png",
-    alt: "ServiceNow",
-    url: "https://www.servicenow.com/",
-  },
-  { src: "/images/sponsors/ssc.png", alt: "SSC", url: "https://www.ssc.com/" },
-  {
-    src: "/images/sponsors/trend.png",
-    alt: "Trend Micro",
-    url: "https://www.trendmicro.com/",
-  },
+  { src: "/images/sponsors/xtremax.webp", alt: "XTREMAX" },
 ];
 
 export const EMAIL = "hello@thetehgroup.com";
