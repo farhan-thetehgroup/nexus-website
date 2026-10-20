@@ -57,20 +57,27 @@ const Card = ({ reason, index }) => {
         ease: [0.16, 1, 0.3, 1],
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
+      {/* Colored field the frost refracts: sits just behind the glass edge */}
+      <div
+        className={`absolute -inset-2 bg-gradient-to-br ${reason.gradient} rounded-[2rem] opacity-20 blur-2xl group-hover:opacity-40 transition-opacity duration-500`}
+      />
 
+      {/* Glass panel */}
       <motion.div
-        className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl p-8 rounded-3xl border border-emerald-500/20 hover:border-emerald-400/60 overflow-hidden group cursor-pointer"
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className="relative overflow-hidden rounded-3xl border border-white/15 bg-white/[0.07] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_24px_60px_rgba(2,8,20,0.45),inset_0_1px_0_rgba(255,255,255,0.25)] p-8 cursor-pointer group-hover:border-white/30 transition-colors duration-300"
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         whileHover={{ y: -10 }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-cyan-500/0 group-hover:from-emerald-500/10 group-hover:to-cyan-500/10 transition-all duration-500" />
-
-        <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-emerald-500/20 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+        {/* Refracted bloom inside the glass */}
+        <div
+          className={`absolute -top-24 -right-24 w-56 h-56 bg-gradient-to-br ${reason.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-35 transition-opacity duration-500`}
+        />
+        {/* Sheen along the top edge of the pane */}
+        <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
 
         <div className="relative z-10">
           <motion.div
-            className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${reason.gradient} p-3 mb-6 shadow-lg`}
+            className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${reason.gradient} p-3 mb-6 shadow-[0_10px_30px_rgba(2,8,20,0.35)] border border-white/20`}
             transition={{ duration: 0.4 }}
             whileHover={{ scale: 1.08 }}
           >
@@ -84,22 +91,17 @@ const Card = ({ reason, index }) => {
             transition={{ duration: 0.6, delay: reason.delay + 0.3 }}
           />
 
-          <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-emerald-400 transition-colors duration-300">
+          <h3 className="text-2xl font-bold mb-4 text-white transition-colors duration-300">
             {reason.title}
           </h3>
 
-          <p className="text-gray-300 leading-relaxed group-hover:text-gray-100 transition-colors duration-300">
+          <p className="text-white/70 leading-relaxed group-hover:text-white/90 transition-colors duration-300">
             {reason.desc}
           </p>
-
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-cyan-500"
-            initial={{ scaleX: 0 }}
-            style={{ originX: 0 }}
-            transition={{ duration: 0.3 }}
-            whileHover={{ scaleX: 1 }}
-          />
         </div>
+
+        {/* Edge glow line on hover */}
+        <div className="absolute bottom-0 left-0 right-0 h-px origin-left scale-x-0 bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
       </motion.div>
     </motion.div>
   );
@@ -122,22 +124,23 @@ export const WhySponsorSection = () => {
       ref={containerRef}
     >
       <motion.div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-55"
         style={{ y: backgroundY }}
       >
-        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-[10%] w-[380px] h-[380px] bg-emerald-500/40 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-[8%] w-[420px] h-[420px] bg-cyan-500/30 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[620px] h-[480px] bg-purple-500/25 rounded-full blur-3xl" />
+        <div className="absolute bottom-[12%] left-[22%] w-[300px] h-[300px] bg-orange-500/20 rounded-full blur-3xl" />
       </motion.div>
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="text-center mb-20">
           <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] mb-6"
             {...entry.fade(0, 14, 0.6)}
           >
             <Sparkles className="w-5 h-5 text-emerald-400" />
-            <span className="text-emerald-400 font-semibold">
+            <span className="text-emerald-300 font-semibold">
               Premium Benefits
             </span>
           </motion.div>
