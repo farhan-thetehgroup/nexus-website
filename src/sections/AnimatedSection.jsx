@@ -11,7 +11,7 @@ const containerVariants = {
 
 export const AnimatedSection = ({ children, id }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.3 });
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   return (
     <motion.section
@@ -20,7 +20,8 @@ export const AnimatedSection = ({ children, id }) => {
       id={id}
       initial="hidden"
       ref={ref}
-      variants={containerVariants}>
+      variants={containerVariants}
+    >
       {children}
     </motion.section>
   );

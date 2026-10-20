@@ -3,6 +3,11 @@
 /* eslint-disable no-undef */
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
+
+import {
+  MaskedLine,
+  useSectionEntry,
+} from "../components/common/ui/SectionEntry";
 import {
   Mail,
   Phone,
@@ -81,7 +86,7 @@ const ContactForm = () => {
       console.error("Missing contact form API configuration.");
       setStatus("error");
       setStatusMessage(
-        "The contact form is temporarily unavailable. Please try again later."
+        "The contact form is temporarily unavailable. Please try again later.",
       );
       setLoading(false);
       return;
@@ -131,7 +136,7 @@ const ContactForm = () => {
         setStatus("error");
         setStatusMessage(
           responseBody?.message ||
-            "You have made too many requests. Please wait a moment and try again."
+            "You have made too many requests. Please wait a moment and try again.",
         );
         setTimeout(() => {
           setStatus(null);
@@ -143,13 +148,13 @@ const ContactForm = () => {
       if (!response.ok) {
         const apiMessage =
           responseBody?.message ||
-          (Array.isArray(responseBody?.errors) ?
-            responseBody.errors.join(", ")
-          : null);
+          (Array.isArray(responseBody?.errors)
+            ? responseBody.errors.join(", ")
+            : null);
 
         setStatus("error");
         setStatusMessage(
-          apiMessage || `Failed to submit form. Status: ${response.status}`
+          apiMessage || `Failed to submit form. Status: ${response.status}`,
         );
         if (Array.isArray(responseBody?.errors)) {
           const parsedErrors = {};
@@ -179,7 +184,7 @@ const ContactForm = () => {
       setStatus("success");
       setStatusMessage(
         responseBody?.message ||
-          "Message sent successfully! We'll contact you soon."
+          "Message sent successfully! We'll contact you soon.",
       );
       setFieldErrors({});
       setFormData({
@@ -199,7 +204,7 @@ const ContactForm = () => {
       console.error("Form submission error:", error);
       setStatus("error");
       setStatusMessage(
-        error?.message || "Failed to send message. Please try again."
+        error?.message || "Failed to send message. Please try again.",
       );
       setFieldErrors({});
     } finally {
@@ -210,9 +215,9 @@ const ContactForm = () => {
   const inputClasses = (hasError) =>
     [
       "w-full px-4 py-3 rounded-xl bg-slate-800/50 border text-white placeholder-gray-500 focus:outline-none transition-all",
-      hasError ?
-        "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-      : "border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20",
+      hasError
+        ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+        : "border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20",
     ].join(" ");
 
   return (
@@ -220,7 +225,8 @@ const ContactForm = () => {
       className="max-w-4xl mx-auto"
       initial={{ opacity: 0, y: 40 }}
       transition={{ duration: 0.8 }}
-      whileInView={{ opacity: 1, y: 0 }}>
+      whileInView={{ opacity: 1, y: 0 }}
+    >
       <div className="relative bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-3xl border border-emerald-500/30 overflow-hidden p-8 md:p-12">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-bl-full opacity-10" />
 
@@ -231,7 +237,8 @@ const ContactForm = () => {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/40 mb-4"
               initial={{ scale: 0 }}
               transition={{ type: "spring", delay: 0.2 }}
-              whileInView={{ scale: 1 }}>
+              whileInView={{ scale: 1 }}
+            >
               <Mail className="w-4 h-4 text-cyan-400" />
               <span className="text-cyan-400 font-medium text-sm">
                 Sponsorship Inquiry
@@ -254,7 +261,8 @@ const ContactForm = () => {
             <motion.div
               animate={{ opacity: 1, y: 0 }}
               className="mb-6 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/50 flex items-center gap-3"
-              initial={{ opacity: 0, y: -20 }}>
+              initial={{ opacity: 0, y: -20 }}
+            >
               <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
               <p className="text-emerald-400 font-medium">
                 {statusMessage ||
@@ -267,7 +275,8 @@ const ContactForm = () => {
             <motion.div
               animate={{ opacity: 1, y: 0 }}
               className="mb-6 p-4 rounded-xl bg-red-500/20 border border-red-500/50 flex items-center gap-3"
-              initial={{ opacity: 0, y: -20 }}>
+              initial={{ opacity: 0, y: -20 }}
+            >
               <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
               <p className="text-red-400 font-medium">
                 {statusMessage ||
@@ -375,9 +384,9 @@ const ContactForm = () => {
               <textarea
                 className={[
                   "w-full px-4 py-3 rounded-xl bg-slate-800/50 border text-white placeholder-gray-500 focus:outline-none transition-all resize-none",
-                  fieldErrors.message ?
-                    "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-                  : "border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20",
+                  fieldErrors.message
+                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                    : "border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20",
                 ].join(" ")}
                 name="message"
                 onChange={handleChange}
@@ -399,17 +408,19 @@ const ContactForm = () => {
               disabled={loading}
               type="submit"
               whileHover={!loading ? { scale: 1.02 } : {}}
-              whileTap={!loading ? { scale: 0.98 } : {}}>
-              {loading ?
+              whileTap={!loading ? { scale: 0.98 } : {}}
+            >
+              {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
                   <span>Sending...</span>
                 </>
-              : <>
+              ) : (
+                <>
                   <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   <span>Send Message</span>
                 </>
-              }
+              )}
             </motion.button>
 
             {/* Contact Info */}
@@ -420,7 +431,8 @@ const ContactForm = () => {
               <div className="flex flex-wrap items-center justify-center gap-6">
                 <a
                   className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors"
-                  href={MAILTO_URL}>
+                  href={MAILTO_URL}
+                >
                   <Mail className="w-4 h-4" />
                   <span className="text-sm font-medium">{EMAIL}</span>
                 </a>
@@ -428,7 +440,8 @@ const ContactForm = () => {
                   className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors"
                   href={`https://api.whatsapp.com/send?phone=${PHONE_WHATSAPP}&text=${WHATSAPP_MESSAGE}`}
                   rel="noopener noreferrer"
-                  target="_blank">
+                  target="_blank"
+                >
                   <Phone className="w-4 h-4" />
                   <span className="text-sm font-medium">{PHONE_WHATSAPP}</span>
                 </a>
@@ -461,7 +474,8 @@ const HashtagBadge = ({ tag, index }) => {
       transition={{ delay: index * 0.1, type: "spring", stiffness: 300 }}
       whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
       whileInView={{ opacity: 1, scale: 1 }}
-      whileTap={{ scale: 0.95 }}>
+      whileTap={{ scale: 0.95 }}
+    >
       <div className="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/40 hover:border-emerald-400/70 backdrop-blur-sm transition-all duration-300 flex items-center gap-2 group">
         <Hash className="w-4 h-4 text-emerald-400 group-hover:text-cyan-400 transition-colors" />
         <span className="font-semibold text-white group-hover:text-emerald-400 transition-colors">
@@ -479,23 +493,24 @@ const HashtagBadge = ({ tag, index }) => {
 
 export default function ContactFormSection() {
   const containerRef = useRef(null);
+  const entry = useSectionEntry();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
 
-  const headerY = useTransform(scrollYProgress, [0, 0.3], [100, 0]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   return (
     <section
       className="relative min-h-screen flex items-center justify-center py-32 px-4 overflow-hidden"
       id="contact"
-      ref={containerRef}>
+      ref={containerRef}
+    >
       <motion.div
         className="absolute inset-0 opacity-20"
-        style={{ y: backgroundY }}>
+        style={{ y: backgroundY }}
+      >
         <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-80 h-80 bg-emerald-500/30 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-3xl" />
@@ -504,37 +519,31 @@ export default function ContactFormSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.05)_0%,transparent_100%)]" />
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
-        <motion.div
-          className="text-center mb-16"
-          style={{ y: headerY, opacity: headerOpacity }}>
+        <div className="text-center mb-16">
           <motion.div
             className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 border border-cyan-500/40 mb-6 backdrop-blur-sm"
-            initial={{ scale: 0, rotate: -180 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-            whileInView={{ scale: 1, rotate: 0 }}>
+            {...entry.fade(0, 14, 0.6)}
+          >
             <MessageCircle className="w-5 h-5 text-cyan-400" />
             <span className="text-cyan-400 font-semibold">Get in Touch</span>
           </motion.div>
 
-          <motion.h2
-            className="text-5xl md:text-7xl font-bold mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            whileInView={{ opacity: 1, y: 0 }}>
-            <span className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
-              Ask for Sponsorship
-            </span>
-          </motion.h2>
+          <h2 className="text-5xl md:text-7xl font-bold mb-6">
+            <MaskedLine delay={0.1}>
+              <span className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                Ask for Sponsorship
+              </span>
+            </MaskedLine>
+          </h2>
 
           <motion.p
             className="text-xl text-gray-400 max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            whileInView={{ opacity: 1 }}>
+            {...entry.fade(0.24, 16)}
+          >
             Connect with us to discuss partnership opportunities for AI Nexus
             APAC
           </motion.p>
-        </motion.div>
+        </div>
 
         {/* Contact Form */}
         <ContactForm />
@@ -544,7 +553,8 @@ export default function ContactFormSection() {
           className="text-center mt-20"
           initial={{ opacity: 0, y: 40 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          whileInView={{ opacity: 1, y: 0 }}>
+          whileInView={{ opacity: 1, y: 0 }}
+        >
           <div className="inline-block bg-gradient-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl px-10 py-8 rounded-3xl border border-emerald-500/30">
             <div className="flex items-center justify-center gap-3 mb-6">
               <Sparkles className="w-6 h-6 text-emerald-400" />
@@ -568,7 +578,8 @@ export default function ContactFormSection() {
               className="text-sm text-gray-500 mt-6"
               initial={{ opacity: 0 }}
               transition={{ delay: 1 }}
-              whileInView={{ opacity: 1 }}>
+              whileInView={{ opacity: 1 }}
+            >
               Click any hashtag to copy
             </motion.p>
           </div>

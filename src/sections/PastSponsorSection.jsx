@@ -4,12 +4,17 @@ import { useRef } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { Handshake } from "lucide-react";
 
+import {
+  MaskedLine,
+  useSectionEntry,
+} from "../components/common/ui/SectionEntry";
 import { PARTNERS } from "../constants";
 
 const SPEED_PARTNERS_MARQUEE = 40000;
 
 export const PastSponsorSection = () => {
   const sectionRef = useRef(null);
+  const entry = useSectionEntry();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -80,45 +85,25 @@ export const PastSponsorSection = () => {
           <div className="text-center mb-16 max-w-4xl mx-auto">
             <motion.div
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-2 border-emerald-400/40 mb-6 backdrop-blur-sm shadow-lg"
-              initial={{ scale: 0, rotate: -180 }}
-              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-              viewport={{ once: false }}
-              whileInView={{ scale: 1, rotate: 0 }}
+              {...entry.fade(0, 14, 0.6)}
             >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              >
-                <Handshake className="w-5 h-5 text-emerald-400" />
-              </motion.div>
+              <Handshake className="w-5 h-5 text-emerald-400" />
               <span className="text-emerald-400 font-semibold text-sm md:text-base">
                 Proudly partnered with leading institutions
               </span>
-              <motion.span
-                animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
-                className="h-2 w-2 rounded-full bg-emerald-400"
-                transition={{ duration: 2, repeat: Infinity }}
-              />
             </motion.div>
 
-            <motion.h2
-              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6"
-              initial={{ opacity: 0, y: 30 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              viewport={{ once: false }}
-              whileInView={{ opacity: 1, y: 0 }}
-            >
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
-                Our Past Sponsors
-              </span>
-            </motion.h2>
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
+              <MaskedLine delay={0.1}>
+                <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
+                  Our Past Sponsors
+                </span>
+              </MaskedLine>
+            </h2>
 
             <motion.p
               className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed"
-              initial={{ opacity: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              viewport={{ once: false }}
-              whileInView={{ opacity: 1 }}
+              {...entry.fade(0.24, 16)}
             >
               Join a prestigious group of sponsors and partners who are shaping
               the future of technology and innovation. Elevate your brand by
@@ -127,13 +112,7 @@ export const PastSponsorSection = () => {
           </div>
 
           {/* Marquee Section */}
-          <motion.div
-            className="mt-16"
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ delay: 0.8 }}
-            viewport={{ once: false }}
-            whileInView={{ opacity: 1, y: 0 }}
-          >
+          <motion.div className="mt-16" {...entry.fade(0.36, 24)}>
             <PartnersMarquee
               logos={PARTNERS}
               speedMs={SPEED_PARTNERS_MARQUEE}

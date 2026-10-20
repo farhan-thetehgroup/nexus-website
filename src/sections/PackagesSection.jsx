@@ -10,6 +10,11 @@ import {
   Award,
 } from "lucide-react";
 
+import {
+  MaskedLine,
+  useSectionEntry,
+} from "../components/common/ui/SectionEntry";
+
 const packagesData = [
   {
     name: "BRONZE",
@@ -74,7 +79,7 @@ const packagesData = [
 
 const PackageCard = ({ pkg, index }) => {
   const cardRef = useRef(null);
-  const isInView = useInView(cardRef, { once: false, amount: 0.3 });
+  const isInView = useInView(cardRef, { once: true, amount: 0.3 });
   const { scrollYProgress } = useScroll({
     target: cardRef,
     offset: ["start end", "end start"],
@@ -85,7 +90,7 @@ const PackageCard = ({ pkg, index }) => {
   const scale = useTransform(
     scrollYProgress,
     [0, 0.3, 0.7, 1],
-    [0.8, 1, 1, 0.8]
+    [0.8, 1, 1, 0.8],
   );
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
@@ -94,9 +99,9 @@ const PackageCard = ({ pkg, index }) => {
   return (
     <motion.div
       animate={
-        isInView ?
-          { opacity: 1, y: 0, rotateY: 0 }
-        : { opacity: 0, y: 100, rotateY: -20 }
+        isInView
+          ? { opacity: 1, y: 0, rotateY: 0 }
+          : { opacity: 0, y: 100, rotateY: -20 }
       }
       className={`relative ${pkg.featured ? "md:-mt-8" : ""}`}
       initial={{ opacity: 0, y: 100, rotateY: -20 }}
@@ -106,15 +111,18 @@ const PackageCard = ({ pkg, index }) => {
         duration: 0.8,
         delay: index * 0.2,
         ease: [0.21, 0.47, 0.32, 0.98],
-      }}>
+      }}
+    >
       {pkg.badge && (
         <motion.div
           animate={isInView ? { y: 0, opacity: 1 } : { y: -20, opacity: 0 }}
           className="absolute -top-4 left-1/2 -translate-x-1/2 z-20"
           initial={{ y: -20, opacity: 0 }}
-          transition={{ delay: index * 0.2 + 0.4 }}>
+          transition={{ delay: index * 0.2 + 0.4 }}
+        >
           <div
-            className={`px-6 py-2 rounded-full bg-gradient-to-r ${pkg.badgeColor} shadow-2xl flex items-center gap-2`}>
+            className={`px-6 py-2 rounded-full bg-gradient-to-r ${pkg.badgeColor} shadow-2xl flex items-center gap-2`}
+          >
             <Sparkles className="w-4 h-4 text-white" />
             <span className="text-white font-bold text-sm">{pkg.badge}</span>
           </div>
@@ -136,7 +144,8 @@ const PackageCard = ({ pkg, index }) => {
         whileHover={{
           y: -20,
           scale: 1.05,
-        }}>
+        }}
+      >
         <div
           className={`absolute inset-0 bg-gradient-to-br ${pkg.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
         />
@@ -150,7 +159,8 @@ const PackageCard = ({ pkg, index }) => {
             <motion.div
               className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${pkg.color} p-3 shadow-2xl`}
               transition={{ duration: 0.6 }}
-              whileHover={{ rotate: 360 }}>
+              whileHover={{ rotate: 360 }}
+            >
               <Icon className="w-full h-full text-white" />
             </motion.div>
 
@@ -158,7 +168,8 @@ const PackageCard = ({ pkg, index }) => {
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 className="text-yellow-400"
-                transition={{ duration: 2, repeat: Infinity }}>
+                transition={{ duration: 2, repeat: Infinity }}
+              >
                 <Zap className="w-8 h-8 fill-yellow-400" />
               </motion.div>
             )}
@@ -172,7 +183,8 @@ const PackageCard = ({ pkg, index }) => {
           />
 
           <h3
-            className={`text-3xl font-bold mb-2 bg-gradient-to-r ${pkg.color} bg-clip-text text-transparent`}>
+            className={`text-3xl font-bold mb-2 bg-gradient-to-r ${pkg.color} bg-clip-text text-transparent`}
+          >
             {pkg.name}
           </h3>
 
@@ -198,9 +210,11 @@ const PackageCard = ({ pkg, index }) => {
                 className="flex items-start gap-3 group/item"
                 initial={{ opacity: 0, x: -20 }}
                 key={idx}
-                transition={{ delay: index * 0.2 + 0.5 + idx * 0.05 }}>
+                transition={{ delay: index * 0.2 + 0.5 + idx * 0.05 }}
+              >
                 <div
-                  className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${pkg.color} flex items-center justify-center mt-0.5`}>
+                  className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${pkg.color} flex items-center justify-center mt-0.5`}
+                >
                   <Check className="w-3 h-3 text-white" />
                 </div>
                 <span className="text-gray-300 group-hover/item:text-white transition-colors duration-200">
@@ -213,7 +227,8 @@ const PackageCard = ({ pkg, index }) => {
           <motion.button
             className={`w-full py-4 rounded-xl bg-gradient-to-r ${pkg.color} text-white font-bold shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 group/btn`}
             whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}>
+            whileTap={{ scale: 0.95 }}
+          >
             <span>Choose {pkg.name}</span>
             <ChevronRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
           </motion.button>
@@ -232,24 +247,25 @@ const PackageCard = ({ pkg, index }) => {
 };
 
 export default function PackagesSection() {
+  const entry = useSectionEntry();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
 
-  const headerY = useTransform(scrollYProgress, [0, 0.3], [100, 0]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
 
   return (
     <section
       className="relative min-h-screen flex items-center justify-center py-32 px-4 overflow-hidden bg-gradient-to-br from-slate-950 via-amber-950/20 to-slate-950"
       id="packages"
-      ref={containerRef}>
+      ref={containerRef}
+    >
       <motion.div
         className="absolute inset-0 opacity-20"
-        style={{ y: backgroundY }}>
+        style={{ y: backgroundY }}
+      >
         <div className="absolute top-20 left-10 w-96 h-96 bg-amber-500/30 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-yellow-500/30 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-orange-500/20 rounded-full blur-3xl" />
@@ -258,38 +274,32 @@ export default function PackagesSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.05)_0%,transparent_100%)]" />
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
-        <motion.div
-          className="text-center mb-20"
-          style={{ y: headerY, opacity: headerOpacity }}>
+        <div className="text-center mb-20">
           <motion.div
             className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 mb-6 backdrop-blur-sm"
-            initial={{ scale: 0, rotate: 180 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-            whileInView={{ scale: 1, rotate: 0 }}>
+            {...entry.fade(0, 14, 0.6)}
+          >
             <Crown className="w-5 h-5 text-amber-400" />
             <span className="text-amber-400 font-semibold">
               Sponsorship Tiers
             </span>
           </motion.div>
 
-          <motion.h2
-            className="text-5xl md:text-7xl font-bold mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            whileInView={{ opacity: 1, y: 0 }}>
-            <span className="bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
-              Secure Your Spot
-            </span>
-          </motion.h2>
+          <h2 className="text-5xl md:text-7xl font-bold mb-6">
+            <MaskedLine delay={0.1}>
+              <span className="bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                Secure Your Spot
+              </span>
+            </MaskedLine>
+          </h2>
 
           <motion.p
             className="text-xl text-gray-400 max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            whileInView={{ opacity: 1 }}>
+            {...entry.fade(0.24, 16)}
+          >
             Choose the perfect package to maximize your brand visibility and ROI
           </motion.p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {packagesData.map((pkg, idx) => (
@@ -297,11 +307,7 @@ export default function PackagesSection() {
           ))}
         </div>
 
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          whileInView={{ opacity: 1, y: 0 }}>
+        <motion.div className="text-center" {...entry.fade(0.36, 24)}>
           <div className="inline-flex flex-col items-center gap-4 bg-gradient-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl px-10 py-6 rounded-2xl border border-amber-500/30">
             <Sparkles className="w-8 h-8 text-amber-400" />
             <div>
@@ -315,7 +321,8 @@ export default function PackagesSection() {
             <motion.button
               className="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-full shadow-lg hover:shadow-amber-500/50 transition-all duration-300"
               whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}>
+              whileTap={{ scale: 0.95 }}
+            >
               Get in Touch
             </motion.button>
           </div>
