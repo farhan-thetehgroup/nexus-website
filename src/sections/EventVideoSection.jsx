@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Video, Sparkles } from "lucide-react";
 
 import { EVENT_VIDEO } from "../constants";
+import { GlowField } from "../components/common/ui/GlowField";
 import {
   MaskedLine,
   useSectionEntry,
@@ -14,13 +15,25 @@ export const EventVideoSection = () => {
   const entry = useSectionEntry();
 
   return (
-    <section
-      className="relative py-20 md:py-32 px-4 overflow-hidden"
-      id="event-video"
-    >
-      {/* Background decorations */}
-      <div className="absolute top-1/4 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+    <section className="relative py-20 md:py-32 px-4" id="event-video">
+      {/* Ambient light — the bottom blob straddles into the tour section */}
+      <GlowField
+        blobs={[
+          {
+            className: "top-1/4 left-0 h-96 w-96 bg-emerald-500/10",
+            blurClass: "blur-[120px]",
+          },
+          {
+            className: "bottom-1/4 right-0 h-96 w-96 bg-cyan-500/10",
+            blurClass: "blur-[120px]",
+          },
+          {
+            className:
+              "-bottom-56 left-[22%] h-[520px] w-[520px] bg-emerald-500/10",
+            blurClass: "blur-[160px]",
+          },
+        ]}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* CSS Grid for smart mobile reordering and desktop positioning */}

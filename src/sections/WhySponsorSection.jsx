@@ -6,6 +6,7 @@ import {
   MaskedLine,
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
+import { GlowField } from "../components/common/ui/GlowField";
 import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
 import { DotFieldInteraction } from "../components/common/ui/DotFieldInteraction";
 
@@ -123,21 +124,44 @@ export const WhySponsorSection = () => {
 
   return (
     <section
-      className="relative min-h-screen flex items-center justify-center py-32 px-4 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center py-32 px-4"
       id="why"
       ref={containerRef}
     >
       <DotFieldInteraction />
-      {/* Pooled color fields the glass needs behind the grid */}
-      <motion.div
-        className="absolute inset-0 opacity-55"
+      {/* Pooled color fields the glass needs behind the grid — the bottom
+          purple pool straddles into the audience section's light */}
+      <GlowField
+        className="opacity-55"
         style={{ y: backgroundY }}
-      >
-        <div className="absolute top-1/3 left-[10%] w-[380px] h-[380px] bg-emerald-500/40 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-[8%] w-[420px] h-[420px] bg-cyan-500/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[620px] h-[480px] bg-purple-500/25 rounded-full blur-3xl" />
-        <div className="absolute bottom-[12%] left-[22%] w-[300px] h-[300px] bg-orange-500/20 rounded-full blur-3xl" />
-      </motion.div>
+        blobs={[
+          {
+            className:
+              "top-1/3 left-[10%] w-[380px] h-[380px] bg-emerald-500/40",
+          },
+          {
+            className: "top-1/3 right-[8%] w-[420px] h-[420px] bg-cyan-500/30",
+          },
+          {
+            className:
+              "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[620px] h-[480px] bg-purple-500/25",
+          },
+          {
+            className:
+              "bottom-[12%] left-[22%] w-[300px] h-[300px] bg-orange-500/20",
+          },
+          {
+            // Straddles the bottom seam into the audience section.
+            className:
+              "-bottom-48 left-[38%] w-[520px] h-[440px] bg-purple-500/20",
+          },
+          {
+            // Receives the teal light arriving from the tour section above.
+            className:
+              "-top-40 right-[18%] w-[420px] h-[420px] bg-emerald-500/25",
+          },
+        ]}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="text-center mb-20">

@@ -8,6 +8,7 @@ import {
   MaskedLine,
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
+import { GlowField } from "../components/common/ui/GlowField";
 import {
   Mail,
   Phone,
@@ -507,18 +508,32 @@ export default function ContactFormSection() {
 
   return (
     <section
-      className="relative min-h-screen flex items-center justify-center py-32 px-4 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center py-32 px-4"
       id="contact"
       ref={containerRef}
     >
-      <motion.div
-        className="absolute inset-0 opacity-20"
+      {/* Ambient light — the bottom pool straddles into the footer */}
+      <GlowField
+        className="opacity-20"
         style={{ y: backgroundY }}
-      >
-        <div className="absolute top-20 left-20 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-emerald-500/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-3xl" />
-      </motion.div>
+        blobs={[
+          { className: "top-20 left-20 w-96 h-96 bg-cyan-500/30" },
+          { className: "bottom-20 right-20 w-80 h-80 bg-emerald-500/30" },
+          {
+            className:
+              "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/20",
+          },
+          {
+            className:
+              "-bottom-48 right-[34%] w-[440px] h-[440px] bg-blue-500/15",
+          },
+          {
+            // Receives the green light arriving from event formats above.
+            className:
+              "-top-40 left-[26%] w-[400px] h-[400px] bg-emerald-500/20",
+          },
+        ]}
+      />
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.05)_0%,transparent_100%)]" />
 

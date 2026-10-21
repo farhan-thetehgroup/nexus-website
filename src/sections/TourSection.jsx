@@ -19,6 +19,7 @@ import {
 
 import { TOUR_CITIES } from "../constants";
 import { GalleryModal } from "../components/GalleryModal";
+import { GlowField } from "../components/common/ui/GlowField";
 import {
   MaskedLine,
   useSectionEntry,
@@ -205,7 +206,7 @@ export const TourSection = () => {
 
   return (
     <section
-      className="relative min-h-screen flex items-center justify-center py-32 px-4 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center py-32 px-4"
       id="tours"
       ref={containerRef}
     >
@@ -235,14 +236,27 @@ export const TourSection = () => {
         </svg>
       </div>
 
-      <motion.div
-        className="absolute inset-0 opacity-20 z-10 pointer-events-none"
+      {/* Ambient light — parallax layer free to spill across both seams */}
+      <GlowField
+        className="opacity-20 z-10"
         style={{ y: backgroundY }}
-      >
-        <div className="absolute top-32 right-20 w-96 h-96 bg-emerald-500/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-32 left-20 w-80 h-80 bg-cyan-500/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/3 w-[600px] h-[600px] bg-teal-500/20 rounded-full blur-3xl" />
-      </motion.div>
+        blobs={[
+          { className: "top-32 right-20 w-96 h-96 bg-emerald-500/30" },
+          { className: "bottom-32 left-20 w-80 h-80 bg-cyan-500/30" },
+          {
+            className: "top-1/2 left-1/3 w-[600px] h-[600px] bg-teal-500/20",
+          },
+          {
+            // Straddles the bottom seam into the why-sponsor section.
+            className:
+              "-bottom-56 left-[30%] w-[480px] h-[480px] bg-teal-500/25",
+          },
+          {
+            // Receives the light arriving from the video section above.
+            className: "-top-36 right-[25%] w-[380px] h-[380px] bg-cyan-500/20",
+          },
+        ]}
+      />
 
       <div className="absolute inset-0 z-20 pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
 

@@ -8,6 +8,7 @@ import {
 } from "../components/common/ui/SectionEntry";
 import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
 import { DotFieldInteraction } from "../components/common/ui/DotFieldInteraction";
+import { GlowField } from "../components/common/ui/GlowField";
 import {
   Users,
   UserCheck,
@@ -145,29 +146,32 @@ export const EventFormatSection = () => {
   const entry = useSectionEntry();
 
   return (
-    <section
-      className="relative overflow-hidden py-20 md:py-28"
-      id="event-formats"
-    >
+    <section className="relative py-20 md:py-28" id="event-formats">
       <DotFieldInteraction />
-      <motion.div
-        animate={{
-          x: [0, 30, 0],
-          y: [0, -30, 0],
-          scale: [1, 1.1, 1],
-        }}
-        className="absolute top-20 left-10 h-72 w-64 rounded-full opacity-10 blur-3xl bg-tech-green-400"
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        animate={{
-          x: [0, -30, 0],
-          y: [0, 30, 0],
-          scale: [1, 1.2, 1],
-        }}
-        className="absolute right-10 bottom-20 h-80 w-80 rounded-full opacity-10 blur-3xl bg-cyan-400"
-        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-      />
+      {/* Ambient light — blobs pulse in place (the seam pool stills
+          across the boundary into the contact section below) */}
+      <GlowField>
+        <motion.div
+          animate={{
+            x: [0, 30, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.1, 1],
+          }}
+          className="absolute top-20 left-10 h-72 w-64 rounded-full opacity-10 blur-3xl bg-tech-green-400"
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          animate={{
+            x: [0, -30, 0],
+            y: [0, 30, 0],
+            scale: [1, 1.2, 1],
+          }}
+          className="absolute right-10 bottom-20 h-80 w-80 rounded-full opacity-10 blur-3xl bg-cyan-400"
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div className="-bottom-48 left-[24%] h-[460px] w-[460px] bg-tech-green-400/10 blur-3xl absolute rounded-full" />
+        <div className="-top-40 right-[28%] h-[380px] w-[380px] bg-cyan-400/10 blur-3xl absolute rounded-full" />
+      </GlowField>
 
       <div className="absolute inset-0 opacity-5">
         <div

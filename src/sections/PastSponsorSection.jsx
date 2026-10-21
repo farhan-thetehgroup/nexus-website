@@ -8,6 +8,7 @@ import {
   MaskedLine,
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
+import { GlowField } from "../components/common/ui/GlowField";
 import { PARTNERS } from "../constants";
 
 const SPEED_PARTNERS_MARQUEE = 40000;
@@ -33,39 +34,38 @@ export const PastSponsorSection = () => {
   return (
     <>
       <section
-        className="relative min-h-screen flex items-center overflow-hidden py-20 md:py-28"
+        className="relative min-h-screen flex items-center py-20 md:py-28"
         id="sponsors"
         ref={sectionRef}
       >
-        {/* Animated Background Blobs */}
-        <motion.div className="pointer-events-none absolute inset-0">
-          <motion.div
-            animate={{
-              x: [0, 50, 0],
-              y: [0, -30, 0],
-            }}
-            className="absolute top-20 -left-24 h-96 w-96 rounded-full bg-emerald-400/20 blur-3xl"
-            style={{ opacity: blobOpacity, scale: blobScale }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            animate={{
-              x: [0, -50, 0],
-              y: [0, 30, 0],
-            }}
-            className="absolute -right-28 bottom-20 h-[500px] w-[500px] rounded-full bg-cyan-400/20 blur-3xl"
-            style={{ opacity: blobOpacity, scale: blobScale }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        </motion.div>
+        {/* Ambient light — blobs overflow this section into event-video
+            (light crossing seams instead of stopping at the section edge) */}
+        <GlowField
+          blobs={[
+            {
+              className: "top-20 -left-24 h-96 w-96 bg-emerald-400/20",
+              style: { opacity: blobOpacity, scale: blobScale },
+              animate: { x: [0, 50, 0], y: [0, -30, 0] },
+              transition: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+            },
+            {
+              className:
+                "-right-28 bottom-20 h-[500px] w-[500px] bg-cyan-400/20",
+              style: { opacity: blobOpacity, scale: blobScale },
+              animate: { x: [0, -50, 0], y: [0, 30, 0] },
+              transition: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+            },
+            {
+              // Reaches up into the hero's rim so the first seam carries light.
+              className: "-top-24 right-[30%] h-72 w-72 bg-cyan-400/10",
+            },
+            {
+              // Straddles the bottom seam into the event-video section.
+              className:
+                "-bottom-40 left-[30%] h-[420px] w-[420px] bg-emerald-400/15",
+            },
+          ]}
+        />
 
         {/* Tech Grid Pattern */}
         <div className="absolute inset-0 opacity-5">
