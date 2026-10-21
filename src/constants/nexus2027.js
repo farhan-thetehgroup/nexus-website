@@ -30,7 +30,7 @@ export const NEXUS_2027 = {
 
 export const NEXUS_2027_MENU_ITEMS = [
   { name: "Sponsors", id: "sponsors" },
-  { name: "Highlights", id: "highlights" },
+  { name: "Highlights", id: "event-video" },
   { name: "Why", id: "why" },
   { name: "Target Audience", id: "audience" },
   { name: "Event Formats", id: "event-formats" },
