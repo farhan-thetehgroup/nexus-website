@@ -78,11 +78,15 @@ const Card = ({ reason, index }) => {
 
         <div className="relative z-10">
           <motion.div
-            className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${reason.gradient} p-3 mb-6 shadow-[0_10px_30px_rgba(2,8,20,0.35)] border border-white/20`}
+            className="relative w-16 h-16 rounded-2xl border border-white/15 bg-white/[0.07] backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_10px_30px_rgba(2,8,20,0.25)] overflow-hidden mb-6"
             transition={{ duration: 0.4 }}
             whileHover={{ scale: 1.08 }}
           >
-            <Icon className="w-full h-full text-white" />
+            {/* Faint tint of the card's gradient keeps each icon's identity */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${reason.gradient} opacity-25`}
+            />
+            <Icon className="relative w-full h-full p-3 text-white" />
           </motion.div>
 
           <motion.div
