@@ -4,6 +4,7 @@ import { useState } from "react";
 import "../components/aurora/aurora.css";
 import { useMotionPreference } from "../components/aurora/useMotionPreference";
 import { AdvancedNavbar } from "../components/AdvancedNavbar";
+import AmbientCursorLight from "../components/common/ui/AmbientCursorLight";
 import WhatsappFab from "../components/WhatsappFab";
 import { NEXUS_2027_MENU_ITEMS } from "../constants/nexus2027";
 import { AudienceSection } from "../sections/AudienceSection";
@@ -47,6 +48,7 @@ export const HomePage2027 = () => {
         items={NEXUS_2027_MENU_ITEMS}
         scrollToSection={scrollToSection}
       />
+      <AmbientCursorLight />
       <HeroNexus2027Section motion={motion} />
       <PastSponsorSection />
       <EventVideoSection />
