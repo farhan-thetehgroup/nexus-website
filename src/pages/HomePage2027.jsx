@@ -13,6 +13,7 @@ import { FooterSection } from "../sections/FooterSection";
 import { HeroNexus2027Section } from "../sections/HeroNexus2027Section";
 import { PastSponsorSection } from "../sections/PastSponsorSection";
 import { EventVideoSection } from "../sections/EventVideoSection";
+import { TourSection } from "../sections/TourSection";
 import { WhySponsorSection } from "../sections/WhySponsorSection";
 
 const pageClasses = [
@@ -49,6 +50,7 @@ export const HomePage2027 = () => {
       <HeroNexus2027Section motion={motion} />
       <PastSponsorSection />
       <EventVideoSection />
+      <TourSection />
       <WhySponsorSection />
       <AudienceSection />
       <EventFormatSection />

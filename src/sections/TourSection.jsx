@@ -23,6 +23,7 @@ import {
   MaskedLine,
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
+import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
 
 const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
   const cardRef = useRef(null);
@@ -63,15 +64,15 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
     >
       <motion.div
         animate={isActive ? { opacity: 0.4, scale: 1.1 } : {}}
-        className={`absolute inset-0 bg-gradient-to-br ${city.gradient} rounded-3xl blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 z-10 pointer-events-none`}
+        className={`absolute inset-0 bg-gradient-to-br ${city.gradient} rounded-3xl blur-2xl opacity-20 z-10 pointer-events-none`}
       />
 
       <motion.div
-        className={`relative overflow-hidden bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border-2 ${
-          isActive ? "border-emerald-400/80" : "border-emerald-500/30"
-        } hover:border-emerald-400/70 overflow-hidden`}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        whileHover={{ y: -15, scale: 1.05 }}
+        className={`nx-glass-pane relative overflow-hidden ${
+          isActive ? "border-emerald-400/70" : "hover:border-white/30"
+        } transition-colors duration-300`}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        whileHover={{ y: -10 }}
       >
         {/* Optional image overlay if provided */}
         {img && (
@@ -99,11 +100,11 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
           </div>
         )}
         <div
-          className={`absolute inset-0 z-20 bg-gradient-to-br ${city.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+          className={`absolute inset-0 z-20 bg-gradient-to-br ${city.gradient} opacity-0 pointer-events-none`}
         />
 
         <div
-          className={`absolute top-0 right-0 z-30 w-32 h-32 bg-gradient-to-br ${city.gradient} rounded-bl-full opacity-20`}
+          className={`absolute top-0 right-0 z-20 w-32 h-32 bg-gradient-to-br ${city.gradient} rounded-bl-full opacity-20`}
         />
 
         {isActive && (
@@ -112,29 +113,29 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
             className="absolute -top-3 -right-3 z-40"
             initial={{ scale: 0 }}
           >
-            <div className="w-6 h-6 rounded-full bg-tech-green-500 animate-ping" />
-            <div className="absolute top-0 left-0 w-6 h-6 rounded-full bg-tech-green-500" />
+            <div className="w-6 h-6 rounded-full bg-tech-green-500 shadow-[0_0_0_4px_rgba(16,185,129,0.25)]" />
           </motion.div>
         )}
 
         <div className="relative z-30 p-8">
           <div className="flex items-start justify-between mb-6">
             <motion.div
-              className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${city.gradient} p-3 shadow-2xl relative`}
+              className={`nx-glass-icon relative w-16 h-16 p-3 overflow-hidden`}
               transition={{ duration: 0.6 }}
-              whileHover={{ rotate: 360, scale: 1.2 }}
+              whileHover={{ scale: 1.08 }}
             >
-              <MapPin className="w-full h-full text-white" />
+              {/* Faint tint of the card's gradient keeps identity */}
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${city.gradient} rounded-2xl blur-xl opacity-50`}
+                className={`absolute inset-0 bg-gradient-to-br ${city.gradient} opacity-25`}
               />
+              <MapPin className="relative w-full h-full text-white" />
             </motion.div>
 
             <motion.div
-              animate={isInView ? { scale: 1 } : { scale: 0 }}
-              className={`px-4 py-1.5 rounded-full bg-gradient-to-r ${city.gradient} text-white text-xs font-bold shadow-lg`}
-              initial={{ scale: 0 }}
-              transition={{ delay: index * 0.15 + 0.3 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+              className="nx-glass-chip px-4 py-1.5 text-white text-xs font-bold"
+              initial={{ opacity: 0, y: 10 }}
+              transition={{ delay: index * 0.15 + 0.3, duration: 0.5 }}
             >
               {city.country}
             </motion.div>
@@ -183,15 +184,8 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
             </span>
             <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
           </motion.button>
-
-          <motion.div
-            className={`absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r ${city.gradient}`}
-            initial={{ scaleX: 0 }}
-            style={{ originX: 0 }}
-            transition={{ duration: 0.4 }}
-            whileHover={{ scaleX: 1 }}
-          />
         </div>
+        <CursorSpotlight above />
       </motion.div>
     </motion.div>
   );
@@ -255,7 +249,7 @@ export const TourSection = () => {
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="text-center mb-20">
           <motion.div
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/40 mb-6 backdrop-blur-sm"
+            className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
             {...entry.fade(0, 14, 0.6)}
           >
             <Globe className="w-5 h-5 text-emerald-400" />
@@ -312,7 +306,7 @@ export const TourSection = () => {
         </div>
 
         <motion.div className="text-center mt-16" {...entry.fade(0.36, 24)}>
-          <div className="inline-flex items-center gap-6 bg-gradient-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl px-10 py-6 rounded-2xl border border-emerald-500/30">
+          <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
             <Navigation className="w-10 h-10 text-emerald-400" />
             <div className="text-left">
               <p className="text-gray-400 text-sm mb-1">
