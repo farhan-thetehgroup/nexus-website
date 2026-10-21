@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Sparkles, Target, TrendingUp, Globe, Award } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import {
   MaskedLine,
@@ -8,30 +8,32 @@ import {
 } from "../components/common/ui/SectionEntry";
 import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
 
+// Icons: icons8 "Glassmorphism" pack (https://icons8.com/icons/glassmorphism)
+// — free tier PNG 96px; attribution required unless licensed (strip after use)
 const whyReasons = [
   {
-    icon: Target,
+    image: "/icons/glass/goal.png",
     title: "Targeted Audience",
     desc: "Gain direct access to 200 Chief, Director, Head, and Lead-level prospects in every city.",
     gradient: "from-blue-500 to-cyan-500",
     delay: 0,
   },
   {
-    icon: TrendingUp,
+    image: "/icons/glass/statistics.png",
     title: "Maximized ROI",
     desc: "Move beyond brand awareness to generate qualified leads, close deals, and build relationships in a high-intensity environment.",
     gradient: "from-purple-500 to-pink-500",
     delay: 0.2,
   },
   {
-    icon: Globe,
+    image: "/icons/glass/globe.png",
     title: "Regional Dominance",
     desc: "Build your brand presence across multiple key APAC markets in a single, coordinated campaign.",
     gradient: "from-emerald-500 to-teal-500",
     delay: 0.4,
   },
   {
-    icon: Award,
+    image: "/icons/glass/medal2.png",
     title: "Quality Over Quantity",
     desc: "Our curated matchmaking ensures your time is spent with the right people who have real budget and authority.",
     gradient: "from-orange-500 to-red-500",
@@ -42,8 +44,6 @@ const whyReasons = [
 const Card = ({ reason, index }) => {
   const cardRef = useRef(null);
   const isInView = useInView(cardRef, { once: true, amount: 0.3 });
-
-  const Icon = reason.icon;
 
   return (
     <motion.div
@@ -78,15 +78,11 @@ const Card = ({ reason, index }) => {
 
         <div className="relative z-10">
           <motion.div
-            className="relative w-16 h-16 rounded-2xl border border-white/15 bg-white/[0.07] backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_10px_30px_rgba(2,8,20,0.25)] overflow-hidden mb-6"
+            className="relative w-16 h-16 rounded-2xl border border-white/15 bg-white/[0.07] backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_10px_30px_rgba(2,8,20,0.25)] flex items-center justify-center mb-6"
             transition={{ duration: 0.4 }}
             whileHover={{ scale: 1.08 }}
           >
-            {/* Faint tint of the card's gradient keeps each icon's identity */}
-            <div
-              className={`absolute inset-0 bg-gradient-to-br ${reason.gradient} opacity-25`}
-            />
-            <Icon className="relative w-full h-full p-3 text-white" />
+            <img src={reason.image} alt={reason.title} className="w-12 h-12" />
           </motion.div>
 
           <motion.div
