@@ -198,30 +198,12 @@ export const AudienceSection = () => {
           </h2>
 
           <motion.p
-            className="text-xl text-gray-400 max-w-3xl mx-auto mb-8"
+            className="text-xl text-gray-400 max-w-3xl mx-auto"
             {...entry.fade(0.24, 16)}
           >
             Connect with 200+ senior decision-makers actively seeking
             cutting-edge solutions
           </motion.p>
-
-          <motion.div
-            className="flex items-center justify-center gap-8 text-sm"
-            {...entry.fade(0.36, 18)}
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 animate-pulse" />
-              <span className="text-gray-400">C-Level</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 animate-pulse" />
-              <span className="text-gray-400">Directors</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 animate-pulse" />
-              <span className="text-gray-400">Decision Makers</span>
-            </div>
-          </motion.div>
         </div>
 
         <div className="space-y-8">
