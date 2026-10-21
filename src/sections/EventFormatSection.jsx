@@ -6,6 +6,7 @@ import {
   MaskedLine,
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
+import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
 import {
   Users,
   UserCheck,
@@ -225,15 +226,7 @@ export const EventFormatSection = () => {
                   variants={cardVariants}
                   whileHover={{ y: -12, scale: 1.02 }}
                 >
-                  <motion.div
-                    animate={{
-                      boxShadow:
-                        hoveredCard === format.id
-                          ? "0 20px 60px rgba(16, 185, 129, 0.4)"
-                          : "0 10px 30px rgba(0, 0, 0, 0.3)",
-                    }}
-                    className="relative h-full overflow-hidden rounded-2xl bg-brand-700/40 backdrop-blur-sm shadow-xl border-2 border-tech-green-400/20 hover:border-tech-green-400/60 transition-all duration-500"
-                  >
+                  <motion.div className="relative h-full overflow-hidden rounded-2xl bg-brand-700/40 backdrop-blur-sm shadow-xl border-2 border-tech-green-400/20 hover:border-tech-green-400/60 transition-colors duration-300">
                     <div className="relative h-64 overflow-hidden">
                       <motion.img
                         alt={format.title}
@@ -326,6 +319,7 @@ export const EventFormatSection = () => {
                         </motion.div>
                       </motion.div>
                     </div>
+                    <CursorSpotlight above />
                   </motion.div>
                 </motion.div>
               );
@@ -345,15 +339,7 @@ export const EventFormatSection = () => {
                   variants={cardVariants}
                   whileHover={{ y: -12, scale: 1.02 }}
                 >
-                  <motion.div
-                    animate={{
-                      boxShadow:
-                        hoveredCard === format.id
-                          ? "0 20px 60px rgba(16, 185, 129, 0.4)"
-                          : "0 10px 30px rgba(0, 0, 0, 0.3)",
-                    }}
-                    className="relative h-full overflow-hidden rounded-2xl bg-brand-700/40 backdrop-blur-sm shadow-xl border-2 border-tech-green-400/20 hover:border-tech-green-400/60 transition-all duration-500"
-                  >
+                  <motion.div className="relative h-full overflow-hidden rounded-2xl bg-brand-700/40 backdrop-blur-sm shadow-xl border-2 border-tech-green-400/20 hover:border-tech-green-400/60 transition-colors duration-300">
                     <div className="relative h-64 overflow-hidden">
                       <motion.img
                         alt={format.title}
@@ -446,6 +432,7 @@ export const EventFormatSection = () => {
                         </motion.div>
                       </motion.div>
                     </div>
+                    <CursorSpotlight above />
                   </motion.div>
                 </motion.div>
               );

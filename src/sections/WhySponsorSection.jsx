@@ -6,6 +6,7 @@ import {
   MaskedLine,
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
+import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
 
 const whyReasons = [
   {
@@ -59,7 +60,7 @@ const Card = ({ reason, index }) => {
     >
       {/* Colored field the frost refracts: sits just behind the glass edge */}
       <div
-        className={`absolute -inset-2 bg-gradient-to-br ${reason.gradient} rounded-[2rem] opacity-20 blur-2xl group-hover:opacity-40 transition-opacity duration-500`}
+        className={`absolute -inset-2 bg-gradient-to-br ${reason.gradient} rounded-[2rem] opacity-20 blur-2xl`}
       />
 
       {/* Glass panel */}
@@ -70,7 +71,7 @@ const Card = ({ reason, index }) => {
       >
         {/* Refracted bloom inside the glass */}
         <div
-          className={`absolute -top-24 -right-24 w-56 h-56 bg-gradient-to-br ${reason.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-35 transition-opacity duration-500`}
+          className={`absolute -top-24 -right-24 w-56 h-56 bg-gradient-to-br ${reason.gradient} rounded-full blur-3xl opacity-20`}
         />
         {/* Sheen along the top edge of the pane */}
         <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
@@ -99,9 +100,7 @@ const Card = ({ reason, index }) => {
             {reason.desc}
           </p>
         </div>
-
-        {/* Edge glow line on hover */}
-        <div className="absolute bottom-0 left-0 right-0 h-px origin-left scale-x-0 bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
+        <CursorSpotlight above />
       </motion.div>
     </motion.div>
   );
