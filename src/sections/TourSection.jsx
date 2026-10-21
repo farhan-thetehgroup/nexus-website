@@ -270,9 +270,12 @@ export const TourSection = () => {
   return (
     <section className="relative" id="tours" ref={containerRef}>
       {/* Pinned dotted map — sticks through BOTH the story and the grid,
-          so the map background never truncates between the two phases */}
+          so the map background never truncates between the two phases.
+          -mb-[100vh] cancels its flow height: the header overlays the map
+          from the section's very top instead of arriving a full screen
+          later (the "map-only blank" the client flagged). */}
       <div
-        className="pointer-events-none sticky top-0 z-0 h-screen opacity-55"
+        className="pointer-events-none sticky top-0 z-0 -mb-[100vh] h-screen opacity-55"
         style={{
           maskImage:
             "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
@@ -315,7 +318,7 @@ export const TourSection = () => {
 
       <div className="relative z-10">
         {/* Header rides in over the pinned map */}
-        <div className="mx-auto max-w-7xl px-4 pb-6 pt-32 text-center">
+        <div className="mx-auto max-w-7xl px-4 pb-6 pt-16 text-center">
           <div className="text-center mb-16">
             <motion.div
               className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
@@ -360,7 +363,7 @@ export const TourSection = () => {
           style={{ height: `${TOUR_CITIES.length * 100}vh` }}
         >
           <div
-            className="sticky top-0 flex h-screen items-center px-6 md:px-16 lg:px-24"
+            className="sticky top-0 flex h-screen items-center justify-center px-6 md:px-16"
             ref={stageRef}
           >
             {!storyDone && labelPos && (
@@ -378,7 +381,7 @@ export const TourSection = () => {
               </div>
             )}
 
-            <div className="w-full max-w-[420px]">
+            <div className="w-full max-w-[440px]">
               <AnimatePresence mode="wait">
                 {!storyDone && (
                   <motion.div
@@ -397,6 +400,9 @@ export const TourSection = () => {
                       pattern={TOUR_CITIES[stage].pattern}
                       setShowGallery={setShowGallery}
                     />
+                    <p className="mt-5 max-w-md px-1 text-center text-sm leading-relaxed text-white/70 md:text-base">
+                      {TOUR_CITIES[stage].tagline}
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>

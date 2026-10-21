@@ -15,7 +15,9 @@ export const EventVideoSection = () => {
   const entry = useSectionEntry();
 
   return (
-    <section className="relative py-20 md:py-32 px-4" id="event-video">
+    // pb trimmed at md: this section's bottom padding stacked with the tour
+    // section's top padding under the pinned map read as a map-only blank.
+    <section className="relative py-20 md:pt-32 md:pb-10 px-4" id="event-video">
       {/* Ambient light — the bottom blob straddles into the tour section */}
       <GlowField
         blobs={[

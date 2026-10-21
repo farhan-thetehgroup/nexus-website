@@ -117,6 +117,10 @@ export const TOUR_CITIES = [
     position: { top: "55%", left: "65%" },
     // Real city coordinates — projected onto the dotted map (DotWorldMap).
     coords: { lat: -6.2088, lon: 106.8456 },
+    // Story copy for the scrollytelling stage — hand-written marketing
+    // flavor for this stop (the user asked for a line per scroll).
+    tagline:
+      "Indonesia's capital set the tone — 400+ leaders on one shared stage.",
     gallery: GALLERY_ID,
     pattern: "/images/pattern/jakarta.webp",
     url: "https://id.nexus-apac.com",
@@ -129,6 +133,8 @@ export const TOUR_CITIES = [
     gradient: "from-red-500 to-pink-600",
     position: { top: "45%", left: "70%" },
     coords: { lat: 1.3521, lon: 103.8198 },
+    tagline:
+      "In the Lion City, the region's sharpest minds turned one day into real opportunity.",
     gallery: GALLERY_SG,
     pattern: "/images/pattern/singapore.webp",
     url: "https://sg.nexus-apac.com",
@@ -141,6 +147,8 @@ export const TOUR_CITIES = [
     gradient: "from-yellow-500 to-orange-600",
     position: { top: "35%", left: "75%" },
     coords: { lat: 14.5995, lon: 120.9842 },
+    tagline:
+      "Manila brought the energy — 400+ professionals, zero wasted conversations.",
     gallery: GALLERY,
     pattern: "/images/pattern/manila.webp",
     url: "https://ph.nexus-apac.com",
@@ -153,6 +161,8 @@ export const TOUR_CITIES = [
     gradient: "from-emerald-500 to-teal-600",
     position: { top: "50%", left: "62%" },
     coords: { lat: 3.139, lon: 101.6869 },
+    tagline:
+      "Beneath the Petronas towers, AI and cybersecurity leaders found their next partners.",
     gallery: GALLERY_MY,
     pattern: "/images/pattern/malaysia.webp",
     url: "https://my.nexus-apac.com",
@@ -165,6 +175,8 @@ export const TOUR_CITIES = [
     gradient: "from-blue-500 to-cyan-600",
     position: { top: "40%", left: "68%" },
     coords: { lat: 13.7563, lon: 100.5018 },
+    tagline:
+      "Bangkok turned curated matchmaking into pipeline — the tour's most intense stop.",
     gallery: GALLERY_COLLAB,
     pattern: "/images/pattern/thailand.webp",
     url: "https://th.nexus-apac.com/",
@@ -177,6 +189,8 @@ export const TOUR_CITIES = [
     gradient: "from-purple-500 to-pink-600",
     position: { top: "40%", left: "60%" },
     coords: { lat: 22.3193, lon: 114.1694 },
+    tagline:
+      "The grand finale — Hong Kong closes the tour with the region's finance elite.",
     gallery: GALLERY_COLLAB,
     pattern: "/images/pattern/city-line.svg",
     url: "https://hk.nexus-apac.com/",
