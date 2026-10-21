@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 import { TechParticleField } from "../components/TechParticleField";
+import "../components/aurora/aurora.css";
 import { AdvancedNavbar } from "../components/AdvancedNavbar";
 import WhatsappFab from "../components/WhatsappFab";
 import { HeroSection } from "../sections/HeroSection";
