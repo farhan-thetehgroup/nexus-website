@@ -4,9 +4,10 @@ import {
   useScroll,
   useTransform,
   useInView,
+  useMotionValueEvent,
   AnimatePresence,
 } from "framer-motion";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   MapPin,
   Calendar,
@@ -204,32 +205,79 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
 export const TourSection = () => {
   const [activeCity, setActiveCity] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
+  const [stage, setStage] = useState(0);
+  const [storyDone, setStoryDone] = useState(false);
+  const [labelPos, setLabelPos] = useState(null);
   const entry = useSectionEntry();
   const motionOk = useMotionPreference();
   const containerRef = useRef(null);
+  const storyRef = useRef(null);
+  const stageRef = useRef(null);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
-
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
+  // Story phases: N x 100vh, one tour stop per screen of scroll.
+  const { scrollYProgress: storyP } = useScroll({
+    target: storyRef,
+    offset: ["start start", "end end"],
+  });
+
+  const syncStory = useCallback((v) => {
+    setStage(
+      Math.min(TOUR_CITIES.length - 1, Math.floor(v * TOUR_CITIES.length)),
+    );
+    setStoryDone(v >= 0.995);
+  }, []);
+  useMotionValueEvent(storyP, "change", syncStory);
+  // Deep links can land past the story — sync the stage once mounted.
+  useEffect(() => {
+    syncStory(storyP.get());
+  }, [storyP, syncStory]);
+
+  // Anchors the "you are here" chip to the active city's dot on the
+  // canvas. Mirrors DotWorldMap's cover-fit math (fit="cover",
+  // anchorX=1) so the chip and the canvas pulse never disagree.
+  useEffect(() => {
+    const update = () => {
+      const el = stageRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const { cols = 400, rows = 136 } = dotMapDense;
+      const step = Math.max(rect.width / cols, rect.height / rows);
+      const g = cityPulsePoints[stage];
+      if (!g) return;
+      setLabelPos({
+        x: (g.x + 0.5) * step + (rect.width - cols * step),
+        y: (g.y + 0.5) * step,
+      });
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [stage]);
+
+  const pulsePoints = cityPulsePoints.map((p, i) => ({
+    ...p,
+    // During the story one city leads; once the grid takes over the
+    // whole tour breathes together.
+    active: storyDone || i === stage,
+  }));
+
   return (
-    <section
-      className="relative min-h-screen flex items-center justify-center py-32 px-4"
-      id="tours"
-      ref={containerRef}
-    >
-      {/* Dotted world map background — the six tour stops pulse at their
-          real coordinates (cover-crop anchored right so APAC fills the
-          frame, edge-faded by the mask so the seams stay continuous) */}
+    <section className="relative" id="tours" ref={containerRef}>
+      {/* Pinned dotted map — sticks through BOTH the story and the grid,
+          so the map background never truncates between the two phases */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-55"
+        className="pointer-events-none sticky top-0 z-0 h-screen opacity-55"
         style={{
           maskImage:
-            "radial-gradient(ellipse 70% 64% at 50% 50%, black 38%, rgba(0,0,0,0.5) 75%, transparent 100%)",
+            "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
           WebkitMaskImage:
-            "radial-gradient(ellipse 70% 64% at 50% 50%, black 38%, rgba(0,0,0,0.5) 75%, transparent 100%)",
+            "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
         }}
       >
         <DotWorldMap
@@ -238,11 +286,12 @@ export const TourSection = () => {
           dotMapData={dotMapDense}
           fit="cover"
           motion={motionOk}
-          pulsePoints={cityPulsePoints}
+          pulsePoints={pulsePoints}
         />
       </div>
 
-      {/* Ambient light — parallax layer free to spill across both seams */}
+      {/* Ambient light — parallax layer over the pinned map, free to
+          spill across both section seams */}
       <GlowField
         className="opacity-20 z-10"
         style={{ y: backgroundY }}
@@ -264,78 +313,158 @@ export const TourSection = () => {
         ]}
       />
 
-      <div className="max-w-7xl mx-auto relative z-10 w-full">
-        <div className="text-center mb-20">
-          <motion.div
-            className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
-            {...entry.fade(0, 14, 0.6)}
-          >
-            <Globe className="w-5 h-5 text-emerald-400" />
-            <span className="text-emerald-400 font-semibold">
-              Multi-City Tour
-            </span>
-          </motion.div>
-
-          <h2 className="text-5xl md:text-7xl font-bold mb-4">
-            <MaskedLine delay={0.1}>
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
-                Join Us in Shaping the Future
-              </span>
-            </MaskedLine>
-          </h2>
-
-          <motion.p
-            className="text-3xl font-bold text-white mb-4"
-            {...entry.fade(0.24, 16)}
-          >
-            APAC Tech Tour 2026
-          </motion.p>
-
-          <motion.p
-            className="text-xl text-gray-400 max-w-3xl mx-auto"
-            {...entry.fade(0.36, 24)}
-          >
-            A roadshow across 6 major APAC cities connecting innovators and
-            decision-makers
-          </motion.p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {TOUR_CITIES.map((city, idx) => (
-            <div
-              key={idx}
-              className={
-                TOUR_CITIES.length % 3 === 1 && idx === TOUR_CITIES.length - 1
-                  ? "lg:col-start-2"
-                  : ""
-              }
+      <div className="relative z-10">
+        {/* Header rides in over the pinned map */}
+        <div className="mx-auto max-w-7xl px-4 pb-6 pt-32 text-center">
+          <div className="text-center mb-16">
+            <motion.div
+              className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
+              {...entry.fade(0, 14, 0.6)}
             >
-              <CityCard
-                city={city}
-                img={city.img}
-                index={idx}
-                isActive={activeCity === idx}
-                onClick={setActiveCity}
-                pattern={city.pattern}
-                setShowGallery={setShowGallery}
-              />
-            </div>
-          ))}
+              <Globe className="w-5 h-5 text-emerald-400" />
+              <span className="text-emerald-400 font-semibold">
+                Multi-City Tour
+              </span>
+            </motion.div>
+
+            <h2 className="text-5xl md:text-7xl font-bold mb-4">
+              <MaskedLine delay={0.1}>
+                <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
+                  Join Us in Shaping the Future
+                </span>
+              </MaskedLine>
+            </h2>
+
+            <motion.p
+              className="text-3xl font-bold text-white mb-4"
+              {...entry.fade(0.24, 16)}
+            >
+              APAC Tech Tour 2026
+            </motion.p>
+
+            <motion.p
+              className="text-xl text-gray-400 max-w-3xl mx-auto"
+              {...entry.fade(0.36, 24)}
+            >
+              A roadshow across 6 major APAC cities connecting innovators and
+              decision-makers
+            </motion.p>
+          </div>
         </div>
 
-        <motion.div className="text-center mt-16" {...entry.fade(0.36, 24)}>
-          <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
-            <Navigation className="w-10 h-10 text-emerald-400" />
-            <div className="text-left">
-              <p className="text-gray-400 text-sm mb-1">
-                Total Expected C-Level Attendees
-              </p>
-              <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                2200+
-              </p>
+        {/* Story: every screen of scroll reveals one card and lifts its
+            city on the map; the last screen hands over to the grid */}
+        <div
+          className="relative"
+          ref={storyRef}
+          style={{ height: `${TOUR_CITIES.length * 100}vh` }}
+        >
+          <div
+            className="sticky top-0 flex h-screen items-center px-6 md:px-16 lg:px-24"
+            ref={stageRef}
+          >
+            {!storyDone && labelPos && (
+              <div
+                className="pointer-events-none absolute z-20"
+                style={{
+                  left: labelPos.x,
+                  top: labelPos.y,
+                  transform: "translate(-50%, -150%)",
+                }}
+              >
+                <div className="nx-glass-chip px-3 py-1 text-xs font-semibold whitespace-nowrap text-emerald-300">
+                  {TOUR_CITIES[stage].city}
+                </div>
+              </div>
+            )}
+
+            <div className="w-full max-w-[420px]">
+              <AnimatePresence mode="wait">
+                {!storyDone && (
+                  <motion.div
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.96, y: -18 }}
+                    initial={{ opacity: 0, y: 24 }}
+                    key={stage}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <CityCard
+                      city={TOUR_CITIES[stage]}
+                      img={TOUR_CITIES[stage].img}
+                      index={stage}
+                      isActive
+                      onClick={setActiveCity}
+                      pattern={TOUR_CITIES[stage].pattern}
+                      setShowGallery={setShowGallery}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
+
+            {!storyDone && (
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+                <div className="nx-glass-chip flex items-center gap-3 px-4 py-2">
+                  {TOUR_CITIES.map((c, i) => (
+                    <span
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        i === stage
+                          ? "w-7 bg-emerald-400"
+                          : i < stage
+                            ? "w-1.5 bg-emerald-400/50"
+                            : "w-1.5 bg-white/25"
+                      }`}
+                      key={c.city}
+                    />
+                  ))}
+                  <span className="text-xs font-semibold text-white/80">
+                    Stop {stage + 1}/{TOUR_CITIES.length}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-        </motion.div>
+        </div>
+
+        {/* All stops — the full grid, as before */}
+        <div className="mx-auto max-w-7xl px-4 pb-32">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {TOUR_CITIES.map((city, idx) => (
+              <div
+                className={
+                  TOUR_CITIES.length % 3 === 1 && idx === TOUR_CITIES.length - 1
+                    ? "lg:col-start-2"
+                    : ""
+                }
+                key={idx}
+              >
+                <CityCard
+                  city={city}
+                  img={city.img}
+                  index={idx}
+                  isActive={activeCity === idx}
+                  onClick={setActiveCity}
+                  pattern={city.pattern}
+                  setShowGallery={setShowGallery}
+                />
+              </div>
+            ))}
+          </div>
+
+          <motion.div className="text-center mt-16" {...entry.fade(0.36, 24)}>
+            <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
+              <Navigation className="w-10 h-10 text-emerald-400" />
+              <div className="text-left">
+                <p className="text-gray-400 text-sm mb-1">
+                  Total Expected C-Level Attendees
+                </p>
+                <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                  2200+
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
       <AnimatePresence>
         {showGallery && (

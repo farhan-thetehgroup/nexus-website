@@ -43,11 +43,18 @@ export const DotWorldMap = ({
   fit = "stretch",
   anchorX = 0.5,
   anchorY = 0.5,
-  // [{ x, y, tone? }] — grid-space points (see latLonToGrid) rendered as
-  // breathing dots with staggered ping rings, e.g. tour cities.
+  // [{ x, y, tone?, active? }] — grid-space points (see latLonToGrid)
+  // rendered as breathing dots with staggered ping rings, e.g. tour
+  // cities. `active` lifts a point (bigger, brighter, wider rings); it is
+  // read per-frame through a ref, so changing it never rebuilds the map.
   pulsePoints,
 }) => {
   const canvasRef = useRef(null);
+  const pulseRef = useRef(pulsePoints);
+
+  useEffect(() => {
+    pulseRef.current = pulsePoints;
+  }, [pulsePoints]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -60,6 +67,7 @@ export const DotWorldMap = ({
     let paths = [];
     let focusPaths = [];
     let pulsePx = [];
+    let pulseEase = []; // per-point presence, eased per frame toward target
     let width = 1;
     let height = 1;
     let unit = 4; // cell size, set by build() — used by the pulse renderer
@@ -102,7 +110,7 @@ export const DotWorldMap = ({
         target.arc(x, y, radius, 0, Math.PI * 2);
       }
 
-      pulsePx = (pulsePoints ?? []).map((p) => ({
+      pulsePx = (pulseRef.current ?? []).map((p) => ({
         tone: p.tone ?? focusTone,
         px: (p.x + 0.5) * stepX + offX,
         py: (p.y + 0.5) * stepY + offY,
@@ -131,23 +139,43 @@ export const DotWorldMap = ({
 
       // City pulses: a breathing core with two staggered ping rings per
       // point, phase-offset per city so they never pulse in lockstep.
+      // The active city eases toward full presence, the rest rest low.
+      const pts = pulseRef.current ?? [];
+      if (pulseEase.length !== pts.length) {
+        pulseEase = pts.map(() => 0.45);
+      }
+      for (let i = 0; i < pts.length; i++) {
+        const target = pts[i].active ? 1 : 0.45;
+        pulseEase[i] += (target - pulseEase[i]) * 0.09;
+      }
+
       for (let i = 0; i < pulsePx.length; i++) {
         const p = pulsePx[i];
-        const base = Math.max(2.2, unit * 0.36);
+        const e = pulseEase[i] ?? 0.45;
+        const base = Math.max(2.2, unit * 0.36) * (0.85 + 0.5 * e);
         const breath =
           0.5 + 0.5 * Math.sin((time * Math.PI * 2) / 2.8 + i * 1.1);
 
         ctx.beginPath();
-        ctx.fillStyle = `rgba(${p.tone}, ${(0.6 + 0.4 * breath).toFixed(3)})`;
+        ctx.fillStyle = `rgba(${p.tone}, ${Math.min(
+          1,
+          0.45 + 0.45 * e + 0.1 * breath,
+        ).toFixed(3)})`;
         ctx.arc(p.px, p.py, base * (0.78 + 0.3 * breath), 0, Math.PI * 2);
         ctx.fill();
 
         for (let k = 0; k < 2; k++) {
           const t = (time / 3.6 + i * 0.37 + k * 0.5) % 1;
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(${p.tone}, ${(0.7 * (1 - t)).toFixed(3)})`;
+          ctx.strokeStyle = `rgba(${p.tone}, ${(0.7 * e * (1 - t)).toFixed(3)})`;
           ctx.lineWidth = 1.6;
-          ctx.arc(p.px, p.py, base * (1.1 + 6.2 * t), 0, Math.PI * 2);
+          ctx.arc(
+            p.px,
+            p.py,
+            base * (1.1 + (4.4 + 2.6 * e) * t),
+            0,
+            Math.PI * 2,
+          );
           ctx.stroke();
         }
       }
@@ -155,13 +183,32 @@ export const DotWorldMap = ({
 
     build();
 
+    // Skip painting while the canvas is scrolled out of view — the loop
+    // keeps ticking so it resumes the moment the map re-enters.
+    let inView = true;
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+      },
+      { rootMargin: "10% 0%" },
+    );
+    visibility.observe(canvas);
+
     if (motion) {
       const loop = (now) => {
-        draw(now / 1000);
+        if (inView) draw(now / 1000);
         raf = requestAnimationFrame(loop);
       };
       raf = requestAnimationFrame(loop);
     } else {
+      // No animation: converge the pulse easing instantly so the static
+      // frame shows the current active/inactive mix at full presence.
+      for (let i = 0; i < 40; i++) {
+        const pts = pulseRef.current ?? [];
+        for (let j = 0; j < pts.length; j++) {
+          pulseEase[j] = pts[j].active ? 1 : 0.45;
+        }
+      }
       draw(2.2);
     }
 
@@ -174,6 +221,7 @@ export const DotWorldMap = ({
     return () => {
       cancelAnimationFrame(raf);
       observer.disconnect();
+      visibility.disconnect();
     };
   }, [
     motion,
@@ -186,7 +234,7 @@ export const DotWorldMap = ({
     fit,
     anchorX,
     anchorY,
-    pulsePoints,
+    pulsePoints?.length ?? 0,
   ]);
 
   return (
