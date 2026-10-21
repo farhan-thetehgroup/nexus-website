@@ -210,32 +210,6 @@ export const TourSection = () => {
       id="tours"
       ref={containerRef}
     >
-      {/* Pattern SVG background above gradient blobs */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <svg
-          className="w-full h-full"
-          fill="none"
-          height="100%"
-          viewBox="0 0 1440 900"
-          width="100%"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <pattern
-              height="40"
-              id="pattern-circles"
-              patternUnits="userSpaceOnUse"
-              width="40"
-              x="0"
-              y="0"
-            >
-              <circle cx="2" cy="2" fill="#2dd4bf" opacity="0.12" r="2" />
-            </pattern>
-          </defs>
-          <rect fill="url(#pattern-circles)" height="900" width="1440" />
-        </svg>
-      </div>
-
       {/* Ambient light — parallax layer free to spill across both seams */}
       <GlowField
         className="opacity-20 z-10"
@@ -257,8 +231,6 @@ export const TourSection = () => {
           },
         ]}
       />
-
-      <div className="absolute inset-0 z-20 pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="text-center mb-20">
