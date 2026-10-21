@@ -7,6 +7,7 @@ import {
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
 import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
+import { DotFieldInteraction } from "../components/common/ui/DotFieldInteraction";
 import {
   Users,
   UserCheck,
@@ -148,6 +149,7 @@ export const EventFormatSection = () => {
       className="relative overflow-hidden py-20 md:py-28"
       id="event-formats"
     >
+      <DotFieldInteraction />
       <motion.div
         animate={{
           x: [0, 30, 0],

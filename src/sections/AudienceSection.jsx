@@ -15,6 +15,7 @@ import {
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
 import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
+import { DotFieldInteraction } from "../components/common/ui/DotFieldInteraction";
 
 const audienceData = [
   {
@@ -166,6 +167,7 @@ export const AudienceSection = () => {
       id="audience"
       ref={containerRef}
     >
+      <DotFieldInteraction />
       <motion.div
         className="absolute inset-0 opacity-20"
         style={{ y: backgroundY, rotate: bgRotate }}

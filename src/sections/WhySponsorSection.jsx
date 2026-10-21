@@ -7,6 +7,7 @@ import {
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
 import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
+import { DotFieldInteraction } from "../components/common/ui/DotFieldInteraction";
 
 const whyReasons = [
   {
@@ -126,6 +127,8 @@ export const WhySponsorSection = () => {
       id="why"
       ref={containerRef}
     >
+      <DotFieldInteraction />
+      {/* Pooled color fields the glass needs behind the grid */}
       <motion.div
         className="absolute inset-0 opacity-55"
         style={{ y: backgroundY }}
