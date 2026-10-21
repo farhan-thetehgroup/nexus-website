@@ -19,12 +19,21 @@ import {
 
 import { TOUR_CITIES } from "../constants";
 import { GalleryModal } from "../components/GalleryModal";
+import { DotWorldMap, latLonToGrid } from "../components/aurora/DotWorldMap";
+import dotMapDense from "../components/aurora/dotMapDense.json";
+import { useMotionPreference } from "../components/aurora/useMotionPreference";
 import { GlowField } from "../components/common/ui/GlowField";
 import {
   MaskedLine,
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
 import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
+
+// City pulse points for the dotted map background — real coordinates
+// projected onto the dense map's grid (see DotWorldMap.latLonToGrid).
+const cityPulsePoints = TOUR_CITIES.filter((c) => c.coords).map((c) =>
+  latLonToGrid(c.coords.lat, c.coords.lon, dotMapDense),
+);
 
 const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
   const cardRef = useRef(null);
@@ -196,6 +205,7 @@ export const TourSection = () => {
   const [activeCity, setActiveCity] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
   const entry = useSectionEntry();
+  const motionOk = useMotionPreference();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -210,6 +220,28 @@ export const TourSection = () => {
       id="tours"
       ref={containerRef}
     >
+      {/* Dotted world map background — the six tour stops pulse at their
+          real coordinates (cover-crop anchored right so APAC fills the
+          frame, edge-faded by the mask so the seams stay continuous) */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-55"
+        style={{
+          maskImage:
+            "radial-gradient(ellipse 70% 64% at 50% 50%, black 38%, rgba(0,0,0,0.5) 75%, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 70% 64% at 50% 50%, black 38%, rgba(0,0,0,0.5) 75%, transparent 100%)",
+        }}
+      >
+        <DotWorldMap
+          anchorX={1}
+          className="block h-full w-full"
+          dotMapData={dotMapDense}
+          fit="cover"
+          motion={motionOk}
+          pulsePoints={cityPulsePoints}
+        />
+      </div>
+
       {/* Ambient light — parallax layer free to spill across both seams */}
       <GlowField
         className="opacity-20 z-10"
