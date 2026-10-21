@@ -31,9 +31,10 @@ import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
 
 // City pulse points for the dotted map background — real coordinates
 // projected onto the dense map's grid (see DotWorldMap.latLonToGrid).
-const cityPulsePoints = TOUR_CITIES.filter((c) => c.coords).map((c) =>
-  latLonToGrid(c.coords.lat, c.coords.lon, dotMapDense),
-);
+const cityPulsePoints = TOUR_CITIES.filter((c) => c.coords).map((c) => ({
+  city: c.city,
+  ...latLonToGrid(c.coords.lat, c.coords.lon, dotMapDense),
+}));
 
 const CityCard = ({ city, index, isActive, onClick, pattern, img, story }) => {
   const cardRef = useRef(null);
@@ -206,7 +207,7 @@ export const TourSection = () => {
   const [showGallery, setShowGallery] = useState(false);
   const [stage, setStage] = useState(0);
   const [storyDone, setStoryDone] = useState(false);
-  const [labelPos, setLabelPos] = useState(null);
+  const [pointsPx, setPointsPx] = useState([]);
   const entry = useSectionEntry();
   const motionOk = useMotionPreference();
   const containerRef = useRef(null);
@@ -245,9 +246,10 @@ export const TourSection = () => {
     };
   }, [syncStory]);
 
-  // Anchors the "you are here" chip to the active city's dot on the
-  // canvas. Mirrors DotWorldMap's cover-fit math (fit="cover",
-  // anchorX=1) so the chip and the canvas pulse never disagree.
+  // City anchors on the canvas (px), recomputed on resize. Markers render
+  // as DOM on top of everything so a dot never half-hides behind the
+  // frosted card; mirrors DotWorldMap's cover-fit math (fit="cover",
+  // anchorX=1) with the same dense grid.
   useEffect(() => {
     const update = () => {
       const el = stageRef.current;
@@ -255,24 +257,18 @@ export const TourSection = () => {
       const rect = el.getBoundingClientRect();
       const { cols = 400, rows = 136 } = dotMapDense;
       const step = Math.max(rect.width / cols, rect.height / rows);
-      const g = cityPulsePoints[stage];
-      if (!g) return;
-      setLabelPos({
-        x: (g.x + 0.5) * step + (rect.width - cols * step),
-        y: (g.y + 0.5) * step,
-      });
+      setPointsPx(
+        cityPulsePoints.map((g) => ({
+          city: g.city,
+          x: (g.x + 0.5) * step + (rect.width - cols * step),
+          y: (g.y + 0.5) * step,
+        })),
+      );
     };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, [stage]);
-
-  const pulsePoints = cityPulsePoints.map((p, i) => ({
-    ...p,
-    // During the story one city leads; once the grid takes over the
-    // whole tour breathes together.
-    active: storyDone || i === stage,
-  }));
+  }, []);
 
   return (
     <section className="relative" id="tours" ref={containerRef}>
@@ -296,7 +292,6 @@ export const TourSection = () => {
           dotMapData={dotMapDense}
           fit="cover"
           motion={motionOk}
-          pulsePoints={pulsePoints}
         />
       </div>
 
@@ -373,20 +368,75 @@ export const TourSection = () => {
             className="sticky top-0 flex h-screen items-center justify-center px-6 md:px-16"
             ref={stageRef}
           >
-            {!storyDone && labelPos && (
-              <div
-                className="pointer-events-none absolute z-20"
-                style={{
-                  left: labelPos.x,
-                  top: labelPos.y,
-                  transform: "translate(-50%, -150%)",
-                }}
-              >
-                <div className="nx-glass-chip px-3 py-1 text-xs font-semibold whitespace-nowrap text-emerald-300">
-                  {TOUR_CITIES[stage].city}
+            {/* City markers — DOM dots over everything so a marker never
+                half-hides behind the frosted card: at viewports where the
+                cover-crop puts the APAC band mid-screen, a canvas dot
+                behind the glass read as a stray blurred blob in the
+                card's corner. The active dot grows and pings; the label
+                chip anchors to this exact point. */}
+            <motion.div
+              animate={{ opacity: storyDone ? 0 : 1 }}
+              className="pointer-events-none absolute inset-0"
+              style={{ transition: "opacity 0.45s ease" }}
+            >
+              {pointsPx.map((p, i) => (
+                <div
+                  className="absolute"
+                  key={p.city}
+                  style={{
+                    left: p.x,
+                    top: p.y,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  {i === stage && !storyDone ? (
+                    <>
+                      <motion.span
+                        animate={
+                          motionOk
+                            ? { scale: [1, 3], opacity: [0.5, 0] }
+                            : { opacity: 0.2 }
+                        }
+                        className="absolute -inset-1.5 rounded-full border border-emerald-300"
+                        transition={{
+                          duration: 1.8,
+                          ease: "easeOut",
+                          repeat: Infinity,
+                        }}
+                      />
+                      <motion.span
+                        animate={
+                          motionOk
+                            ? { scale: [1, 3], opacity: [0.5, 0] }
+                            : { opacity: 0.15 }
+                        }
+                        className="absolute -inset-1.5 rounded-full border border-emerald-300"
+                        transition={{
+                          delay: 0.9,
+                          duration: 1.8,
+                          ease: "easeOut",
+                          repeat: Infinity,
+                        }}
+                      />
+                      <span className="block h-3 w-3 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.7)]" />
+                      <div
+                        className="absolute left-1/2"
+                        style={{
+                          bottom: "calc(100% + 0.5rem)",
+                          transform: "translateX(-50%)",
+                        }}
+                      >
+                        <div className="nx-glass-chip whitespace-nowrap px-3 py-1 text-xs font-semibold text-emerald-300">
+                          {p.city}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <span className="block h-2 w-2 rounded-full bg-emerald-300/60" />
+                  )}
                 </div>
-              </div>
-            )}
+              ))}
+            </motion.div>
 
             <div className="w-full max-w-[440px]">
               {/* mode="wait": the outgoing card fades out, THEN the next
