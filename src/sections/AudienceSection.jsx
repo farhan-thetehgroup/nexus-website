@@ -14,6 +14,7 @@ import {
   MaskedLine,
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
+import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
 
 const audienceData = [
   {
@@ -72,35 +73,39 @@ const AudienceCard = ({ item, index }) => {
         ease: [0.16, 1, 0.3, 1],
       }}
     >
+      {/* Colored field the frost refracts */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${item.gradient} rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500`}
+        className={`absolute inset-0 bg-gradient-to-br ${item.gradient} rounded-3xl blur-2xl opacity-20`}
       />
 
       <motion.div
-        className="relative bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-3xl border border-emerald-500/30 hover:border-emerald-400/70 overflow-hidden cursor-pointer"
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        whileHover={{ y: -15 }}
+        className="nx-glass-pane relative overflow-hidden cursor-pointer"
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        whileHover={{ y: -10 }}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(16,185,129,0.1),transparent)]" />
 
         <div
-          className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${item.gradient} rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500`}
+          className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${item.gradient} rounded-full blur-3xl opacity-20`}
         />
 
         <div className="relative p-8">
           <div className="flex items-start justify-between mb-6">
             <motion.div
-              className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${item.gradient} p-4 shadow-2xl relative`}
+              className="nx-glass-icon relative w-20 h-20 p-4 overflow-hidden"
               transition={{ duration: 0.4 }}
               whileHover={{ scale: 1.08 }}
             >
-              <Icon className="w-full h-full text-white" />
-              <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl" />
+              {/* Faint tint of the card's gradient keeps identity */}
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-25`}
+              />
+              <Icon className="relative w-full h-full text-white" />
             </motion.div>
 
             <motion.div
               animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-              className={`px-4 py-2 rounded-full bg-gradient-to-r ${item.gradient} text-white font-bold text-sm shadow-lg`}
+              className="nx-glass-chip px-4 py-2 text-white font-bold text-sm"
               initial={{ opacity: 0 }}
               transition={{ delay: index * 0.2 + 0.4, duration: 0.6 }}
             >
@@ -115,9 +120,7 @@ const AudienceCard = ({ item, index }) => {
             transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
           />
 
-          <h3 className="text-3xl font-bold mb-3 text-white group-hover:text-emerald-400 transition-colors duration-300">
-            {item.title}
-          </h3>
+          <h3 className="text-3xl font-bold mb-3 text-white">{item.title}</h3>
 
           <p className="text-gray-300 text-lg leading-relaxed mb-6 group-hover:text-gray-100 transition-colors duration-300">
             {item.desc}
@@ -129,7 +132,7 @@ const AudienceCard = ({ item, index }) => {
                 animate={
                   isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
                 }
-                className="flex items-center gap-3 text-gray-300 group-hover:text-emerald-400 transition-colors duration-300"
+                className="flex items-center gap-3 text-gray-300 transition-colors duration-300"
                 initial={{ opacity: 0, x: -20 }}
                 key={idx}
                 transition={{ delay: index * 0.2 + 0.4 + idx * 0.1 }}
@@ -139,15 +142,8 @@ const AudienceCard = ({ item, index }) => {
               </motion.div>
             ))}
           </div>
-
-          <motion.div
-            className={`absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r ${item.gradient} rounded-b-3xl`}
-            initial={{ scaleX: 0 }}
-            style={{ originX: 0 }}
-            transition={{ duration: 0.4 }}
-            whileHover={{ scaleX: 1 }}
-          />
         </div>
+        <CursorSpotlight above />
       </motion.div>
     </motion.div>
   );
@@ -184,7 +180,7 @@ export const AudienceSection = () => {
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="text-center mb-20">
           <motion.div
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border border-emerald-500/40 mb-6 backdrop-blur-sm"
+            className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
             {...entry.fade(0, 14, 0.6)}
           >
             <ShieldCheck className="w-5 h-5 text-emerald-400" />

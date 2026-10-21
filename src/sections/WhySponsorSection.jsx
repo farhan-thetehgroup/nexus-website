@@ -65,7 +65,7 @@ const Card = ({ reason, index }) => {
 
       {/* Glass panel */}
       <motion.div
-        className="relative overflow-hidden rounded-3xl border border-white/15 bg-white/[0.07] backdrop-blur-2xl backdrop-saturate-150 shadow-[0_24px_60px_rgba(2,8,20,0.45),inset_0_1px_0_rgba(255,255,255,0.25)] p-8 cursor-pointer group-hover:border-white/30 transition-colors duration-300"
+        className="nx-glass-pane relative overflow-hidden p-8 cursor-pointer group-hover:border-white/30 transition-colors duration-300"
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         whileHover={{ y: -10 }}
       >
@@ -78,7 +78,7 @@ const Card = ({ reason, index }) => {
 
         <div className="relative z-10">
           <motion.div
-            className="relative w-16 h-16 rounded-2xl border border-white/15 bg-white/[0.07] backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_10px_30px_rgba(2,8,20,0.25)] overflow-hidden mb-6"
+            className="nx-glass-icon relative w-16 h-16 flex items-center justify-center mb-6"
             transition={{ duration: 0.4 }}
             whileHover={{ scale: 1.08 }}
           >
@@ -139,7 +139,7 @@ export const WhySponsorSection = () => {
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="text-center mb-20">
           <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] mb-6"
+            className="nx-glass-chip inline-flex items-center gap-2 px-4 py-2 mb-6"
             {...entry.fade(0, 14, 0.6)}
           >
             <Sparkles className="w-5 h-5 text-emerald-400" />

@@ -181,7 +181,7 @@ export const EventFormatSection = () => {
       <div className="max-w-7xl relative z-10 mx-auto px-4">
         <div className="mb-16 text-center">
           <motion.div
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/40 mb-6 backdrop-blur-sm"
+            className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
             {...entry.fade(0, 14, 0.6)}
           >
             <Calendar className="w-5 h-5 text-purple-400" />
@@ -226,7 +226,7 @@ export const EventFormatSection = () => {
                   variants={cardVariants}
                   whileHover={{ y: -12, scale: 1.02 }}
                 >
-                  <motion.div className="relative h-full overflow-hidden rounded-2xl bg-brand-700/40 backdrop-blur-sm shadow-xl border-2 border-tech-green-400/20 hover:border-tech-green-400/60 transition-colors duration-300">
+                  <motion.div className="nx-glass-pane relative h-full overflow-hidden cursor-pointer hover:border-white/30 transition-colors duration-300">
                     <div className="relative h-64 overflow-hidden">
                       <motion.img
                         alt={format.title}
@@ -339,7 +339,7 @@ export const EventFormatSection = () => {
                   variants={cardVariants}
                   whileHover={{ y: -12, scale: 1.02 }}
                 >
-                  <motion.div className="relative h-full overflow-hidden rounded-2xl bg-brand-700/40 backdrop-blur-sm shadow-xl border-2 border-tech-green-400/20 hover:border-tech-green-400/60 transition-colors duration-300">
+                  <motion.div className="nx-glass-pane relative h-full overflow-hidden cursor-pointer hover:border-white/30 transition-colors duration-300">
                     <div className="relative h-64 overflow-hidden">
                       <motion.img
                         alt={format.title}

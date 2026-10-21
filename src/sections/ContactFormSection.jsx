@@ -214,10 +214,10 @@ const ContactForm = () => {
 
   const inputClasses = (hasError) =>
     [
-      "w-full px-4 py-3 rounded-xl bg-slate-800/50 border text-white placeholder-gray-500 focus:outline-none transition-all",
+      "w-full px-4 py-3 rounded-xl bg-white/[0.06] border text-white placeholder-gray-500 focus:outline-none transition-colors",
       hasError
-        ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-        : "border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20",
+        ? "border-red-500/70 focus:border-red-400 focus:ring-2 focus:ring-red-500/20"
+        : "border-white/15 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20",
     ].join(" ");
 
   return (
@@ -227,17 +227,17 @@ const ContactForm = () => {
       transition={{ duration: 0.8 }}
       whileInView={{ opacity: 1, y: 0 }}
     >
-      <div className="relative bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-3xl border border-emerald-500/30 overflow-hidden p-8 md:p-12">
+      <div className="nx-glass-pane relative overflow-hidden p-8 md:p-12">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-bl-full opacity-10" />
 
         <div className="relative z-10">
           {/* Header */}
           <div className="text-center mb-8">
             <motion.div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/40 mb-4"
-              initial={{ scale: 0 }}
-              transition={{ type: "spring", delay: 0.2 }}
-              whileInView={{ scale: 1 }}
+              className="nx-glass-chip inline-flex items-center gap-2 px-4 py-2 mb-4"
+              initial={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              whileInView={{ opacity: 1, y: 0 }}
             >
               <Mail className="w-4 h-4 text-cyan-400" />
               <span className="text-cyan-400 font-medium text-sm">
@@ -383,10 +383,10 @@ const ContactForm = () => {
               </label>
               <textarea
                 className={[
-                  "w-full px-4 py-3 rounded-xl bg-slate-800/50 border text-white placeholder-gray-500 focus:outline-none transition-all resize-none",
+                  "w-full px-4 py-3 rounded-xl bg-white/[0.06] border text-white placeholder-gray-500 focus:outline-none transition-colors resize-none",
                   fieldErrors.message
-                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-                    : "border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20",
+                    ? "border-red-500/70 focus:border-red-400 focus:ring-2 focus:ring-red-500/20"
+                    : "border-white/15 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20",
                 ].join(" ")}
                 name="message"
                 onChange={handleChange}
@@ -469,14 +469,18 @@ const HashtagBadge = ({ tag, index }) => {
   return (
     <motion.div
       className="cursor-pointer"
-      initial={{ opacity: 0, scale: 0 }}
+      initial={{ opacity: 0, y: 10 }}
       onClick={handleCopy}
-      transition={{ delay: index * 0.1, type: "spring", stiffness: 300 }}
-      whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{
+        delay: index * 0.1,
+        duration: 0.5,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      whileHover={{ scale: 1.06 }}
+      whileInView={{ opacity: 1, y: 0 }}
       whileTap={{ scale: 0.95 }}
     >
-      <div className="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/40 hover:border-emerald-400/70 backdrop-blur-sm transition-all duration-300 flex items-center gap-2 group">
+      <div className="nx-glass-chip px-5 py-2.5 hover:border-white/30 transition-colors duration-300 flex items-center gap-2 group cursor-pointer">
         <Hash className="w-4 h-4 text-emerald-400 group-hover:text-cyan-400 transition-colors" />
         <span className="font-semibold text-white group-hover:text-emerald-400 transition-colors">
           {tag.substring(1)}
@@ -521,7 +525,7 @@ export default function ContactFormSection() {
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="text-center mb-16">
           <motion.div
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 border border-cyan-500/40 mb-6 backdrop-blur-sm"
+            className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
             {...entry.fade(0, 14, 0.6)}
           >
             <MessageCircle className="w-5 h-5 text-cyan-400" />
@@ -555,7 +559,7 @@ export default function ContactFormSection() {
           transition={{ duration: 0.8, delay: 0.6 }}
           whileInView={{ opacity: 1, y: 0 }}
         >
-          <div className="inline-block bg-gradient-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl px-10 py-8 rounded-3xl border border-emerald-500/30">
+          <div className="nx-glass-pane px-10 py-8">
             <div className="flex items-center justify-center gap-3 mb-6">
               <Sparkles className="w-6 h-6 text-emerald-400" />
               <h3 className="text-2xl font-bold text-white">
