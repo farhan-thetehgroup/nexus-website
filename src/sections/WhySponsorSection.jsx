@@ -79,13 +79,13 @@ const Card = ({ reason, index }) => {
 
         <div className="relative z-10">
           <motion.div
-            className="nx-glass-icon relative w-16 h-16 flex items-center justify-center mb-6"
+            className="nx-glass-icon relative w-16 h-16 flex items-center justify-center mb-6 overflow-hidden"
             transition={{ duration: 0.4 }}
             whileHover={{ scale: 1.08 }}
           >
             {/* Faint tint of the card's gradient keeps each icon's identity */}
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${reason.gradient} opacity-25`}
+              className={`absolute inset-0 rounded-[inherit] bg-gradient-to-br ${reason.gradient} opacity-25`}
             />
             <Icon className="relative w-full h-full p-3 text-white" />
           </motion.div>
