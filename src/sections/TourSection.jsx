@@ -4,7 +4,6 @@ import {
   useScroll,
   useTransform,
   useInView,
-  useMotionValueEvent,
   AnimatePresence,
 } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -36,7 +35,7 @@ const cityPulsePoints = TOUR_CITIES.filter((c) => c.coords).map((c) =>
   latLonToGrid(c.coords.lat, c.coords.lon, dotMapDense),
 );
 
-const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
+const CityCard = ({ city, index, isActive, onClick, pattern, img, story }) => {
   const cardRef = useRef(null);
   const isInView = useInView(cardRef, { once: true, amount: 0.5 });
   const { scrollYProgress } = useScroll({
@@ -54,24 +53,34 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
 
   const isPastEvent =
     new Date(city.date) < new Date(new Date().setHours(0, 0, 0, 0));
+  // Story mode renders statically: the scrollytelling wrapper owns the
+  // whole entrance (single fade+slide). Layering this card's own entry
+  // (x/rotateY + per-index delay) AND the scroll-linked y/opacity/scale on
+  // top of it is what made the stage card stutter.
+  const flow = story
+    ? {}
+    : {
+        animate: isInView
+          ? { opacity: 1, x: 0, rotateY: 0 }
+          : { opacity: 0, x: index % 2 === 0 ? -100 : 100, rotateY: 20 },
+        initial: { opacity: 0, x: index % 2 === 0 ? -100 : 100, rotateY: 20 },
+        style: { y, opacity, scale },
+        transition: {
+          duration: 0.8,
+          delay: index * 0.15,
+          ease: [0.21, 0.47, 0.32, 0.98],
+        },
+      };
+  // In story mode the micro-details follow a small fixed offset instead
+  // of index*0.15 (up to 0.9s of "appears, pauses, then moves").
+  const detailDelay = story ? 0.25 : index * 0.15 + 0.3;
 
   return (
     <motion.div
-      animate={
-        isInView
-          ? { opacity: 1, x: 0, rotateY: 0 }
-          : { opacity: 0, x: index % 2 === 0 ? -100 : 100, rotateY: 20 }
-      }
+      {...flow}
       className="relative group cursor-pointer"
-      initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100, rotateY: 20 }}
       onClick={() => onClick(index)}
       ref={cardRef}
-      style={{ y, opacity, scale }}
-      transition={{
-        duration: 0.8,
-        delay: index * 0.15,
-        ease: [0.21, 0.47, 0.32, 0.98],
-      }}
     >
       <motion.div
         animate={isActive ? { opacity: 0.4, scale: 1.1 } : {}}
@@ -118,16 +127,6 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
           className={`absolute top-0 right-0 z-20 w-32 h-32 bg-gradient-to-br ${city.gradient} rounded-bl-full opacity-20`}
         />
 
-        {isActive && (
-          <motion.div
-            animate={{ scale: 1 }}
-            className="absolute -top-3 -right-3 z-40"
-            initial={{ scale: 0 }}
-          >
-            <div className="w-6 h-6 rounded-full bg-tech-green-500 shadow-[0_0_0_4px_rgba(16,185,129,0.25)]" />
-          </motion.div>
-        )}
-
         <div className="relative z-30 p-8">
           <div className="flex items-start justify-between mb-6">
             <motion.div
@@ -146,7 +145,7 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
               className="nx-glass-chip px-4 py-1.5 text-white text-xs font-bold"
               initial={{ opacity: 0, y: 10 }}
-              transition={{ delay: index * 0.15 + 0.3, duration: 0.5 }}
+              transition={{ delay: detailDelay, duration: 0.5 }}
             >
               {city.country}
             </motion.div>
@@ -156,7 +155,7 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
             animate={isInView ? { width: "80px" } : { width: 0 }}
             className={`h-1.5 bg-gradient-to-r ${city.gradient} mb-4 rounded-full`}
             initial={{ width: 0 }}
-            transition={{ duration: 0.6, delay: index * 0.15 + 0.3 }}
+            transition={{ duration: 0.6, delay: detailDelay }}
           />
 
           <h3
@@ -220,23 +219,31 @@ export const TourSection = () => {
   });
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
-  // Story phases: N x 100vh, one tour stop per screen of scroll.
-  const { scrollYProgress: storyP } = useScroll({
-    target: storyRef,
-    offset: ["start start", "end end"],
-  });
-
-  const syncStory = useCallback((v) => {
+  // Story phases: N x 100vh, one tour stop per screen of scroll. Stage is
+  // computed straight from geometry on every scroll event — framer's
+  // scrollY pipeline lagged the swap by >1s here, which read as the card
+  // freezing and then bursting to its next position.
+  const syncStory = useCallback(() => {
+    const el = storyRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const travel = rect.height - window.innerHeight;
+    if (travel <= 0) return;
+    const v = Math.min(1, Math.max(0, -rect.top / travel));
     setStage(
       Math.min(TOUR_CITIES.length - 1, Math.floor(v * TOUR_CITIES.length)),
     );
     setStoryDone(v >= 0.995);
   }, []);
-  useMotionValueEvent(storyP, "change", syncStory);
-  // Deep links can land past the story — sync the stage once mounted.
   useEffect(() => {
-    syncStory(storyP.get());
-  }, [storyP, syncStory]);
+    syncStory();
+    window.addEventListener("scroll", syncStory, { passive: true });
+    window.addEventListener("resize", syncStory);
+    return () => {
+      window.removeEventListener("scroll", syncStory);
+      window.removeEventListener("resize", syncStory);
+    };
+  }, [syncStory]);
 
   // Anchors the "you are here" chip to the active city's dot on the
   // canvas. Mirrors DotWorldMap's cover-fit math (fit="cover",
@@ -382,14 +389,19 @@ export const TourSection = () => {
             )}
 
             <div className="w-full max-w-[440px]">
+              {/* mode="wait": the outgoing card fades out, THEN the next
+                  one rises. Crossfade (sync mode) left the old card at full
+                  opacity stacked behind the incoming one here. The card
+                  renders statically in story mode, so there is no double
+                  entry choreography — this stays a clean single flight. */}
               <AnimatePresence mode="wait">
                 {!storyDone && (
                   <motion.div
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.96, y: -18 }}
-                    initial={{ opacity: 0, y: 24 }}
+                    exit={{ opacity: 0, y: -18, scale: 0.97 }}
+                    initial={{ opacity: 0, y: 26 }}
                     key={stage}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                   >
                     <CityCard
                       city={TOUR_CITIES[stage]}
@@ -399,6 +411,7 @@ export const TourSection = () => {
                       onClick={setActiveCity}
                       pattern={TOUR_CITIES[stage].pattern}
                       setShowGallery={setShowGallery}
+                      story
                     />
                     <p className="mt-5 max-w-md px-1 text-center text-sm leading-relaxed text-white/70 md:text-base">
                       {TOUR_CITIES[stage].tagline}
