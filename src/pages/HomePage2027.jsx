@@ -19,7 +19,10 @@ import { WhySponsorSection } from "../sections/WhySponsorSection";
 
 const pageClasses = [
   "nx-aurora-theme",
-  "relative min-h-screen overflow-hidden",
+  // overflow-clip, NOT overflow-hidden: hidden would turn <main> into a
+  // scroll container and silently kill every position:sticky inside it
+  // (the tour scrollytelling). Clip paints the same and keeps sticky alive.
+  "relative min-h-screen overflow-clip",
   "bg-gradient-to-b from-[#03101a] via-[#062030] to-[#03101a]",
   "text-white",
 ].join(" ");
