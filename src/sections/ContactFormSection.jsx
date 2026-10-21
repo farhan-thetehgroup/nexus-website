@@ -9,6 +9,7 @@ import {
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
 import { GlowField } from "../components/common/ui/GlowField";
+import { GlassButton } from "../components/common/ui/GlassButton";
 import {
   Mail,
   Phone,
@@ -404,12 +405,11 @@ const ContactForm = () => {
             </div>
 
             {/* Submit Button */}
-            <motion.button
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-bold shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
+            <GlassButton
+              className="w-full justify-center gap-3 py-4 font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
               disabled={loading}
+              tone="emerald"
               type="submit"
-              whileHover={!loading ? { scale: 1.02 } : {}}
-              whileTap={!loading ? { scale: 0.98 } : {}}
             >
               {loading ? (
                 <>
@@ -418,11 +418,11 @@ const ContactForm = () => {
                 </>
               ) : (
                 <>
-                  <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <Send className="h-5 w-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                   <span>Send Message</span>
                 </>
               )}
-            </motion.button>
+            </GlassButton>
 
             {/* Contact Info */}
             <div className="pt-6 border-t border-slate-700">

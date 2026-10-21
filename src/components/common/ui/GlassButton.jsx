@@ -14,6 +14,10 @@ export const GlassButton = ({
   tone = "neutral",
   style,
   children,
+  disabled,
+  // Everything else ("aria-label", "name", data-*, ...) falls through to
+  // the rendered tag so call sites never lose attribute forwarding.
+  ...rest
 }) => {
   const tones = {
     neutral:
@@ -29,9 +33,10 @@ export const GlassButton = ({
       } ${className}`}
       {...(Tag === "a"
         ? { href, target, rel: target ? "noopener,noreferrer" : undefined }
-        : { type })}
+        : { type, disabled })}
       onClick={onClick}
       style={style}
+      {...rest}
     >
       {children}
     </Tag>

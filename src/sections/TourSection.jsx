@@ -22,6 +22,7 @@ import { GalleryModal } from "../components/GalleryModal";
 import { DotWorldMap, latLonToGrid } from "../components/aurora/DotWorldMap";
 import dotMapDense from "../components/aurora/dotMapDense.json";
 import { useMotionPreference } from "../components/aurora/useMotionPreference";
+import { GlassButton } from "../components/common/ui/GlassButton";
 import { GlowField } from "../components/common/ui/GlowField";
 import {
   MaskedLine,
@@ -176,15 +177,14 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img, story }) => {
             </div>
           </div>
 
-          <motion.button
-            className={`w-full py-3 rounded-xl bg-gradient-to-r ${city.gradient} text-white font-bold shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 group/btn`}
+          <GlassButton
+            className="w-full justify-center gap-2 py-3 text-sm font-bold text-white"
             onClick={() => {
               if (city.url && city.url.trim() !== "") {
                 window.open(city.url, "_blank", "noopener,noreferrer");
               }
             }}
-            whileHover={{ scale: 1.05, x: 5 }}
-            whileTap={{ scale: 0.95 }}
+            tone="emerald"
           >
             <span>
               {isPastEvent
@@ -193,8 +193,8 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img, story }) => {
                   ? "Register Now"
                   : "Coming Soon"}
             </span>
-            <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-          </motion.button>
+            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </GlassButton>
         </div>
         <CursorSpotlight above />
       </motion.div>

@@ -13,6 +13,7 @@ import {
   PHONE_WHATSAPP,
   WHATSAPP_MESSAGE,
 } from "../constants";
+import { GlassButton } from "../components/common/ui/GlassButton";
 
 const ThreeFooterBackground = () => {
   const mountRef = useRef(null);
@@ -413,28 +414,21 @@ export const FooterSection = ({ items = MENU_ITEMS }) => {
       </div>
 
       {/* Scroll to Top Button */}
-      <motion.button
+      <motion.div
         animate={{ opacity: 1, y: 0 }}
-        aria-label="Scroll to top"
-        className="fixed right-5 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] w-12 h-12 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center shadow-xl z-50 group sm:right-8"
+        className="fixed right-5 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-50 sm:right-8"
         initial={{ opacity: 0, y: 20 }}
-        onClick={scrollToTop}
         transition={{ delay: 1 }}
-        whileHover={{
-          scale: 1.15,
-          boxShadow: "0 0 40px rgba(16, 185, 129, 0.6)",
-        }}
-        whileTap={{ scale: 0.9 }}
       >
-        <ArrowUp className="h-6 w-6 text-blue-950" />
-
-        <motion.span
-          className="absolute inset-0 rounded-full bg-emerald-400"
-          initial={{ opacity: 0, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          whileHover={{ opacity: 0.3, scale: 1.5 }}
-        />
-      </motion.button>
+        <GlassButton
+          aria-label="Scroll to top"
+          className="h-12 w-12 justify-center rounded-full"
+          onClick={scrollToTop}
+          tone="emerald"
+        >
+          <ArrowUp className="h-6 w-6 text-white" />
+        </GlassButton>
+      </motion.div>
     </footer>
   );
 };
