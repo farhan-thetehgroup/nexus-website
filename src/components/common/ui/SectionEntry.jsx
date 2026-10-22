@@ -57,7 +57,13 @@ export const MaskedLine = ({ children, delay = 0.1, className = "" }) => {
   const inView = useInView(ref, { once: true, amount: 0.3 });
 
   return (
-    <motion.span ref={ref} className={`block overflow-hidden ${className}`}>
+    <motion.span
+      ref={ref}
+      // pb extends the clip box below descenders (g/y/p of big display
+      // titles paint outside a 1em line box and were read as "cut off");
+      // the negative margin cancels the extra room in the flow.
+      className={`block overflow-hidden pb-[0.16em] -mb-[0.16em] ${className}`}
+    >
       <motion.span
         className="block will-change-transform"
         initial={{ y: "115%" }}
