@@ -484,4 +484,17 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.25),
       0 10px 30px rgba(2, 8, 20, 0.25);
   }
+
+  /* Glass frame for a tile that wraps an opaque asset (sponsor logo
+     plates). Rim + inner top highlight only — no backdrop-filter: the
+     frost would sit behind an opaque plate and never show, while 120+
+     filtered layers moving in the logo marquee would cost real frames. */
+  .nx-glass-frame {
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.11);
+    box-shadow:
+      0 20px 46px rgba(2, 8, 20, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
 }

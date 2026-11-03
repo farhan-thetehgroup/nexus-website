@@ -84,11 +84,11 @@ export const PastSponsorSection = () => {
           {/* Header */}
           <div className="text-center mb-16 max-w-4xl mx-auto">
             <motion.div
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-2 border-emerald-400/40 mb-6 backdrop-blur-sm shadow-lg"
+              className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
               {...entry.fade(0, 14, 0.6)}
             >
               <Handshake className="w-5 h-5 text-emerald-400" />
-              <span className="text-emerald-400 font-semibold text-sm md:text-base">
+              <span className="text-emerald-300 font-semibold">
                 Proudly partnered with leading institutions
               </span>
             </motion.div>
@@ -102,7 +102,7 @@ export const PastSponsorSection = () => {
             </h2>
 
             <motion.p
-              className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed"
+              className="text-lg md:text-xl text-white/70 max-w-3xl mx-auto leading-relaxed"
               {...entry.fade(0.24, 16)}
             >
               Join a prestigious group of sponsors and partners who are shaping
@@ -222,22 +222,30 @@ const LogoCard = ({ logo }) => {
     }
   };
 
-  // Plain white tile, uniform size, logo in full color (no grayscale).
+  // Glass frame around a white logo plate: the frost rim carries the page's
+  // material, the opaque plate keeps the client logos legible (most of them
+  // are dark ink meant for a light field). The frame deliberately has no
+  // backdrop-filter — 120+ filtered layers moving in the marquee would cost
+  // far more than the blur could ever show behind an opaque plate.
   return (
     <motion.div
-      className="flex h-28 w-48 items-center justify-center rounded-2xl bg-white shadow-md cursor-pointer"
+      className={`nx-glass-frame group relative flex h-32 w-52 items-center justify-center p-2 transition-colors duration-300 hover:border-white/30 ${
+        logo.url ? "cursor-pointer" : ""
+      }`}
       onClick={handleClick}
-      whileHover={{
-        scale: 1.06,
-        y: -4,
-        boxShadow: "0 16px 32px rgba(0, 0, 0, 0.35)",
-      }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -4 }}
     >
-      <img
-        alt={logo.alt}
-        className="h-auto max-h-16 w-auto max-w-[160px] object-contain"
-        src={logo.src}
-      />
+      {/* Sheen along the frame's top edge */}
+      <span className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+
+      <span className="flex h-full w-full items-center justify-center rounded-2xl bg-white">
+        <img
+          alt={logo.alt}
+          className="h-auto max-h-16 w-auto max-w-[160px] object-contain"
+          src={logo.src}
+        />
+      </span>
     </motion.div>
   );
 };
