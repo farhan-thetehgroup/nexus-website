@@ -154,7 +154,7 @@ const SocialLink = ({ icon: Icon, href, label }) => {
   return (
     <motion.a
       aria-label={label}
-      className="group relative w-12 h-12 flex items-center justify-center rounded-xl bg-blue-900/50 border-2 border-emerald-400/20 hover:border-emerald-400 backdrop-blur-sm"
+      className="nx-glass-icon group relative flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300 hover:border-white/30"
       href={href}
       rel="noopener noreferrer"
       target="_blank"
@@ -170,12 +170,12 @@ const SocialLink = ({ icon: Icon, href, label }) => {
       <Icon className="relative h-5 w-5 text-gray-400 group-hover:text-emerald-400 transition-colors duration-300" />
 
       <motion.div
-        className="absolute -top-12 left-1/2 transform -translate-x-1/2 px-3 py-2 bg-blue-900 border-2 border-emerald-400/50 rounded-lg text-xs text-emerald-400 whitespace-nowrap pointer-events-none opacity-0"
+        className="absolute -top-12 left-1/2 transform -translate-x-1/2 rounded-lg border border-white/15 bg-[#07161f]/95 px-3 py-2 text-xs text-white/80 whitespace-nowrap backdrop-blur-xl pointer-events-none opacity-0"
         transition={{ duration: 0.2 }}
         whileHover={{ opacity: 1, y: -4 }}
       >
         {label}
-        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-900 border-r-2 border-b-2 border-emerald-400/50 rotate-45" />
+        <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 border-r border-b border-white/15 bg-[#07161f]/95" />
       </motion.div>
     </motion.a>
   );
@@ -244,7 +244,7 @@ export const FooterSection = ({ items = MENU_ITEMS }) => {
   };
 
   return (
-    <footer className="relative bg-gradient-to-b from-gray-900 via-gray-900 to-black border-t border-emerald-400/20 overflow-hidden">
+    <footer className="relative bg-gradient-to-b from-gray-900 via-gray-900 to-black border-t border-white/10 overflow-hidden">
       <div className="absolute inset-0 h-full">
         <ThreeFooterBackground />
       </div>
@@ -388,7 +388,7 @@ export const FooterSection = ({ items = MENU_ITEMS }) => {
 
         {/* Bottom Bar */}
         <motion.div
-          className="pt-8 border-t-2 border-emerald-400/20"
+          className="pt-8 border-t border-white/10"
           initial={{ opacity: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}
           viewport={{ once: true }}

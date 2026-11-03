@@ -91,7 +91,7 @@ const CityCard = ({ city, index, isActive, onClick, pattern, img, story }) => {
 
       <motion.div
         className={`nx-glass-pane relative overflow-hidden ${
-          isActive ? "border-emerald-400/70" : "hover:border-white/30"
+          isActive ? "border-white/35" : "hover:border-white/30"
         } transition-colors duration-300`}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         whileHover={{ y: -10 }}

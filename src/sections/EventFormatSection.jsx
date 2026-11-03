@@ -270,12 +270,12 @@ export const EventFormatSection = () => {
                       </motion.div>
 
                       <motion.div
-                        className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 backdrop-blur-sm shadow-lg border border-tech-green-400/50"
+                        className="nx-glass-chip absolute bottom-4 left-4 px-4 py-2"
                         whileHover={{ scale: 1.1 }}
                       >
                         <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-tech-green-600" />
-                          <span className="text-brand-900 text-sm font-bold">
+                          <Users className="h-4 w-4 text-emerald-300" />
+                          <span className="text-sm font-semibold text-white/85">
                             {format.attendees}
                           </span>
                         </div>
@@ -306,7 +306,7 @@ export const EventFormatSection = () => {
                           </motion.div>
                         ))}
                       </div>
-                      <motion.div className="flex items-center justify-between border-t border-tech-green-400/20 pt-4">
+                      <motion.div className="flex items-center justify-between border-t border-white/10 pt-4">
                         <span className="text-tech-green-400 text-sm font-semibold">
                           Learn More
                         </span>
@@ -383,12 +383,12 @@ export const EventFormatSection = () => {
                       </motion.div>
 
                       <motion.div
-                        className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 backdrop-blur-sm shadow-lg border border-tech-green-400/50"
+                        className="nx-glass-chip absolute bottom-4 left-4 px-4 py-2"
                         whileHover={{ scale: 1.1 }}
                       >
                         <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-tech-green-600" />
-                          <span className="text-brand-900 text-sm font-bold">
+                          <Users className="h-4 w-4 text-emerald-300" />
+                          <span className="text-sm font-semibold text-white/85">
                             {format.attendees}
                           </span>
                         </div>
@@ -419,7 +419,7 @@ export const EventFormatSection = () => {
                           </motion.div>
                         ))}
                       </div>
-                      <motion.div className="flex items-center justify-between border-t border-tech-green-400/20 pt-4">
+                      <motion.div className="flex items-center justify-between border-t border-white/10 pt-4">
                         <span className="text-tech-green-400 text-sm font-semibold">
                           Learn More
                         </span>
@@ -458,7 +458,7 @@ export const EventFormatSection = () => {
           >
             <motion.div
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              className="w-full max-w-3xl max-h-screen overflow-y-auto overflow-x-hidden rounded-2xl bg-brand-900 shadow-2xl border-2 border-tech-green-400/50"
+              className="w-full max-w-3xl max-h-screen overflow-y-auto overflow-x-hidden rounded-2xl border border-white/15 bg-brand-900/95 shadow-2xl backdrop-blur-xl"
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
