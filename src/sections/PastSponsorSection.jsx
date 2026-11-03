@@ -9,6 +9,7 @@ import {
   useSectionEntry,
 } from "../components/common/ui/SectionEntry";
 import { GlowField } from "../components/common/ui/GlowField";
+import { DotFieldInteraction } from "../components/common/ui/DotFieldInteraction";
 import { PARTNERS } from "../constants";
 
 const SPEED_PARTNERS_MARQUEE = 40000;
@@ -38,6 +39,9 @@ export const PastSponsorSection = () => {
         id="sponsors"
         ref={sectionRef}
       >
+        {/* Constellation dot-grid — same interactive field as why/audience/event-formats */}
+        <DotFieldInteraction />
+
         {/* Ambient light — blobs overflow this section into event-video
             (light crossing seams instead of stopping at the section edge) */}
         <GlowField
