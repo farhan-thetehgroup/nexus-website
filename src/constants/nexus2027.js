@@ -38,6 +38,65 @@ export const NEXUS_2027_MENU_ITEMS = [
   { name: "Contact", id: "contact" },
 ];
 
+// NEXUS 2027 upcoming tour stops — TEMPORARY list taken verbatim from the
+// client's Drive folder ("NEXUS APAC 2027"): country/edition labels as the
+// display names, dates where the folder names carry them ("TBA" where not),
+// no official URLs yet (cards render "Coming Soon"). Revisit when the real
+// per-city names/dates land. Named after the labels, not tour-city guesses
+// (venues may differ from the 2026 cities — do not invent "Jakarta" etc).
+export const NEXUS_2027_EVENTS = [
+  {
+    city: "Philippines",
+    date: "February 11, 2027",
+    gradient: "from-yellow-500 to-orange-600",
+    pattern: "/images/pattern/manila.webp",
+    url: "",
+  },
+  {
+    city: "Indonesia",
+    date: "March 24, 2027",
+    gradient: "from-brand-500 to-tech-green-600",
+    pattern: "/images/pattern/jakarta.webp",
+    url: "",
+  },
+  {
+    city: "Singapore",
+    date: "April 14, 2027",
+    gradient: "from-red-500 to-pink-600",
+    pattern: "/images/pattern/singapore.webp",
+    url: "",
+  },
+  {
+    city: "Malaysia",
+    date: "June 16, 2027",
+    gradient: "from-emerald-500 to-teal-600",
+    pattern: "/images/pattern/malaysia.webp",
+    url: "",
+  },
+  {
+    // "Indonesia (FT)" — the client's label; FT edition affiliation TBD.
+    city: "Indonesia (FT)",
+    date: "July 21, 2027",
+    gradient: "from-blue-500 to-indigo-600",
+    pattern: "/images/pattern/city-line.svg",
+    url: "",
+  },
+  {
+    city: "Thailand",
+    date: "TBA",
+    gradient: "from-blue-500 to-cyan-600",
+    pattern: "/images/pattern/thailand.webp",
+    url: "",
+  },
+  {
+    city: "Hong Kong",
+    date: "TBA",
+    gradient: "from-purple-500 to-pink-600",
+    pattern: "/images/pattern/city-line.svg",
+    url: "",
+  },
+];
+
 export const AURORA_PALETTES = {
   drift: {
     bg: "#04141f",

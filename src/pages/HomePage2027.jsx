@@ -15,6 +15,8 @@ import { HeroNexus2027Section } from "../sections/HeroNexus2027Section";
 import { PastSponsorSection } from "../sections/PastSponsorSection";
 import { EventVideoSection } from "../sections/EventVideoSection";
 import { TourSection } from "../sections/TourSection";
+import { NEXUS_2027_EVENTS } from "../constants/nexus2027";
+import { TOUR_CITIES } from "../constants";
 import { WhySponsorSection } from "../sections/WhySponsorSection";
 
 const pageClasses = [
@@ -31,7 +33,9 @@ const pageClasses = [
  * NEXUS 2027 — full page.
  * The 2027 hero (Polar Drift), then the shared content sections (past
  * sponsors, why sponsor, audience, event formats, contact, footer). The
- * 2026 tour/highlights sections stay out until 2027 programme details land.
+ * tour content renders in two phases: the pinned-map scrollytelling as the
+ * HISTORICAL preview of the 2026 tour, then the 2027 UPCOMING event grid
+ * (client's temporary stop list in constants/nexus2027.js).
  */
 export const HomePage2027 = () => {
   const motion = useMotionPreference();
@@ -55,7 +59,9 @@ export const HomePage2027 = () => {
       <HeroNexus2027Section motion={motion} />
       <PastSponsorSection />
       <EventVideoSection />
-      <TourSection />
+      {/* Tour split: history first, then the 2027 upcoming grid. */}
+      <TourSection cities={TOUR_CITIES} mode="history" />
+      <TourSection cities={NEXUS_2027_EVENTS} mode="upcoming" id="tour-2027" />
       <WhySponsorSection />
       <AudienceSection />
       <EventFormatSection />
