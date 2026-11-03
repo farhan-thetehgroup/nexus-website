@@ -73,7 +73,7 @@ export const CityCard = ({
       />
 
       <motion.div
-        className={`nx-glass-pane relative overflow-hidden ${
+        className={`nx-glass-pane relative overflow-hidden bg-[#0a1a28]/70 ${
           isActive ? "border-white/35" : "hover:border-white/30"
         } transition-colors duration-300`}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
@@ -148,18 +148,18 @@ export const CityCard = ({
           />
 
           <h3
-            className={`text-3xl font-bold mb-3 bg-gradient-to-r ${city.gradient} bg-clip-text text-transparent`}
+            className={`text-3xl font-bold mb-3 bg-gradient-to-r ${city.gradient} bg-clip-text text-transparent [text-shadow:0_1px_14px_rgba(2,10,22,0.65)]`}
           >
             {city.city}
           </h3>
 
           <div className="space-y-3 mb-6">
-            <div className="flex items-center gap-3 text-gray-300">
+            <div className="flex items-center gap-3 text-white/85">
               <Calendar className={`w-5 h-5 text-emerald-400`} />
               <span className="font-medium">{city.date}</span>
             </div>
             {city.attendees && (
-              <div className="flex items-center gap-3 text-gray-300">
+              <div className="flex items-center gap-3 text-white/85">
                 <Users className={`w-5 h-5 text-emerald-400`} />
                 <span className="font-medium">{city.attendees} Attendees</span>
               </div>
