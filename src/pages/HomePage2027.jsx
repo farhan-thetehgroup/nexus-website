@@ -30,7 +30,8 @@ const pageClasses = [
 ].join(" ");
 
 /**
- * NEXUS 2027 — full page.
+ * NEXUS 2027 — the site's main page (moved off /2027; every non-lab path
+ * renders this component, legacy /2027 links included).
  * The 2027 hero (Polar Drift), then the shared content sections (past
  * sponsors, why sponsor, audience, event formats, contact, footer). The
  * tour content renders in two phases: the pinned-map scrollytelling as the

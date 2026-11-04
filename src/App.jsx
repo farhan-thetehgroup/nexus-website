@@ -1,8 +1,6 @@
 /* eslint-disable no-undef */
 import { Suspense, lazy } from "react";
 
-import { HomePage } from "./pages/HomePage";
-
 const DesignLab = lazy(() =>
   import("./labs/nexus-2027/DesignLab").then((module) => ({
     default: module.DesignLab,
@@ -21,23 +19,16 @@ const LoadingScreen = () => (
   </div>
 );
 
-// Path routes: /2027 (Nexus 2027 page) and /lab/nexus-2027 (design study).
-// Static hosts (Vercel/Netlify/nginx) need a rewrite of these paths to
-// index.html — single-page app fallback.
-const normalize = (path) =>
-  path.replace(/\/+$/, "").toLowerCase() || "/";
+// The NEXUS 2027 page IS the site's home page now — every path except the
+// design study renders it, so unknown paths and legacy /2027 links land on
+// the same SPA page instead of a 404 (static hosts still need a rewrite of
+// everything to index.html — single-page app fallback).
+const normalize = (path) => path.replace(/\/+$/, "").toLowerCase() || "/";
 
 function App() {
   const path = normalize(window.location.pathname);
 
-  const page =
-    path === "/2027" ? (
-      <HomePage2027 />
-    ) : path === "/lab/nexus-2027" ? (
-      <DesignLab />
-    ) : (
-      <HomePage />
-    );
+  const page = path === "/lab/nexus-2027" ? <DesignLab /> : <HomePage2027 />;
 
   return <Suspense fallback={<LoadingScreen />}>{page}</Suspense>;
 }
