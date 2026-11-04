@@ -58,6 +58,11 @@ const SECTION_COPY = {
 // core gets a +45° counter-rotation and `rotate` carries the path heading.
 const FLIGHT_SAMPLES = 22;
 
+// Horizontal offset (px) each passed stop folds to the left, one step per
+// stop behind it. Small enough that the pile stays a fan of slivers instead
+// of a spread hand, big enough that every past stop stays readable.
+const STACK_STEP = 26;
+
 const flightGeometry = (a, b) => {
   const dist = Math.hypot(b.x - a.x, b.y - a.y);
   const c = {
@@ -104,6 +109,7 @@ export const TourSection = ({
   const [stage, setStage] = useState(0);
   const [storyDone, setStoryDone] = useState(false);
   const [pointsPx, setPointsPx] = useState([]);
+  const [stageWidth, setStageWidth] = useState(0);
   const [flight, setFlight] = useState(null);
   const prevStageRef = useRef(null);
   const entry = useSectionEntry();
@@ -113,6 +119,15 @@ export const TourSection = ({
   const stageRef = useRef(null);
   const copy = SECTION_COPY[mode];
   const isStoryMode = mode !== "upcoming";
+
+  // The pile has to stay inside the stage: at full width a passed-stop fan
+  // of (n-1) * STACK_STEP runs past the left edge on phones and its deepest
+  // slivers vanish off-screen. Cap the fan at a share of the stage width so
+  // narrow viewports compress the stack instead of losing it.
+  const maxFan = Math.min(
+    (cities.length - 1) * STACK_STEP,
+    Math.max(48, stageWidth * 0.12),
+  );
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -168,6 +183,7 @@ export const TourSection = ({
       const rect = el.getBoundingClientRect();
       const { cols = 400, rows = 136 } = dotMapDense;
       const step = Math.max(rect.width / cols, rect.height / rows);
+      setStageWidth(rect.width);
       setPointsPx(
         pulsePoints.map((g) => ({
           city: g.city,
@@ -477,35 +493,92 @@ export const TourSection = ({
               )}
 
               <div className="w-full max-w-[440px]">
-                {/* mode="wait": the outgoing card fades out, THEN the next
-                    one rises. Crossfade (sync mode) left the old card at full
-                    opacity stacked behind the incoming one here. The card
-                    renders statically in story mode, so there is no double
-                    entry choreography — this stays a clean single flight. */}
-                <AnimatePresence mode="wait">
-                  {!storyDone && (
-                    <motion.div
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -18, scale: 0.97 }}
-                      initial={{ opacity: 0, y: 26 }}
-                      key={stage}
-                      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                    >
-                      <CityCard
-                        city={cities[stage]}
-                        img={cities[stage].img}
-                        index={stage}
-                        isActive
-                        onClick={setActiveCity}
-                        pattern={cities[stage].pattern}
-                        story
-                      />
-                      <p className="mt-5 max-w-md px-1 text-center text-sm leading-relaxed text-white/70 md:text-base">
+                {/* Stacked deck: every stop stays mounted for the whole
+                    story. Passed stops fold to the left one STACK_STEP per
+                    stop and sit behind the newer cards (newest on top), so
+                    scrolling reads as a pile growing under the card instead
+                    of cards vanishing; the incoming card slides in from the
+                    right over the pile. Only the current card takes pointer
+                    events. */}
+                <motion.div
+                  animate={{ opacity: storyDone ? 0 : 1 }}
+                  className={storyDone ? "pointer-events-none" : undefined}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
+                >
+                  <div className="grid">
+                    {cities.map((city, i) => {
+                      const depth = stage - i;
+                      const isCurrent = depth === 0;
+                      const isPassed = depth > 0;
+                      return (
+                        <motion.div
+                          animate={{
+                            x: isPassed
+                              ? -Math.min(depth * STACK_STEP, maxFan)
+                              : isCurrent
+                                ? 0
+                                : 440,
+                            opacity: isPassed || isCurrent ? 1 : 0,
+                            scale: isPassed || isCurrent ? 1 : 0.94,
+                          }}
+                          className="relative col-start-1 row-start-1"
+                          inert={!isCurrent}
+                          initial={false}
+                          key={city.city}
+                          style={{
+                            pointerEvents: isCurrent ? "auto" : "none",
+                            zIndex: isCurrent ? 30 : isPassed ? 30 - depth : 0,
+                          }}
+                          transition={{
+                            duration: 0.7,
+                            ease: [0.16, 1, 0.3, 1],
+                          }}
+                        >
+                          <div className="relative">
+                            <CityCard
+                              city={city}
+                              img={city.img}
+                              index={i}
+                              isActive={isCurrent}
+                              onClick={setActiveCity}
+                              pattern={city.pattern}
+                              story
+                            />
+                            {/* Depth tint: each stop behind the front card
+                                sinks a little darker, so the fan reads as a
+                                stack instead of one wide card. */}
+                            <div
+                              className="pointer-events-none absolute inset-0 z-40 rounded-3xl bg-[#020a16]"
+                              style={{
+                                opacity: isPassed
+                                  ? Math.min(0.45, 0.14 * depth)
+                                  : 0,
+                              }}
+                            />
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* One tagline for the whole deck, in flow beneath the
+                      stack: the card block stays vertically centred with it
+                      and the text can never collide with the stop counter
+                      the way an absolutely-positioned per-card caption did. */}
+                  <div className="mt-5 min-h-[3.25rem] px-1 text-center text-sm leading-relaxed text-white/70 md:text-base">
+                    <AnimatePresence mode="wait">
+                      <motion.p
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        initial={{ opacity: 0, y: 8 }}
+                        key={stage}
+                        transition={{ duration: 0.35 }}
+                      >
                         {cities[stage].tagline}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      </motion.p>
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
               </div>
 
               {!storyDone && (
