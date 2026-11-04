@@ -6,7 +6,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Calendar, Globe, Navigation } from "lucide-react";
+import { Calendar, Globe, Navigation, Plane } from "lucide-react";
 
 import { TOUR_CITIES } from "../constants";
 import { CityCard } from "../components/tour/CityCard";
@@ -51,6 +51,49 @@ const SECTION_COPY = {
   },
 };
 
+// Flight geometry between two stage markers (px coords from the sticky
+// stage box): a quadratic arc bowing upward from the straight line plus
+// sampled keyframes for framer (position + heading from the tangent).
+// lucide's Plane glyph points up-right (~-45° from +x), so the rendered
+// core gets a +45° counter-rotation and `rotate` carries the path heading.
+const FLIGHT_SAMPLES = 22;
+
+const flightGeometry = (a, b) => {
+  const dist = Math.hypot(b.x - a.x, b.y - a.y);
+  const c = {
+    x: (a.x + b.x) / 2,
+    y: (a.y + b.y) / 2 - Math.min(96, Math.max(26, dist * 0.3)),
+  };
+  const at = (t) => ({
+    x: (1 - t) ** 2 * a.x + 2 * (1 - t) * t * c.x + t * t * b.x,
+    y: (1 - t) ** 2 * a.y + 2 * (1 - t) * t * c.y + t * t * b.y,
+  });
+  const pts = [];
+  for (let i = 0; i <= FLIGHT_SAMPLES; i++) pts.push(at(i / FLIGHT_SAMPLES));
+  const xs = pts.map((p) => p.x);
+  const ys = pts.map((p) => p.y);
+  const rs = pts.map((p, i) => {
+    const q = pts[Math.min(i + 1, FLIGHT_SAMPLES)];
+    const o = pts[Math.max(i - 1, 0)];
+    const [h, ref] = i < FLIGHT_SAMPLES ? [q, p] : [p, o];
+    return (Math.atan2(h.y - ref.y, h.x - ref.x) * 180) / Math.PI;
+  });
+  const times = pts.map((_, i) => i / FLIGHT_SAMPLES);
+  return {
+    id: `${a.x.toFixed(0)}-${a.y.toFixed(0)}-${b.x.toFixed(0)}-${b.y.toFixed(0)}`,
+    path: `M ${a.x} ${a.y} Q ${c.x} ${c.y} ${b.x} ${b.y}`,
+    x1: a.x,
+    y1: a.y,
+    x2: b.x,
+    y2: b.y,
+    xs,
+    ys,
+    rs,
+    times,
+    duration: 0.7 + Math.min(0.9, dist / 1600),
+  };
+};
+
 export const TourSection = ({
   cities = TOUR_CITIES,
   mode = "full",
@@ -61,6 +104,8 @@ export const TourSection = ({
   const [stage, setStage] = useState(0);
   const [storyDone, setStoryDone] = useState(false);
   const [pointsPx, setPointsPx] = useState([]);
+  const [flight, setFlight] = useState(null);
+  const prevStageRef = useRef(null);
   const entry = useSectionEntry();
   const motionOk = useMotionPreference();
   const containerRef = useRef(null);
@@ -135,6 +180,22 @@ export const TourSection = ({
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, [pulsePoints]);
+
+  // Flight choreography — each time the venue (story stage) changes, the
+  // plane arcs from the previous stop's marker to the new one. Geometry
+  // uses the same marker px coords (pointsPx), so the flight starts/ends
+  // exactly on the dotted map's city dots. Reduced-motion users just get
+  // the marker swaps, no plane.
+  useEffect(() => {
+    if (mode !== "history" || !motionOk) return;
+    const from = prevStageRef.current;
+    prevStageRef.current = stage;
+    if (from === null || from === stage) return;
+    const a = pointsPx[from];
+    const b = pointsPx[stage];
+    if (!a || !b) return;
+    setFlight(flightGeometry(a, b));
+  }, [stage, pointsPx, mode, motionOk]);
 
   return (
     <section className="relative" id={id} ref={containerRef}>
@@ -306,6 +367,114 @@ export const TourSection = ({
                   </div>
                 ))}
               </motion.div>
+
+              {/* Flight — the venue plane. Lives inside the content stacking
+                  context at -z-10: above the pinned map, below the frosted
+                  card, so the arc reads as map-level travel while the card
+                  swap stays the story's focus. Fades with the story and
+                  is replaced per leg (AnimatePresence); reduced-motion
+                  skips it. */}
+              {mode === "history" && (
+                <motion.div
+                  animate={{ opacity: storyDone ? 0 : 1 }}
+                  className="pointer-events-none absolute inset-0 -z-10"
+                  style={{ transition: "opacity 0.45s ease" }}
+                >
+                  <AnimatePresence>
+                    {flight && (
+                      <motion.div
+                        className="absolute inset-0"
+                        exit={{ opacity: 0, transition: { duration: 0.35 } }}
+                        key={flight.id}
+                      >
+                        <svg className="block h-full w-full overflow-visible">
+                          <defs>
+                            <linearGradient
+                              gradientUnits="userSpaceOnUse"
+                              id={`nx-flight-grad-${flight.id}`}
+                              x1={flight.x1}
+                              y1={flight.y1}
+                              x2={flight.x2}
+                              y2={flight.y2}
+                            >
+                              <stop
+                                offset="0%"
+                                stopColor="#6ee7b7"
+                                stopOpacity="0.9"
+                              />
+                              <stop
+                                offset="100%"
+                                stopColor="#67e8f9"
+                                stopOpacity="0.9"
+                              />
+                            </linearGradient>
+                          </defs>
+                          <motion.path
+                            animate={{
+                              pathLength: 1,
+                              opacity: [0, 0.5, 0.5, 0],
+                            }}
+                            d={flight.path}
+                            fill="none"
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            stroke={`url(#nx-flight-grad-${flight.id})`}
+                            strokeLinecap="round"
+                            strokeWidth={1.5}
+                            transition={{
+                              opacity: {
+                                duration: flight.duration,
+                                times: [0, 0.15, 0.75, 1],
+                              },
+                              pathLength: {
+                                duration: flight.duration,
+                                ease: "easeInOut",
+                              },
+                            }}
+                          />
+                        </svg>
+                        <motion.div
+                          animate={{
+                            x: flight.xs,
+                            y: flight.ys,
+                            rotate: flight.rs,
+                            opacity: [0, 1, 1, 1],
+                          }}
+                          className="absolute left-0 top-0"
+                          initial={{
+                            x: flight.xs[0],
+                            y: flight.ys[0],
+                            rotate: flight.rs[0],
+                            opacity: 0,
+                          }}
+                          transition={{
+                            duration: flight.duration,
+                            ease: "easeInOut",
+                            times: flight.times,
+                            opacity: {
+                              duration: flight.duration,
+                              times: [0, 0.08, 0.9, 1],
+                            },
+                            rotate: {
+                              duration: flight.duration,
+                              ease: "linear",
+                              times: flight.times,
+                            },
+                          }}
+                        >
+                          <Plane
+                            className="h-5 w-5 text-emerald-300"
+                            style={{
+                              filter:
+                                "drop-shadow(0 0 7px rgba(110,231,183,0.9))",
+                              transform: "rotate(45deg)",
+                            }}
+                          />
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )}
 
               <div className="w-full max-w-[440px]">
                 {/* mode="wait": the outgoing card fades out, THEN the next
