@@ -6,7 +6,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Calendar, Globe, Navigation, Plane } from "lucide-react";
+import { ArrowRight, Calendar, Globe, Navigation, Plane, Users } from "lucide-react";
 
 import { TOUR_CITIES } from "../constants";
 import { CityCard } from "../components/tour/CityCard";
@@ -49,6 +49,7 @@ const SECTION_COPY = {
     subline: "APAC Tech Tour 2027",
     body: "A roadshow across 6 major APAC cities connecting innovators and decision-makers",
     statLabel: "Event Stops Announced Across the Region",
+    attendeeLabel: "Total Expected C-Level Attendees",
   },
 };
 
@@ -63,6 +64,10 @@ const FLIGHT_SAMPLES = 22;
 // stop behind it. Small enough that the pile stays a fan of slivers instead
 // of a spread hand, big enough that every past stop stays readable.
 const STACK_STEP = 26;
+
+// C-level tally across the tour (5 x 400 stops + 200 in Hong Kong). One
+// source of truth so the home stat and the retrospective can never drift.
+const C_LEVEL_ATTENDEES = "2200+";
 
 const flightGeometry = (a, b) => {
   const dist = Math.hypot(b.x - a.x, b.y - a.y);
@@ -652,7 +657,7 @@ export const TourSection = ({
                       {copy.statLabel}
                     </p>
                     <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                      2200+
+                      {C_LEVEL_ATTENDEES}
                     </p>
                   </div>
                 </div>
@@ -674,7 +679,7 @@ export const TourSection = ({
               <div className="text-left">
                 <p className="text-gray-400 text-sm mb-1">{copy.statLabel}</p>
                 <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  2200+
+                  {C_LEVEL_ATTENDEES}
                 </p>
               </div>
             </div>
@@ -687,13 +692,28 @@ export const TourSection = ({
             }`}
             {...entry.fade(0.36, 24)}
           >
-            <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
-              <Navigation className="w-10 h-10 text-emerald-400" />
-              <div className="text-left">
-                <p className="text-gray-400 text-sm mb-1">{copy.statLabel}</p>
-                <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  {cities.length}
-                </p>
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
+                <Navigation className="w-10 h-10 text-emerald-400" />
+                <div className="text-left">
+                  <p className="text-gray-400 text-sm mb-1">{copy.statLabel}</p>
+                  <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                    {cities.length}
+                  </p>
+                </div>
+              </div>
+              {/* C-Level payoff — same panel language as the retrospective
+                  page, so the numbers read as one pair, not a stray stat. */}
+              <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
+                <Users className="w-10 h-10 text-emerald-400" />
+                <div className="text-left">
+                  <p className="text-gray-400 text-sm mb-1">
+                    {copy.attendeeLabel}
+                  </p>
+                  <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                    {C_LEVEL_ATTENDEES}
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
