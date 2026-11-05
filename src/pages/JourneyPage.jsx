@@ -1,11 +1,13 @@
-/* eslint-disable no-undef */
 import "../components/aurora/aurora.css";
-import { AdvancedNavbar } from "../components/AdvancedNavbar";
+import { useMotionPreference } from "../components/aurora/useMotionPreference";
 import AmbientCursorLight from "../components/common/ui/AmbientCursorLight";
-import WhatsappFab from "../components/WhatsappFab";
+import { HomeFab } from "../components/common/ui/HomeFab";
 import { TOUR_CITIES } from "../constants";
 import { NEXUS_2027_MENU_ITEMS } from "../constants/nexus2027";
 import { FooterSection } from "../sections/FooterSection";
+import { JourneyGallerySection } from "../sections/JourneyGallerySection";
+import { JourneyHeroSection } from "../sections/JourneyHeroSection";
+import { PastSponsorSection } from "../sections/PastSponsorSection";
 import { TourSection } from "../sections/TourSection";
 
 const pageClasses = [
@@ -19,34 +21,32 @@ const pageClasses = [
 ].join(" ");
 
 /**
- * Our Journey — the 2026 tour retrospective that used to be the first half
- * of the home page's tour split. Same scrollytelling (pinned dotted map,
- * stacked stop cards, venue plane), now a page of its own so the home page
- * only carries the current year's events.
+ * Our Journey — the 2026 APAC tour retrospective.
  *
- * The navbar items point at home sections, so they navigate back to
- * `/#<id>` (HomePage2027 re-runs the hash scroll after mount) instead of
- * trying to scroll a section that is not on this route.
+ * A standalone historical page: archive hero, the sponsor wall carried over
+ * from the main site, the interactive scrollytelling of every 2026 stop,
+ * and a gallery slot (shell only for now). There is deliberately NO navbar
+ * here — navigation is a single floating action that points forward to the
+ * current NEXUS APAC 2027 page.
  */
 export const JourneyPage = () => {
-  const goHomeSection = (id) => {
-    window.location.href = `/#${id}`;
-  };
+  const motion = useMotionPreference();
 
   return (
     <main className={pageClasses}>
-      <AdvancedNavbar
-        items={NEXUS_2027_MENU_ITEMS}
-        scrollToSection={goHomeSection}
-      />
       <AmbientCursorLight />
-      {/* pt-16 clears the fixed navbar; the section header adds its own
-          padding on top of that. */}
-      <div className="pt-16">
-        <TourSection cities={TOUR_CITIES} id="journey" mode="history" />
-      </div>
-      <FooterSection items={NEXUS_2027_MENU_ITEMS} linkBase="/" />
-      <WhatsappFab />
+      <JourneyHeroSection motion={motion} />
+      <PastSponsorSection />
+      <TourSection cities={TOUR_CITIES} id="journey" mode="history" />
+      <JourneyGallerySection />
+      {/* No scroll-to-top FAB here: the page must keep exactly one floating
+          action (the 2027 hand-off). */}
+      <FooterSection
+        items={NEXUS_2027_MENU_ITEMS}
+        linkBase="/"
+        showScrollTop={false}
+      />
+      <HomeFab href="/" />
     </main>
   );
 };
