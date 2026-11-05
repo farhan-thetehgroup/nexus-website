@@ -12,6 +12,7 @@ import { GlowField } from "../components/common/ui/GlowField";
 import {
   Users,
   UserCheck,
+  UtensilsCrossed,
   Monitor,
   MessageCircle,
   Mic2,
@@ -111,6 +112,23 @@ const eventFormats = [
       "https://images.unsplash.com/photo-1632383380175-812d44ec112b?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=880",
     color: "from-tech-green-500 to-teal-600",
     attendees: "Open",
+  },
+  {
+    id: 6,
+    icon: UtensilsCrossed,
+    title: "Executive Luncheon",
+    description:
+      "A closed-door, interactive, Chatham House rules lunch strictly for Speakers, CXOs, Board Members and Heads of Risk - candid conversation over private sponsor-hosted tables.",
+    features: [
+      "Hosted sponsor tables",
+      "Chatham House rules",
+      "Invitation-only access",
+      "Speakers & CXOs only",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop",
+    color: "from-purple-400 to-purple-600",
+    attendees: "C-Level",
   },
 ];
 
@@ -332,12 +350,12 @@ export const EventFormatSection = () => {
             })}
           </div>
 
-          <div className="flex flex-col justify-center gap-8 md:flex-row">
+          <div className="grid gap-8 md:grid-cols-3">
             {eventFormats.slice(3).map((format, index) => {
               const IconComponent = format.icon;
               return (
                 <motion.div
-                  className="group w-full cursor-pointer md:max-w-md"
+                  className="group cursor-pointer"
                   key={format.id}
                   onClick={() => setSelectedFormat(format)}
                   onMouseEnter={() => setHoveredCard(format.id)}
