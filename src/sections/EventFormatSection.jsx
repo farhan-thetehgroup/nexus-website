@@ -263,16 +263,17 @@ export const EventFormatSection = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent" />
 
-                      <div className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-tech-green-400/90 shadow-lg backdrop-blur-sm border-2 border-white">
-                        <span className="text-brand-900 text-lg font-bold">
+                      <div className="nx-glass-chip absolute top-4 right-4 flex h-12 w-12 items-center justify-center">
+                        <span className="text-white/90 text-lg font-bold">
                           {index + 1}
                         </span>
                       </div>
 
-                      <div
-                        className={`absolute top-4 left-4 rounded-full bg-gradient-to-br p-3 ${format.color} text-white shadow-xl border-2 border-white/50`}
-                      >
-                        <IconComponent className="h-5 w-5" />
+                      <div className="nx-glass-chip absolute top-4 left-4 overflow-hidden p-3">
+                        <div
+                          className={`absolute inset-0 rounded-[inherit] bg-gradient-to-br opacity-25 ${format.color}`}
+                        />
+                        <IconComponent className="relative h-5 w-5 text-white" />
                       </div>
 
                       <div className="nx-glass-chip absolute bottom-4 left-4 px-4 py-2">
@@ -356,16 +357,17 @@ export const EventFormatSection = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent" />
 
-                      <div className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-tech-green-400/90 shadow-lg backdrop-blur-sm border-2 border-white">
-                        <span className="text-brand-900 text-lg font-bold">
+                      <div className="nx-glass-chip absolute top-4 right-4 flex h-12 w-12 items-center justify-center">
+                        <span className="text-white/90 text-lg font-bold">
                           {3 + index + 1}
                         </span>
                       </div>
 
-                      <div
-                        className={`absolute top-4 left-4 rounded-full bg-gradient-to-br p-3 ${format.color} text-white shadow-xl border-2 border-white/50`}
-                      >
-                        <IconComponent className="h-5 w-5" />
+                      <div className="nx-glass-chip absolute top-4 left-4 overflow-hidden p-3">
+                        <div
+                          className={`absolute inset-0 rounded-[inherit] bg-gradient-to-br opacity-25 ${format.color}`}
+                        />
+                        <IconComponent className="relative h-5 w-5 text-white" />
                       </div>
 
                       <div className="nx-glass-chip absolute bottom-4 left-4 px-4 py-2">
