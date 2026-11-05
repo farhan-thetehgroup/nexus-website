@@ -6,7 +6,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Calendar, Globe, Navigation, Plane } from "lucide-react";
+import { ArrowRight, Calendar, Globe, Navigation, Plane } from "lucide-react";
 
 import { TOUR_CITIES } from "../constants";
 import { CityCard } from "../components/tour/CityCard";
@@ -14,6 +14,7 @@ import { GalleryModal } from "../components/GalleryModal";
 import { DotWorldMap, latLonToGrid } from "../components/aurora/DotWorldMap";
 import dotMapDense from "../components/aurora/dotMapDense.json";
 import { useMotionPreference } from "../components/aurora/useMotionPreference";
+import { GlassButton } from "../components/common/ui/GlassButton";
 import { GlowField } from "../components/common/ui/GlowField";
 import {
   MaskedLine,
@@ -34,7 +35,7 @@ const SECTION_COPY = {
     statLabel: "Total Expected C-Level Attendees",
   },
   history: {
-    chip: "Historical Preview",
+    chip: "Our Journey",
     Icon: Globe,
     headline: "The Road So Far",
     subline: "APAC Tech Tour 2026",
@@ -44,9 +45,9 @@ const SECTION_COPY = {
   upcoming: {
     chip: "Upcoming Events",
     Icon: Calendar,
-    headline: "Where We Head Next",
-    subline: "NEXUS 2027",
-    body: "Seven stops across the Asia-Pacific — confirmed dates below, with the remaining stops to be announced",
+    headline: "Join Us in Shaping the Future",
+    subline: "APAC Tech Tour 2027",
+    body: "A roadshow across 6 major APAC cities connecting innovators and decision-makers",
     statLabel: "Event Stops Announced Across the Region",
   },
 };
@@ -103,6 +104,9 @@ export const TourSection = ({
   cities = TOUR_CITIES,
   mode = "full",
   id = "tours",
+  // Optional closing action under the grid — { label, href }. The 2027 home
+  // uses it to hand off to the retrospective page.
+  cta = null,
 }) => {
   const [activeCity, setActiveCity] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
@@ -678,7 +682,9 @@ export const TourSection = ({
         )}
         {mode === "upcoming" && (
           <motion.div
-            className="mx-auto max-w-7xl px-4 pb-32 text-center mt-16"
+            className={`mx-auto max-w-7xl px-4 text-center mt-16 ${
+              cta ? "pb-8" : "pb-32"
+            }`}
             {...entry.fade(0.36, 24)}
           >
             <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
@@ -690,6 +696,25 @@ export const TourSection = ({
                 </p>
               </div>
             </div>
+          </motion.div>
+        )}
+
+        {/* Hand-off to the retrospective page (the 2026 tour story now
+            lives on its own route instead of in this section). */}
+        {cta && (
+          <motion.div
+            className="mx-auto max-w-7xl px-4 pb-32 text-center"
+            {...entry.fade(0.48, 24)}
+          >
+            <GlassButton
+              as="a"
+              className="justify-center gap-2 px-7 py-3.5 text-sm font-bold text-white"
+              href={cta.href}
+              tone="emerald"
+            >
+              <span>{cta.label}</span>
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </GlassButton>
           </motion.div>
         )}
       </div>

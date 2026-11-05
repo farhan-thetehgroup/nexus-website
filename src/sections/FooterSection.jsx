@@ -213,7 +213,7 @@ const FooterLink = ({ href, children }) => {
   );
 };
 
-export const FooterSection = ({ items = MENU_ITEMS }) => {
+export const FooterSection = ({ items = MENU_ITEMS, linkBase = "" }) => {
   const [currentYear] = useState(new Date().getFullYear());
 
   const socialLinks = [
@@ -318,7 +318,10 @@ export const FooterSection = ({ items = MENU_ITEMS }) => {
                   whileInView={{ opacity: 1, x: 0 }}
                 >
                   <FooterLink
-                    href={link.id.startsWith("#") ? link.id : `#${link.id}`}
+                    href={
+                      linkBase +
+                      (link.id.startsWith("#") ? link.id : `#${link.id}`)
+                    }
                   >
                     {link.name}
                   </FooterLink>
