@@ -3,7 +3,6 @@ export const MENU_ITEMS = [
   { name: "Highlights", id: "event-video" },
   { name: "Why", id: "why" },
   { name: "Tour", id: "tours" },
-  { name: "Target Audience", id: "audience" },
   { name: "Event Formats", id: "event-formats" },
   { name: "Contact", id: "contact" },
 ];

@@ -33,7 +33,6 @@ export const NEXUS_2027_MENU_ITEMS = [
   { name: "Highlights", id: "event-video" },
   { name: "Tour", id: "tours" },
   { name: "Why", id: "why" },
-  { name: "Target Audience", id: "audience" },
   { name: "Event Formats", id: "event-formats" },
   { name: "Contact", id: "contact" },
 ];

@@ -10,7 +10,6 @@ import { PastSponsorSection } from "../sections/PastSponsorSection";
 import { EventVideoSection } from "../sections/EventVideoSection";
 import { WhySponsorSection } from "../sections/WhySponsorSection";
 import { TourSection } from "../sections/TourSection";
-import { AudienceSection } from "../sections/AudienceSection";
 import { EventFormatSection } from "../sections/EventFormatSection";
 import { FooterSection } from "../sections/FooterSection";
 import ContactFormSection from "../sections/ContactFormSection";
@@ -42,7 +41,6 @@ export const HomePage = () => {
       <EventVideoSection />
       <WhySponsorSection />
       <TourSection />
-      <AudienceSection />
       <EventFormatSection />
       <ContactFormSection />
       <FooterSection />

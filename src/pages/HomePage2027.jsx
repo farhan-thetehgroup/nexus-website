@@ -7,7 +7,6 @@ import { AdvancedNavbar } from "../components/AdvancedNavbar";
 import AmbientCursorLight from "../components/common/ui/AmbientCursorLight";
 import WhatsappFab from "../components/WhatsappFab";
 import { NEXUS_2027_MENU_ITEMS } from "../constants/nexus2027";
-import { AudienceSection } from "../sections/AudienceSection";
 import ContactFormSection from "../sections/ContactFormSection";
 import { EventFormatSection } from "../sections/EventFormatSection";
 import { FooterSection } from "../sections/FooterSection";
@@ -86,7 +85,6 @@ export const HomePage2027 = () => {
         mode="upcoming"
       />
       <WhySponsorSection />
-      <AudienceSection />
       <EventFormatSection />
       <ContactFormSection />
       <FooterSection items={NEXUS_2027_MENU_ITEMS} />
