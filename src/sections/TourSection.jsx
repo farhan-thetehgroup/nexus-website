@@ -228,25 +228,34 @@ export const TourSection = ({
           grid, whose phasing rides over it). The 2027 "upcoming" mode gets
           its own map pinned behind its grid so the dotted field stays a
           continuous language with the history section above it.
-          -mb-[100vh] cancels its flow height: the header overlays the map
-          from the section's very top instead of arriving a full screen
-          later (the "map-only blank" the client flagged). */}
-      <div
-        className="pointer-events-none sticky top-0 z-0 -mb-[100vh] h-screen opacity-55"
-        style={{
-          maskImage:
-            "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
-        }}
-      >
-        <DotWorldMap
-          anchorX={1}
-          className="block h-full w-full"
-          dotMapData={dotMapDense}
-          fit="cover"
-          motion={motionOk}
-        />
+          The clip wrapper is load-bearing: the map cancels its own flow
+          height with a negative margin so the header overlays it from the
+          very top, and Chrome lets a sticky box with a negative bottom
+          margin hang that full distance past its container — on the short
+          grid section the map then painted over the whole opening screen
+          of the next section. `overflow: clip` on an absolute, section-
+          sized wrapper bounds the stick without turning into a scroll
+          container (overflow-hidden would make the map stick to the
+          wrapper and never pin at all); the section itself must stay
+          unclipped so the glow-field blobs keep spilling across the seams. */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-clip">
+        <div
+          className="sticky top-0 h-screen opacity-55"
+          style={{
+            maskImage:
+              "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
+          }}
+        >
+          <DotWorldMap
+            anchorX={1}
+            className="block h-full w-full"
+            dotMapData={dotMapDense}
+            fit="cover"
+            motion={motionOk}
+          />
+        </div>
       </div>
 
       {/* Ambient light — parallax layer over the pinned map, free to
