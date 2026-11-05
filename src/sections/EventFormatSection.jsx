@@ -248,60 +248,45 @@ export const EventFormatSection = () => {
                   onMouseEnter={() => setHoveredCard(format.id)}
                   onMouseLeave={() => setHoveredCard(null)}
                   variants={cardVariants}
-                  whileHover={{ y: -12, scale: 1.02 }}
+                  whileHover={{ y: -8 }}
                 >
                   <motion.div className="nx-glass-pane relative h-full overflow-hidden cursor-pointer hover:border-white/30 transition-colors duration-300">
                     <div className="relative h-64 overflow-hidden">
                       <motion.img
                         alt={format.title}
                         animate={{
-                          scale: hoveredCard === format.id ? 1.15 : 1,
+                          scale: hoveredCard === format.id ? 1.06 : 1,
                         }}
                         className="h-full w-full object-cover"
                         src={format.image}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: 0.45 }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent" />
 
-                      <motion.div
-                        animate={{
-                          rotate: hoveredCard === format.id ? 360 : 0,
-                        }}
-                        className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-tech-green-400/90 shadow-lg backdrop-blur-sm border-2 border-white"
-                        transition={{ duration: 0.6 }}
-                      >
+                      <div className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-tech-green-400/90 shadow-lg backdrop-blur-sm border-2 border-white">
                         <span className="text-brand-900 text-lg font-bold">
                           {index + 1}
                         </span>
-                      </motion.div>
+                      </div>
 
-                      <motion.div
-                        animate={{
-                          rotate:
-                            hoveredCard === format.id ? [0, -10, 10, 0] : 0,
-                          scale: hoveredCard === format.id ? 1.1 : 1,
-                        }}
+                      <div
                         className={`absolute top-4 left-4 rounded-full bg-gradient-to-br p-3 ${format.color} text-white shadow-xl border-2 border-white/50`}
-                        transition={{ duration: 0.5 }}
                       >
                         <IconComponent className="h-5 w-5" />
-                      </motion.div>
+                      </div>
 
-                      <motion.div
-                        className="nx-glass-chip absolute bottom-4 left-4 px-4 py-2"
-                        whileHover={{ scale: 1.1 }}
-                      >
+                      <div className="nx-glass-chip absolute bottom-4 left-4 px-4 py-2">
                         <div className="flex items-center gap-2">
                           <Users className="h-4 w-4 text-emerald-300" />
                           <span className="text-sm font-semibold text-white/85">
                             {format.attendees}
                           </span>
                         </div>
-                      </motion.div>
+                      </div>
                     </div>
 
                     <div className="p-6">
-                      <h3 className="text-white group-hover:text-tech-green-400 mb-3 text-xl font-bold transition-colors">
+                      <h3 className="text-white mb-3 text-xl font-bold">
                         {format.title}
                       </h3>
                       <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-200">
@@ -314,7 +299,7 @@ export const EventFormatSection = () => {
                             initial={{ opacity: 0, x: -20 }}
                             key={idx}
                             transition={{
-                              delay: hoveredCard === format.id ? idx * 0.1 : 0,
+                              delay: idx * 0.08,
                             }}
                             viewport={{ once: true }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -330,14 +315,9 @@ export const EventFormatSection = () => {
                         </span>
                         <motion.div
                           animate={
-                            hoveredCard === format.id
-                              ? { x: [0, 5, 0] }
-                              : { x: 0 }
+                            hoveredCard === format.id ? { x: 4 } : { x: 0 }
                           }
-                          transition={{
-                            repeat: hoveredCard === format.id ? Infinity : 0,
-                            duration: 1.5,
-                          }}
+                          transition={{ duration: 0.3 }}
                         >
                           <ChevronRight className="h-5 w-5 text-tech-green-400" />
                         </motion.div>
@@ -361,60 +341,45 @@ export const EventFormatSection = () => {
                   onMouseEnter={() => setHoveredCard(format.id)}
                   onMouseLeave={() => setHoveredCard(null)}
                   variants={cardVariants}
-                  whileHover={{ y: -12, scale: 1.02 }}
+                  whileHover={{ y: -8 }}
                 >
                   <motion.div className="nx-glass-pane relative h-full overflow-hidden cursor-pointer hover:border-white/30 transition-colors duration-300">
                     <div className="relative h-64 overflow-hidden">
                       <motion.img
                         alt={format.title}
                         animate={{
-                          scale: hoveredCard === format.id ? 1.15 : 1,
+                          scale: hoveredCard === format.id ? 1.06 : 1,
                         }}
                         className="h-full w-full object-cover"
                         src={format.image}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: 0.45 }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent" />
 
-                      <motion.div
-                        animate={{
-                          rotate: hoveredCard === format.id ? 360 : 0,
-                        }}
-                        className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-tech-green-400/90 shadow-lg backdrop-blur-sm border-2 border-white"
-                        transition={{ duration: 0.6 }}
-                      >
+                      <div className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-tech-green-400/90 shadow-lg backdrop-blur-sm border-2 border-white">
                         <span className="text-brand-900 text-lg font-bold">
                           {3 + index + 1}
                         </span>
-                      </motion.div>
+                      </div>
 
-                      <motion.div
-                        animate={{
-                          rotate:
-                            hoveredCard === format.id ? [0, -10, 10, 0] : 0,
-                          scale: hoveredCard === format.id ? 1.1 : 1,
-                        }}
+                      <div
                         className={`absolute top-4 left-4 rounded-full bg-gradient-to-br p-3 ${format.color} text-white shadow-xl border-2 border-white/50`}
-                        transition={{ duration: 0.5 }}
                       >
                         <IconComponent className="h-5 w-5" />
-                      </motion.div>
+                      </div>
 
-                      <motion.div
-                        className="nx-glass-chip absolute bottom-4 left-4 px-4 py-2"
-                        whileHover={{ scale: 1.1 }}
-                      >
+                      <div className="nx-glass-chip absolute bottom-4 left-4 px-4 py-2">
                         <div className="flex items-center gap-2">
                           <Users className="h-4 w-4 text-emerald-300" />
                           <span className="text-sm font-semibold text-white/85">
                             {format.attendees}
                           </span>
                         </div>
-                      </motion.div>
+                      </div>
                     </div>
 
                     <div className="p-6">
-                      <h3 className="text-white group-hover:text-tech-green-400 mb-3 text-xl font-bold transition-colors">
+                      <h3 className="text-white mb-3 text-xl font-bold">
                         {format.title}
                       </h3>
                       <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-200">
@@ -427,7 +392,7 @@ export const EventFormatSection = () => {
                             initial={{ opacity: 0, x: -20 }}
                             key={idx}
                             transition={{
-                              delay: hoveredCard === format.id ? idx * 0.1 : 0,
+                              delay: idx * 0.08,
                             }}
                             viewport={{ once: true }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -443,14 +408,9 @@ export const EventFormatSection = () => {
                         </span>
                         <motion.div
                           animate={
-                            hoveredCard === format.id
-                              ? { x: [0, 5, 0] }
-                              : { x: 0 }
+                            hoveredCard === format.id ? { x: 4 } : { x: 0 }
                           }
-                          transition={{
-                            repeat: hoveredCard === format.id ? Infinity : 0,
-                            duration: 1.5,
-                          }}
+                          transition={{ duration: 0.3 }}
                         >
                           <ChevronRight className="h-5 w-5 text-tech-green-400" />
                         </motion.div>
