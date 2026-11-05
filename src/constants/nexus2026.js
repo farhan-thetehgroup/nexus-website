@@ -12,7 +12,7 @@ export const NEXUS_2026_JOURNEY = {
   headline: "A Year of Innovation Across the Asia-Pacific",
   supporting:
     "The 2026 APAC Tech Tour is a wrap. Relive the six stops, the conversations, and the leaders who made the year.",
-  scrollCue: "Scroll to relive the journey",
+  scrollCue: "Relive the journey",
   gallery: {
     eyebrow: "Gallery",
     // Working title — the gallery layout (photos + team testimony) is still

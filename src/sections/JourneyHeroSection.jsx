@@ -19,9 +19,9 @@ const monthShort = (date) =>
  * visitors forward to the 2027 event.
  */
 export const JourneyHeroSection = ({ motion = true }) => {
-  const scrollToJourney = (event) => {
+  const scrollToNext = (event) => {
     event.preventDefault();
-    document.getElementById("journey")?.scrollIntoView({
+    document.getElementById("sponsors")?.scrollIntoView({
       behavior: motion ? "smooth" : "auto",
     });
   };
@@ -95,15 +95,16 @@ export const JourneyHeroSection = ({ motion = true }) => {
 
           {/* The scroll cue hugs the city rail (left of the floating 2027
               action) instead of sitting at the far right, where the FAB
-              would cover it. */}
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 sm:justify-start">
+              would cover it. It points at the NEXT section (Past Sponsors),
+              not straight into the tour. */}
+          <div className="flex flex-wrap items-center justify-start gap-x-10 gap-y-3">
             <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-start">
               {TOUR_CITIES.map((city) => (
                 <li className="flex items-baseline gap-1.5" key={city.city}>
-                  <span className="nx-mono text-[0.6rem] tracking-[0.18em] text-emerald-300/70">
+                  <span className="nx-mono text-[0.72rem] tracking-[0.14em] text-emerald-300/80">
                     {monthShort(city.date)}
                   </span>
-                  <span className="nx-mono text-[0.6rem] tracking-[0.18em] text-white/55 uppercase">
+                  <span className="nx-mono text-[0.72rem] tracking-[0.14em] text-white/65 uppercase">
                     {city.city}
                   </span>
                 </li>
@@ -112,14 +113,14 @@ export const JourneyHeroSection = ({ motion = true }) => {
 
             <a
               className="group inline-flex items-center gap-3"
-              href="#journey"
-              onClick={scrollToJourney}
+              href="#sponsors"
+              onClick={scrollToNext}
             >
-              <span className="nx-mono hidden text-[0.58rem] tracking-[0.22em] text-white/55 uppercase transition-colors duration-300 group-hover:text-white/85 sm:inline">
+              <span className="nx-mono hidden text-[0.7rem] tracking-[0.18em] text-white/60 uppercase transition-colors duration-300 group-hover:text-white/90 sm:inline">
                 {JOURNEY.scrollCue}
               </span>
-              <span className="nx-glass-icon flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-300 group-hover:border-white/30">
-                <ArrowDown className="h-4 w-4 text-emerald-300" />
+              <span className="nx-glass-icon flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-300 group-hover:border-white/30">
+                <ArrowDown className="h-[18px] w-[18px] text-emerald-300" />
               </span>
             </a>
           </div>
