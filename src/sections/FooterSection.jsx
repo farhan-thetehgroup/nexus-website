@@ -213,7 +213,13 @@ const FooterLink = ({ href, children }) => {
   );
 };
 
-export const FooterSection = ({ items = MENU_ITEMS, linkBase = "" }) => {
+export const FooterSection = ({
+  items = MENU_ITEMS,
+  linkBase = "",
+  // The journey page keeps exactly one floating action (its 2027 hand-off),
+  // so it turns the shared scroll-to-top button off.
+  showScrollTop = true,
+}) => {
   const [currentYear] = useState(new Date().getFullYear());
 
   const socialLinks = [
@@ -417,21 +423,23 @@ export const FooterSection = ({ items = MENU_ITEMS, linkBase = "" }) => {
       </div>
 
       {/* Scroll to Top Button */}
-      <motion.div
-        animate={{ opacity: 1, y: 0 }}
-        className="fixed right-5 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-50 sm:right-8"
-        initial={{ opacity: 0, y: 20 }}
-        transition={{ delay: 1 }}
-      >
-        <GlassButton
-          aria-label="Scroll to top"
-          className="h-12 w-12 justify-center rounded-full"
-          onClick={scrollToTop}
-          tone="emerald"
+      {showScrollTop && (
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed right-5 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-50 sm:right-8"
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ delay: 1 }}
         >
-          <ArrowUp className="h-6 w-6 text-white" />
-        </GlassButton>
-      </motion.div>
+          <GlassButton
+            aria-label="Scroll to top"
+            className="h-12 w-12 justify-center rounded-full"
+            onClick={scrollToTop}
+            tone="emerald"
+          >
+            <ArrowUp className="h-6 w-6 text-white" />
+          </GlassButton>
+        </motion.div>
+      )}
     </footer>
   );
 };
