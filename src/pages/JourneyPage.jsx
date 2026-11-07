@@ -5,6 +5,7 @@ import { HomeFab } from "../components/common/ui/HomeFab";
 import { TOUR_CITIES } from "../constants";
 import { NEXUS_2027_MENU_ITEMS } from "../constants/nexus2027";
 import { FooterSection } from "../sections/FooterSection";
+import { JourneyContentReviewSection } from "../sections/JourneyContentReviewSection";
 import { JourneyGallerySection } from "../sections/JourneyGallerySection";
 import { JourneyHeroSection } from "../sections/JourneyHeroSection";
 import { PastSponsorSection } from "../sections/PastSponsorSection";
@@ -38,6 +39,7 @@ export const JourneyPage = () => {
       <JourneyHeroSection motion={motion} />
       <PastSponsorSection />
       <TourSection cities={TOUR_CITIES} id="journey" mode="history" />
+      <JourneyContentReviewSection />
       <JourneyGallerySection />
       {/* No scroll-to-top FAB here: the page must keep exactly one floating
           action (the 2027 hand-off). */}
