@@ -1,0 +1,87 @@
+import { DotWorldMap } from "../components/aurora/DotWorldMap";
+import dotMapDense from "../components/aurora/dotMapDense.json";
+import { NexusWordmarkSvg } from "../components/aurora/NexusWordmarkSvg";
+import { Typewriter } from "../components/common/ui/Typewriter";
+import { GlassButton } from "../components/common/ui/GlassButton";
+import { NEXUS_2027 as EVENT } from "../constants/nexus2027";
+
+/**
+ * NEXUS 2027 — production hero.
+ * APAC-wide brand hero: the exact brand-letterform SVG wordmark with a
+ * pulsing horizontal light beam on the E's second bar, over the full-bleed
+ * halftone map. The AuroraShader layer is parked for a later section.
+ */
+export const HeroNexus2027Section = ({ motion = true }) => (
+  <section
+    className="nx-aurora-theme relative isolate min-h-[100svh] overflow-hidden"
+    id="hero"
+  >
+    <div className="pointer-events-none absolute inset-0">
+      <DotWorldMap
+        anchorX={1}
+        baseAlpha={0.3}
+        className="block h-full w-full opacity-70"
+        dotMapData={dotMapDense}
+        fit="cover"
+        focusAlpha={0.72}
+        motion={motion}
+      />
+    </div>
+
+    <div className="nx-vignette pointer-events-none absolute inset-0" />
+    <div className="nx-grain pointer-events-none absolute inset-0" />
+
+    <div className="relative z-10 flex min-h-[100svh] flex-col px-6 pt-28 pb-8 sm:px-10 sm:pt-32">
+      <h1 className="sr-only">NEXUS Asia-Pacific 2027 — {EVENT.headline}</h1>
+
+      <div
+        aria-hidden="true"
+        className="flex flex-1 flex-col items-center justify-center py-10 text-center"
+      >
+        <p
+          className="nx-meta nx-meta--hero nx-rise mb-5 sm:mb-7"
+          style={{ "--nx-delay": "0ms" }}
+        >
+          {EVENT.scope} — {EVENT.year}
+        </p>
+
+        <NexusWordmarkSvg className="nx-rise" motion={motion} />
+
+        <div
+          className="nx-rise mt-5 min-h-[3.2rem] sm:mt-7 sm:min-h-[3.4rem]"
+          style={{ "--nx-delay": "220ms" }}
+        >
+          <Typewriter
+            className="text-[clamp(1.05rem,2.6vw,1.85rem)] font-light tracking-[0.03em] text-[#eafaf4]"
+            text={EVENT.headline}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center gap-6">
+        <GlassButton
+          as="a"
+          className="nx-rise px-8 py-4 gap-3"
+          href={EVENT.mailto}
+          tone="emerald"
+          style={{ "--nx-delay": "380ms" }}
+        >
+          <span className="nx-meta nx-meta--bright">Be Our Sponsor</span>
+          <span
+            aria-hidden="true"
+            className="text-[#3dffa2] transition-transform duration-300 group-hover:translate-x-1"
+          >
+            →
+          </span>
+        </GlassButton>
+
+        <p
+          className="nx-rise nx-mono text-center text-[0.58rem] tracking-[0.3em] text-[#cdeae2] uppercase sm:text-[0.7rem]"
+          style={{ "--nx-delay": "460ms" }}
+        >
+          {EVENT.tagline}
+        </p>
+      </div>
+    </div>
+  </section>
+);
