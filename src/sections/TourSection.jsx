@@ -3,324 +3,749 @@ import {
   motion,
   useScroll,
   useTransform,
-  useInView,
   AnimatePresence,
 } from "framer-motion";
-import { useRef, useState } from "react";
-import {
-  MapPin,
-  Calendar,
-  Globe,
-  Navigation,
-  Plane,
-  Users,
-  ArrowRight,
-} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, Calendar, Globe, Navigation, Plane, Users } from "lucide-react";
 
 import { TOUR_CITIES } from "../constants";
+import { CityCard } from "../components/tour/CityCard";
 import { GalleryModal } from "../components/GalleryModal";
+import { DotWorldMap, latLonToGrid } from "../components/aurora/DotWorldMap";
+import dotMapDense from "../components/aurora/dotMapDense.json";
+import { useMotionPreference } from "../components/aurora/useMotionPreference";
+import { GlassButton } from "../components/common/ui/GlassButton";
+import { GlowField } from "../components/common/ui/GlowField";
+import {
+  MaskedLine,
+  useSectionEntry,
+} from "../components/common/ui/SectionEntry";
 
-const CityCard = ({ city, index, isActive, onClick, pattern, img }) => {
-  const cardRef = useRef(null);
-  const isInView = useInView(cardRef, { once: false, amount: 0.5 });
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.8, 1],
-    [0.8, 1, 1, 0.8]
-  );
-
-  const isPastEvent = new Date(city.date) < new Date(new Date().setHours(0, 0, 0, 0));
-
-  return (
-    <motion.div
-      animate={
-        isInView ?
-          { opacity: 1, x: 0, rotateY: 0 }
-        : { opacity: 0, x: index % 2 === 0 ? -100 : 100, rotateY: 20 }
-      }
-      className="relative group cursor-pointer"
-      initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100, rotateY: 20 }}
-      onClick={() => onClick(index)}
-      ref={cardRef}
-      style={{ y, opacity, scale }}
-      transition={{
-        duration: 0.8,
-        delay: index * 0.15,
-        ease: [0.21, 0.47, 0.32, 0.98],
-      }}>
-      <motion.div
-        animate={isActive ? { opacity: 0.4, scale: 1.1 } : {}}
-        className={`absolute inset-0 bg-gradient-to-br ${city.gradient} rounded-3xl blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 z-10 pointer-events-none`}
-      />
-
-      <motion.div
-        className={`relative overflow-hidden bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border-2 ${
-          isActive ? "border-emerald-400/80" : "border-emerald-500/30"
-        } hover:border-emerald-400/70 overflow-hidden`}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        whileHover={{ y: -15, scale: 1.05 }}>
-        {/* Optional image overlay if provided */}
-        {img && (
-          <img
-            alt="city-bg"
-            className="absolute inset-0 z-0 w-full h-full object-cover opacity-15 pointer-events-none"
-            src={img}
-          />
-        )}
-        {/* Pattern background if provided */}
-        {pattern && (
-          <div className="absolute inset-0 z-10 pointer-events-none">
-            {typeof pattern === "string" && pattern.startsWith("<svg") ?
-              <div
-                className="w-full h-full opacity-30 mix-blend-overlay"
-                dangerouslySetInnerHTML={{ __html: pattern }}
-              />
-            : <img
-                alt="pattern"
-                className="w-full h-full object-cover opacity-30 mix-blend-overlay"
-                src={pattern}
-              />
-            }
-          </div>
-        )}
-        <div
-          className={`absolute inset-0 z-20 bg-gradient-to-br ${city.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-        />
-
-        <div
-          className={`absolute top-0 right-0 z-30 w-32 h-32 bg-gradient-to-br ${city.gradient} rounded-bl-full opacity-20`}
-        />
-
-        {isActive && (
-          <motion.div
-            animate={{ scale: 1 }}
-            className="absolute -top-3 -right-3 z-40"
-            initial={{ scale: 0 }}>
-            <div className="w-6 h-6 rounded-full bg-tech-green-500 animate-ping" />
-            <div className="absolute top-0 left-0 w-6 h-6 rounded-full bg-tech-green-500" />
-          </motion.div>
-        )}
-
-        <div className="relative z-30 p-8">
-          <div className="flex items-start justify-between mb-6">
-            <motion.div
-              className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${city.gradient} p-3 shadow-2xl relative`}
-              transition={{ duration: 0.6 }}
-              whileHover={{ rotate: 360, scale: 1.2 }}>
-              <MapPin className="w-full h-full text-white" />
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${city.gradient} rounded-2xl blur-xl opacity-50`}
-              />
-            </motion.div>
-
-            <motion.div
-              animate={isInView ? { scale: 1 } : { scale: 0 }}
-              className={`px-4 py-1.5 rounded-full bg-gradient-to-r ${city.gradient} text-white text-xs font-bold shadow-lg`}
-              initial={{ scale: 0 }}
-              transition={{ delay: index * 0.15 + 0.3 }}>
-              {city.country}
-            </motion.div>
-          </div>
-
-          <motion.div
-            animate={isInView ? { width: "80px" } : { width: 0 }}
-            className={`h-1.5 bg-gradient-to-r ${city.gradient} mb-4 rounded-full`}
-            initial={{ width: 0 }}
-            transition={{ duration: 0.6, delay: index * 0.15 + 0.3 }}
-          />
-
-          <h3
-            className={`text-3xl font-bold mb-3 bg-gradient-to-r ${city.gradient} bg-clip-text text-transparent`}>
-            {city.city}
-          </h3>
-
-          <div className="space-y-3 mb-6">
-            <div className="flex items-center gap-3 text-gray-300">
-              <Calendar className={`w-5 h-5 text-emerald-400`} />
-              <span className="font-medium">{city.date}</span>
-            </div>
-            <div className="flex items-center gap-3 text-gray-300">
-              <Users className={`w-5 h-5 text-emerald-400`} />
-              <span className="font-medium">{city.attendees} Attendees</span>
-            </div>
-          </div>
-
-          <motion.button
-            className={`w-full py-3 rounded-xl bg-gradient-to-r ${city.gradient} text-white font-bold shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 group/btn`}
-            onClick={() => {
-              if (city.url && city.url.trim() !== "") {
-                window.open(city.url, "_blank", "noopener,noreferrer");
-              }
-            }}
-            whileHover={{ scale: 1.05, x: 5 }}
-            whileTap={{ scale: 0.95 }}>
-            <span>
-              {isPastEvent ?
-                "Revisit Experience"
-              : city.url && city.url.trim() !== "" ?
-                "Register Now"
-              : "Coming Soon"}
-            </span>
-            <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-          </motion.button>
-
-          <motion.div
-            className={`absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r ${city.gradient}`}
-            initial={{ scaleX: 0 }}
-            style={{ originX: 0 }}
-            transition={{ duration: 0.4 }}
-            whileHover={{ scaleX: 1 }}
-          />
-        </div>
-      </motion.div>
-    </motion.div>
-  );
+// Per-mode section copy. `full` is the legacy 2026 home section (story +
+// its own grid) and MUST keep its original strings; `history` is the same
+// scrollytelling opened on the 2027 page as a historical preview of the
+// tour; `upcoming` is grid-only, showing future events (NEXUS 2027).
+const SECTION_COPY = {
+  full: {
+    chip: "Multi-City Tour",
+    Icon: Globe,
+    headline: "Join Us in Shaping the Future",
+    subline: "APAC Tech Tour 2026",
+    body: "A roadshow across 6 major APAC cities connecting innovators and decision-makers",
+    statLabel: "Total Expected C-Level Attendees",
+  },
+  history: {
+    chip: "Our Journey",
+    Icon: Globe,
+    headline: "The Road So Far",
+    subline: "APAC Tech Tour 2026",
+    body: "A look back at the roadshow across 6 major APAC cities connecting innovators and decision-makers",
+    statLabel: "C-Level Attendees Connected Across the Tour",
+  },
+  upcoming: {
+    chip: "Upcoming Events",
+    Icon: Calendar,
+    headline: "Join Us in Shaping the Future",
+    subline: "APAC Tech Tour 2027",
+    body: "A roadshow across 6 major APAC cities connecting innovators and decision-makers",
+    statLabel: "Event Stops Announced Across the Region",
+    attendeeLabel: "Total Expected C-Level Attendees",
+  },
 };
 
-export const TourSection = () => {
+// Flight geometry between two stage markers (px coords from the sticky
+// stage box): a quadratic arc bowing upward from the straight line plus
+// sampled keyframes for framer (position + heading from the tangent).
+// lucide's Plane glyph points up-right (~-45° from +x), so the rendered
+// core gets a +45° counter-rotation and `rotate` carries the path heading.
+const FLIGHT_SAMPLES = 22;
+
+// Horizontal offset (px) each passed stop folds to the left, one step per
+// stop behind it. Small enough that the pile stays a fan of slivers instead
+// of a spread hand, big enough that every past stop stays readable.
+const STACK_STEP = 26;
+
+// C-level tally across the tour (5 x 400 stops + 200 in Hong Kong). One
+// source of truth so the home stat and the retrospective can never drift.
+const C_LEVEL_ATTENDEES = "2200+";
+
+const flightGeometry = (a, b) => {
+  const dist = Math.hypot(b.x - a.x, b.y - a.y);
+  const c = {
+    x: (a.x + b.x) / 2,
+    y: (a.y + b.y) / 2 - Math.min(96, Math.max(26, dist * 0.3)),
+  };
+  const at = (t) => ({
+    x: (1 - t) ** 2 * a.x + 2 * (1 - t) * t * c.x + t * t * b.x,
+    y: (1 - t) ** 2 * a.y + 2 * (1 - t) * t * c.y + t * t * b.y,
+  });
+  const pts = [];
+  for (let i = 0; i <= FLIGHT_SAMPLES; i++) pts.push(at(i / FLIGHT_SAMPLES));
+  const xs = pts.map((p) => p.x);
+  const ys = pts.map((p) => p.y);
+  const rs = pts.map((p, i) => {
+    const q = pts[Math.min(i + 1, FLIGHT_SAMPLES)];
+    const o = pts[Math.max(i - 1, 0)];
+    const [h, ref] = i < FLIGHT_SAMPLES ? [q, p] : [p, o];
+    return (Math.atan2(h.y - ref.y, h.x - ref.x) * 180) / Math.PI;
+  });
+  const times = pts.map((_, i) => i / FLIGHT_SAMPLES);
+  return {
+    id: `${a.x.toFixed(0)}-${a.y.toFixed(0)}-${b.x.toFixed(0)}-${b.y.toFixed(0)}`,
+    path: `M ${a.x} ${a.y} Q ${c.x} ${c.y} ${b.x} ${b.y}`,
+    x1: a.x,
+    y1: a.y,
+    x2: b.x,
+    y2: b.y,
+    xs,
+    ys,
+    rs,
+    times,
+    duration: 0.7 + Math.min(0.9, dist / 1600),
+  };
+};
+
+export const TourSection = ({
+  cities = TOUR_CITIES,
+  mode = "full",
+  id = "tours",
+  // Optional closing action under the grid — { label, href }. The 2027 home
+  // uses it to hand off to the retrospective page.
+  cta = null,
+}) => {
   const [activeCity, setActiveCity] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
+  const [stage, setStage] = useState(0);
+  const [storyDone, setStoryDone] = useState(false);
+  const [pointsPx, setPointsPx] = useState([]);
+  const [stageWidth, setStageWidth] = useState(0);
+  const [flight, setFlight] = useState(null);
+  const prevStageRef = useRef(null);
+  const entry = useSectionEntry();
+  const motionOk = useMotionPreference();
   const containerRef = useRef(null);
+  const storyRef = useRef(null);
+  const stageRef = useRef(null);
+  const copy = SECTION_COPY[mode];
+  const isStoryMode = mode !== "upcoming";
+
+  // The pile has to stay inside the stage: at full width a passed-stop fan
+  // of (n-1) * STACK_STEP runs past the left edge on phones and its deepest
+  // slivers vanish off-screen. Cap the fan at a share of the stage width so
+  // narrow viewports compress the stack instead of losing it.
+  const maxFan = Math.min(
+    (cities.length - 1) * STACK_STEP,
+    Math.max(48, stageWidth * 0.12),
+  );
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
-
-  const headerY = useTransform(scrollYProgress, [0, 0.3], [100, 0]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
+  // City pulse points for the dotted map background — real coordinates
+  // projected onto the dense map's grid (see DotWorldMap.latLonToGrid).
+  const pulsePoints = useMemo(
+    () =>
+      cities
+        .filter((c) => c.coords)
+        .map((c) => ({
+          city: c.city,
+          ...latLonToGrid(c.coords.lat, c.coords.lon, dotMapDense),
+        })),
+    [cities],
+  );
+
+  // Story phases: N x 100vh, one tour stop per screen of scroll. Stage is
+  // computed straight from geometry on every scroll event — framer's
+  // scrollY pipeline lagged the swap by >1s here, which read as the card
+  // freezing and then bursting to its next position.
+  const syncStory = useCallback(() => {
+    const el = storyRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const travel = rect.height - window.innerHeight;
+    if (travel <= 0) return;
+    const v = Math.min(1, Math.max(0, -rect.top / travel));
+    setStage(Math.min(cities.length - 1, Math.floor(v * cities.length)));
+    setStoryDone(v >= 0.995);
+  }, [cities.length]);
+  useEffect(() => {
+    syncStory();
+    window.addEventListener("scroll", syncStory, { passive: true });
+    window.addEventListener("resize", syncStory);
+    return () => {
+      window.removeEventListener("scroll", syncStory);
+      window.removeEventListener("resize", syncStory);
+    };
+  }, [syncStory]);
+
+  // City anchors on the canvas (px), recomputed on resize. Markers render
+  // as DOM on top of everything so a marker never half-hides behind the
+  // frosted card; mirrors DotWorldMap's cover-fit math (fit="cover",
+  // anchorX=1) with the same dense grid.
+  useEffect(() => {
+    const update = () => {
+      const el = stageRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const { cols = 400, rows = 136 } = dotMapDense;
+      const step = Math.max(rect.width / cols, rect.height / rows);
+      setStageWidth(rect.width);
+      setPointsPx(
+        pulsePoints.map((g) => ({
+          city: g.city,
+          x: (g.x + 0.5) * step + (rect.width - cols * step),
+          y: (g.y + 0.5) * step,
+        })),
+      );
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [pulsePoints]);
+
+  // Flight choreography — each time the venue (story stage) changes, the
+  // plane arcs from the previous stop's marker to the new one. Geometry
+  // uses the same marker px coords (pointsPx), so the flight starts/ends
+  // exactly on the dotted map's city dots. Reduced-motion users just get
+  // the marker swaps, no plane.
+  useEffect(() => {
+    if (mode !== "history" || !motionOk) return;
+    const from = prevStageRef.current;
+    prevStageRef.current = stage;
+    if (from === null || from === stage) return;
+    const a = pointsPx[from];
+    const b = pointsPx[stage];
+    if (!a || !b) return;
+    setFlight(flightGeometry(a, b));
+  }, [stage, pointsPx, mode, motionOk]);
+
   return (
-    <section
-      className="relative min-h-screen flex items-center justify-center py-32 px-4 overflow-hidden"
-      id="tours"
-      ref={containerRef}>
-      {/* Pattern SVG background above gradient blobs */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <svg
-          className="w-full h-full"
-          fill="none"
-          height="100%"
-          viewBox="0 0 1440 900"
-          width="100%"
-          xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern
-              height="40"
-              id="pattern-circles"
-              patternUnits="userSpaceOnUse"
-              width="40"
-              x="0"
-              y="0">
-              <circle cx="2" cy="2" fill="#2dd4bf" opacity="0.12" r="2" />
-            </pattern>
-          </defs>
-          <rect fill="url(#pattern-circles)" height="900" width="1440" />
-        </svg>
+    <section className="relative" id={id} ref={containerRef}>
+      {/* Pinned dotted map — sticks through the header + story (and the
+          grid, whose phasing rides over it). The 2027 "upcoming" mode gets
+          its own map pinned behind its grid so the dotted field stays a
+          continuous language with the history section above it.
+          The clip wrapper is load-bearing: the map cancels its own flow
+          height with a negative margin so the header overlays it from the
+          very top, and Chrome lets a sticky box with a negative bottom
+          margin hang that full distance past its container — on the short
+          grid section the map then painted over the whole opening screen
+          of the next section. `overflow: clip` on an absolute, section-
+          sized wrapper bounds the stick without turning into a scroll
+          container (overflow-hidden would make the map stick to the
+          wrapper and never pin at all); the section itself must stay
+          unclipped so the glow-field blobs keep spilling across the seams. */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-clip">
+        <div
+          className="sticky top-0 h-screen opacity-55"
+          style={{
+            maskImage:
+              "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 78% 72% at 50% 50%, black 40%, rgba(0,0,0,0.5) 75%, transparent 100%)",
+          }}
+        >
+          <DotWorldMap
+            anchorX={1}
+            className="block h-full w-full"
+            dotMapData={dotMapDense}
+            fit="cover"
+            motion={motionOk}
+          />
+        </div>
       </div>
 
-      <motion.div
-        className="absolute inset-0 opacity-20 z-10 pointer-events-none"
-        style={{ y: backgroundY }}>
-        <div className="absolute top-32 right-20 w-96 h-96 bg-emerald-500/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-32 left-20 w-80 h-80 bg-cyan-500/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/3 w-[600px] h-[600px] bg-teal-500/20 rounded-full blur-3xl" />
-      </motion.div>
+      {/* Ambient light — parallax layer over the pinned map, free to
+          spill across the section seams */}
+      <GlowField
+        className="opacity-20 z-10"
+        style={{ y: backgroundY }}
+        blobs={[
+          { className: "top-32 right-20 w-96 h-96 bg-emerald-500/30" },
+          { className: "bottom-32 left-20 w-80 h-80 bg-cyan-500/30" },
+          {
+            className: "top-1/2 left-1/3 w-[600px] h-[600px] bg-teal-500/20",
+          },
+          {
+            // Straddles the bottom seam into the next section.
+            className:
+              "-bottom-56 left-[30%] w-[480px] h-[480px] bg-teal-500/25",
+          },
+          {
+            // Receives the light arriving from the section above.
+            className: "-top-36 right-[25%] w-[380px] h-[380px] bg-cyan-500/20",
+          },
+        ]}
+      />
 
-      <div className="absolute inset-0 z-20 pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="relative z-10">
+        {/* Header rides in over the pinned map */}
+        <div className="mx-auto max-w-7xl px-4 pb-6 pt-16 text-center">
+          <div className="text-center mb-16">
+            <motion.div
+              className="nx-glass-chip inline-flex items-center gap-2 px-5 py-2 mb-6"
+              {...entry.fade(0, 14, 0.6)}
+            >
+              <copy.Icon className="w-5 h-5 text-emerald-400" />
+              <span className="text-emerald-400 font-semibold">
+                {copy.chip}
+              </span>
+            </motion.div>
 
-      <div className="max-w-7xl mx-auto relative z-10 w-full">
-        <motion.div
-          className="text-center mb-20"
-          style={{ y: headerY, opacity: headerOpacity }}>
-          <motion.div
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/40 mb-6 backdrop-blur-sm"
-            initial={{ scale: 0, rotate: -180 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-            whileInView={{ scale: 1, rotate: 0 }}>
-            <Globe
-              className="w-5 h-5 text-emerald-400 animate-spin"
-              style={{ animationDuration: "8s" }}
-            />
-            <span className="text-emerald-400 font-semibold">
-              Multi-City Tour
-            </span>
-          </motion.div>
+            <h2 className="text-5xl md:text-7xl font-bold mb-4">
+              <MaskedLine delay={0.1}>
+                <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
+                  {copy.headline}
+                </span>
+              </MaskedLine>
+            </h2>
 
-          <motion.h2
-            className="text-5xl md:text-7xl font-bold mb-4"
-            initial={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            whileInView={{ opacity: 1, y: 0 }}>
-            <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
-              Join Us in Shaping the Future
-            </span>
-          </motion.h2>
+            <motion.p
+              className="text-3xl font-bold text-white mb-4"
+              {...entry.fade(0.24, 16)}
+            >
+              {copy.subline}
+            </motion.p>
 
-          <motion.p
-            className="text-3xl font-bold text-white mb-4"
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            whileInView={{ opacity: 1 }}>
-            APAC Tech Tour 2026
-          </motion.p>
-
-          <motion.p
-            className="text-xl text-gray-400 max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            whileInView={{ opacity: 1 }}>
-            A roadshow across 6 major APAC cities connecting innovators and
-            decision-makers
-          </motion.p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {TOUR_CITIES.map((city, idx) => (
-            <div
-              key={idx}
-              className={
-                TOUR_CITIES.length % 3 === 1 && idx === TOUR_CITIES.length - 1 ?
-                  "lg:col-start-2"
-                : ""
-              }>
-              <CityCard
-                city={city}
-                img={city.img}
-                index={idx}
-                isActive={activeCity === idx}
-                onClick={setActiveCity}
-                pattern={city.pattern}
-                setShowGallery={setShowGallery}
-              />
-            </div>
-          ))}
+            <motion.p
+              className="text-xl text-gray-400 max-w-3xl mx-auto"
+              {...entry.fade(0.36, 24)}
+            >
+              {copy.body}
+            </motion.p>
+          </div>
         </div>
 
-        <motion.div
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-          whileInView={{ opacity: 1, y: 0 }}>
-          <div className="inline-flex items-center gap-6 bg-gradient-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl px-10 py-6 rounded-2xl border border-emerald-500/30">
-            <Navigation className="w-10 h-10 text-emerald-400" />
-            <div className="text-left">
-              <p className="text-gray-400 text-sm mb-1">
-                Total Expected C-Level Attendees
-              </p>
-              <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                2200+
-              </p>
+        {/* Story: every screen of scroll reveals one card and lifts its
+            city on the map; the last screen hands over to the grid (full
+            mode) or to the next section (history mode). */}
+        {isStoryMode && (
+          <div
+            className="relative"
+            ref={storyRef}
+            style={{ height: `${cities.length * 100}vh` }}
+          >
+            <div
+              className="sticky top-0 flex h-screen items-center justify-center px-6 md:px-16"
+              ref={stageRef}
+            >
+              {/* City markers — DOM dots over everything so a marker never
+                  half-hides behind the frosted card: at viewports where the
+                  cover-crop puts the APAC band mid-screen, a canvas dot
+                  behind the glass read as a stray blurred blob in the
+                  card's corner. The active dot grows and pings; the label
+                  chip anchors to this exact point. */}
+              <motion.div
+                animate={{ opacity: storyDone ? 0 : 1 }}
+                className="pointer-events-none absolute inset-0"
+                style={{ transition: "opacity 0.45s ease" }}
+              >
+                {pointsPx.map((p, i) => (
+                  <div
+                    className="absolute"
+                    key={p.city}
+                    style={{
+                      left: p.x,
+                      top: p.y,
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    {i === stage && !storyDone ? (
+                      <>
+                        <motion.span
+                          animate={
+                            motionOk
+                              ? { scale: [1, 3], opacity: [0.5, 0] }
+                              : { opacity: 0.2 }
+                          }
+                          className="absolute -inset-1.5 rounded-full border border-emerald-300"
+                          transition={{
+                            duration: 1.8,
+                            ease: "easeOut",
+                            repeat: Infinity,
+                          }}
+                        />
+                        <motion.span
+                          animate={
+                            motionOk
+                              ? { scale: [1, 3], opacity: [0.5, 0] }
+                              : { opacity: 0.15 }
+                          }
+                          className="absolute -inset-1.5 rounded-full border border-emerald-300"
+                          transition={{
+                            delay: 0.9,
+                            duration: 1.8,
+                            ease: "easeOut",
+                            repeat: Infinity,
+                          }}
+                        />
+                        <span className="block h-3 w-3 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.7)]" />
+                        <div
+                          className="absolute left-1/2"
+                          style={{
+                            bottom: "calc(100% + 0.5rem)",
+                            transform: "translateX(-50%)",
+                          }}
+                        >
+                          <div className="nx-glass-chip whitespace-nowrap px-3 py-1 text-xs font-semibold text-emerald-300">
+                            {p.city}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <span className="block h-2 w-2 rounded-full bg-emerald-300/60" />
+                    )}
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* Flight — the venue plane. Lives inside the content stacking
+                  context at -z-10: above the pinned map, below the frosted
+                  card, so the arc reads as map-level travel while the card
+                  swap stays the story's focus. Fades with the story and
+                  is replaced per leg (AnimatePresence); reduced-motion
+                  skips it. */}
+              {mode === "history" && (
+                <motion.div
+                  animate={{ opacity: storyDone ? 0 : 1 }}
+                  className="pointer-events-none absolute inset-0 -z-10"
+                  style={{ transition: "opacity 0.45s ease" }}
+                >
+                  <AnimatePresence>
+                    {flight && (
+                      <motion.div
+                        className="absolute inset-0"
+                        exit={{ opacity: 0, transition: { duration: 0.35 } }}
+                        key={flight.id}
+                      >
+                        <svg className="block h-full w-full overflow-visible">
+                          <defs>
+                            <linearGradient
+                              gradientUnits="userSpaceOnUse"
+                              id={`nx-flight-grad-${flight.id}`}
+                              x1={flight.x1}
+                              y1={flight.y1}
+                              x2={flight.x2}
+                              y2={flight.y2}
+                            >
+                              <stop
+                                offset="0%"
+                                stopColor="#6ee7b7"
+                                stopOpacity="0.9"
+                              />
+                              <stop
+                                offset="100%"
+                                stopColor="#67e8f9"
+                                stopOpacity="0.9"
+                              />
+                            </linearGradient>
+                          </defs>
+                          <motion.path
+                            animate={{
+                              pathLength: 1,
+                              opacity: [0, 0.5, 0.5, 0],
+                            }}
+                            d={flight.path}
+                            fill="none"
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            stroke={`url(#nx-flight-grad-${flight.id})`}
+                            strokeLinecap="round"
+                            strokeWidth={1.5}
+                            transition={{
+                              opacity: {
+                                duration: flight.duration,
+                                times: [0, 0.15, 0.75, 1],
+                              },
+                              pathLength: {
+                                duration: flight.duration,
+                                ease: "easeInOut",
+                              },
+                            }}
+                          />
+                        </svg>
+                        <motion.div
+                          animate={{
+                            x: flight.xs,
+                            y: flight.ys,
+                            rotate: flight.rs,
+                            opacity: [0, 1, 1, 1],
+                          }}
+                          className="absolute left-0 top-0"
+                          initial={{
+                            x: flight.xs[0],
+                            y: flight.ys[0],
+                            rotate: flight.rs[0],
+                            opacity: 0,
+                          }}
+                          transition={{
+                            duration: flight.duration,
+                            ease: "easeInOut",
+                            times: flight.times,
+                            opacity: {
+                              duration: flight.duration,
+                              times: [0, 0.08, 0.9, 1],
+                            },
+                            rotate: {
+                              duration: flight.duration,
+                              ease: "linear",
+                              times: flight.times,
+                            },
+                          }}
+                        >
+                          <Plane
+                            className="h-5 w-5 text-emerald-300"
+                            style={{
+                              filter:
+                                "drop-shadow(0 0 7px rgba(110,231,183,0.9))",
+                              transform: "rotate(45deg)",
+                            }}
+                          />
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+
+              <div className="w-full max-w-[440px]">
+                {/* Stacked deck: every stop stays mounted for the whole
+                    story. Passed stops fold to the left one STACK_STEP per
+                    stop and sit behind the newer cards (newest on top), so
+                    scrolling reads as a pile growing under the card instead
+                    of cards vanishing; the incoming card slides in from the
+                    right over the pile. Only the current card takes pointer
+                    events. */}
+                <motion.div
+                  animate={{ opacity: storyDone ? 0 : 1 }}
+                  className={storyDone ? "pointer-events-none" : undefined}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
+                >
+                  <div className="grid">
+                    {cities.map((city, i) => {
+                      const depth = stage - i;
+                      const isCurrent = depth === 0;
+                      const isPassed = depth > 0;
+                      return (
+                        <motion.div
+                          animate={{
+                            x: isPassed
+                              ? -Math.min(depth * STACK_STEP, maxFan)
+                              : isCurrent
+                                ? 0
+                                : 440,
+                            opacity: isPassed || isCurrent ? 1 : 0,
+                            scale: isPassed || isCurrent ? 1 : 0.94,
+                          }}
+                          className="relative col-start-1 row-start-1"
+                          inert={!isCurrent}
+                          initial={false}
+                          key={city.city}
+                          style={{
+                            pointerEvents: isCurrent ? "auto" : "none",
+                            zIndex: isCurrent ? 30 : isPassed ? 30 - depth : 0,
+                          }}
+                          transition={{
+                            duration: 0.7,
+                            ease: [0.16, 1, 0.3, 1],
+                          }}
+                        >
+                          <div className="relative">
+                            <CityCard
+                              city={city}
+                              img={city.img}
+                              index={i}
+                              isActive={isCurrent}
+                              onClick={setActiveCity}
+                              pattern={city.pattern}
+                              story
+                            />
+                            {/* Depth tint: each stop behind the front card
+                                sinks a little darker, so the fan reads as a
+                                stack instead of one wide card. */}
+                            <div
+                              className="pointer-events-none absolute inset-0 z-40 rounded-3xl bg-[#020a16]"
+                              style={{
+                                opacity: isPassed
+                                  ? Math.min(0.45, 0.14 * depth)
+                                  : 0,
+                              }}
+                            />
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* One tagline for the whole deck, in flow beneath the
+                      stack: the card block stays vertically centred with it
+                      and the text can never collide with the stop counter
+                      the way an absolutely-positioned per-card caption did. */}
+                  <div className="mt-5 min-h-[3.25rem] px-1 text-center text-sm leading-relaxed text-white/70 md:text-base">
+                    <AnimatePresence mode="wait">
+                      <motion.p
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        initial={{ opacity: 0, y: 8 }}
+                        key={stage}
+                        transition={{ duration: 0.35 }}
+                      >
+                        {cities[stage].tagline}
+                      </motion.p>
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+              </div>
+
+              {!storyDone && (
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+                  <div className="nx-glass-chip flex items-center gap-3 px-4 py-2">
+                    {cities.map((c, i) => (
+                      <span
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          i === stage
+                            ? "w-7 bg-emerald-400"
+                            : i < stage
+                              ? "w-1.5 bg-emerald-400/50"
+                              : "w-1.5 bg-white/25"
+                        }`}
+                        key={c.city}
+                      />
+                    ))}
+                    <span className="text-xs font-semibold text-white/80">
+                      Stop {stage + 1}/{cities.length}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        </motion.div>
+        )}
+
+        {/* All stops — the full grid (legacy home phase and the standalone
+            2027 upcoming section; history mode ends at the last stop) */}
+        {mode !== "history" && (
+          <div
+            className={`mx-auto max-w-7xl px-4 ${
+              mode === "full" ? "pb-32" : "pb-16"
+            }`}
+          >
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {cities.map((city, idx) => (
+                <div
+                  className={
+                    cities.length % 3 === 1 && idx === cities.length - 1
+                      ? "lg:col-start-2"
+                      : ""
+                  }
+                  key={`${city.city}-${idx}`}
+                >
+                  <CityCard
+                    city={city}
+                    img={city.img}
+                    index={idx}
+                    isActive={activeCity === idx}
+                    onClick={setActiveCity}
+                    pattern={city.pattern}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {mode === "full" && (
+              <motion.div
+                className="text-center mt-16"
+                {...entry.fade(0.36, 24)}
+              >
+                <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
+                  <Navigation className="w-10 h-10 text-emerald-400" />
+                  <div className="text-left">
+                    <p className="text-gray-400 text-sm mb-1">
+                      {copy.statLabel}
+                    </p>
+                    <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                      {C_LEVEL_ATTENDEES}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        )}
+
+        {/* Full/home mode keeps its stat inside the grid phase above;
+            history and upcoming get their own closing stat so the split
+            sections still land on a concrete payoff. */}
+        {mode === "history" && (
+          <motion.div
+            className="mx-auto max-w-7xl px-4 pb-32 text-center mt-16"
+            {...entry.fade(0.36, 24)}
+          >
+            <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
+              <Navigation className="w-10 h-10 text-emerald-400" />
+              <div className="text-left">
+                <p className="text-gray-400 text-sm mb-1">{copy.statLabel}</p>
+                <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                  {C_LEVEL_ATTENDEES}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+        {mode === "upcoming" && (
+          <motion.div
+            className={`mx-auto max-w-7xl px-4 text-center mt-16 ${
+              cta ? "pb-8" : "pb-32"
+            }`}
+            {...entry.fade(0.36, 24)}
+          >
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
+                <Navigation className="w-10 h-10 text-emerald-400" />
+                <div className="text-left">
+                  <p className="text-gray-400 text-sm mb-1">{copy.statLabel}</p>
+                  <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                    {cities.length}
+                  </p>
+                </div>
+              </div>
+              {/* C-Level payoff — same panel language as the retrospective
+                  page, so the numbers read as one pair, not a stray stat. */}
+              <div className="nx-glass-pane inline-flex items-center gap-6 px-10 py-6">
+                <Users className="w-10 h-10 text-emerald-400" />
+                <div className="text-left">
+                  <p className="text-gray-400 text-sm mb-1">
+                    {copy.attendeeLabel}
+                  </p>
+                  <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                    {C_LEVEL_ATTENDEES}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Hand-off to the retrospective page (the 2026 tour story now
+            lives on its own route instead of in this section). */}
+        {cta && (
+          <motion.div
+            className="mx-auto max-w-7xl px-4 pb-32 text-center"
+            {...entry.fade(0.48, 24)}
+          >
+            <GlassButton
+              as="a"
+              className="justify-center gap-2 px-7 py-3.5 text-sm font-bold text-white"
+              href={cta.href}
+              tone="emerald"
+            >
+              <span>{cta.label}</span>
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </GlassButton>
+          </motion.div>
+        )}
       </div>
       <AnimatePresence>
         {showGallery && (

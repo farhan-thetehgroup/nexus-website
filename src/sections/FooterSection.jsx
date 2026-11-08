@@ -13,6 +13,7 @@ import {
   PHONE_WHATSAPP,
   WHATSAPP_MESSAGE,
 } from "../constants";
+import { GlassButton } from "../components/common/ui/GlassButton";
 
 const ThreeFooterBackground = () => {
   const mountRef = useRef(null);
@@ -25,7 +26,7 @@ const ThreeFooterBackground = () => {
       75,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
-      1000
+      1000,
     );
     camera.position.z = 3;
 
@@ -35,7 +36,7 @@ const ThreeFooterBackground = () => {
     });
     renderer.setSize(
       mountRef.current.clientWidth,
-      mountRef.current.clientHeight
+      mountRef.current.clientHeight,
     );
     renderer.setPixelRatio(window.devicePixelRatio);
     mountRef.current.appendChild(renderer.domElement);
@@ -59,11 +60,11 @@ const ThreeFooterBackground = () => {
 
     particlesGeometry.setAttribute(
       "position",
-      new THREE.BufferAttribute(posArray, 3)
+      new THREE.BufferAttribute(posArray, 3),
     );
     particlesGeometry.setAttribute(
       "color",
-      new THREE.BufferAttribute(colors, 3)
+      new THREE.BufferAttribute(colors, 3),
     );
 
     const particlesMaterial = new THREE.PointsMaterial({
@@ -76,7 +77,7 @@ const ThreeFooterBackground = () => {
 
     const particlesMesh = new THREE.Points(
       particlesGeometry,
-      particlesMaterial
+      particlesMaterial,
     );
     scene.add(particlesMesh);
 
@@ -129,7 +130,7 @@ const ThreeFooterBackground = () => {
       camera.updateProjectionMatrix();
       renderer.setSize(
         mountRef.current.clientWidth,
-        mountRef.current.clientHeight
+        mountRef.current.clientHeight,
       );
     };
 
@@ -153,12 +154,13 @@ const SocialLink = ({ icon: Icon, href, label }) => {
   return (
     <motion.a
       aria-label={label}
-      className="group relative w-12 h-12 flex items-center justify-center rounded-xl bg-blue-900/50 border-2 border-emerald-400/20 hover:border-emerald-400 backdrop-blur-sm"
+      className="nx-glass-icon group relative flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300 hover:border-white/30"
       href={href}
       rel="noopener noreferrer"
       target="_blank"
       whileHover={{ scale: 1.15, y: -2 }}
-      whileTap={{ scale: 0.95 }}>
+      whileTap={{ scale: 0.95 }}
+    >
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-emerald-400/30 to-emerald-400/0 rounded-xl opacity-0"
         transition={{ duration: 0.3 }}
@@ -168,11 +170,12 @@ const SocialLink = ({ icon: Icon, href, label }) => {
       <Icon className="relative h-5 w-5 text-gray-400 group-hover:text-emerald-400 transition-colors duration-300" />
 
       <motion.div
-        className="absolute -top-12 left-1/2 transform -translate-x-1/2 px-3 py-2 bg-blue-900 border-2 border-emerald-400/50 rounded-lg text-xs text-emerald-400 whitespace-nowrap pointer-events-none opacity-0"
+        className="absolute -top-12 left-1/2 transform -translate-x-1/2 rounded-lg border border-white/15 bg-[#07161f]/95 px-3 py-2 text-xs text-white/80 whitespace-nowrap backdrop-blur-xl pointer-events-none opacity-0"
         transition={{ duration: 0.2 }}
-        whileHover={{ opacity: 1, y: -4 }}>
+        whileHover={{ opacity: 1, y: -4 }}
+      >
         {label}
-        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-900 border-r-2 border-b-2 border-emerald-400/50 rotate-45" />
+        <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 border-r border-b border-white/15 bg-[#07161f]/95" />
       </motion.div>
     </motion.a>
   );
@@ -195,7 +198,8 @@ const FooterLink = ({ href, children }) => {
       className="group relative inline-block text-gray-400 hover:text-emerald-400 transition-colors duration-300"
       href={href}
       onClick={handleClick}
-      whileHover={{ x: 4 }}>
+      whileHover={{ x: 4 }}
+    >
       <span className="relative">
         {children}
         <motion.span
@@ -209,7 +213,13 @@ const FooterLink = ({ href, children }) => {
   );
 };
 
-export const FooterSection = () => {
+export const FooterSection = ({
+  items = MENU_ITEMS,
+  linkBase = "",
+  // The journey page keeps exactly one floating action (its 2027 hand-off),
+  // so it turns the shared scroll-to-top button off.
+  showScrollTop = true,
+}) => {
   const [currentYear] = useState(new Date().getFullYear());
 
   const socialLinks = [
@@ -240,7 +250,7 @@ export const FooterSection = () => {
   };
 
   return (
-    <footer className="relative bg-gradient-to-b from-gray-900 via-gray-900 to-black border-t border-emerald-400/20 overflow-hidden">
+    <footer className="relative bg-gradient-to-b from-gray-900 via-gray-900 to-black border-t border-white/10 overflow-hidden">
       <div className="absolute inset-0 h-full">
         <ThreeFooterBackground />
       </div>
@@ -254,11 +264,13 @@ export const FooterSection = () => {
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            whileInView={{ opacity: 1, y: 0 }}>
+            whileInView={{ opacity: 1, y: 0 }}
+          >
             <motion.div
               className="mb-6"
               transition={{ duration: 0.3 }}
-              whileHover={{ scale: 1.02 }}>
+              whileHover={{ scale: 1.02 }}
+            >
               <h3 className="text-3xl font-bold mb-2">
                 <div className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
                   <img className="h-6 w-auto" src={BRAND_LOGO} />
@@ -275,11 +287,16 @@ export const FooterSection = () => {
             <div className="flex gap-3">
               {socialLinks.map((social, idx) => (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
+                  initial={{ opacity: 0, y: 14 }}
                   key={idx}
-                  transition={{ delay: idx * 0.1, duration: 0.4 }}
+                  transition={{
+                    delay: idx * 0.08,
+                    duration: 0.6,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   viewport={{ once: true }}
-                  whileInView={{ opacity: 1, scale: 1 }}>
+                  whileInView={{ opacity: 1, y: 0 }}
+                >
                   <SocialLink {...social} />
                 </motion.div>
               ))}
@@ -292,20 +309,26 @@ export const FooterSection = () => {
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            whileInView={{ opacity: 1, y: 0 }}>
+            whileInView={{ opacity: 1, y: 0 }}
+          >
             <h3 className="text-emerald-400 font-bold mb-6 text-lg">
               Quick Links
             </h3>
             <ul className="space-y-3">
-              {MENU_ITEMS.map((link, idx) => (
+              {items.map((link, idx) => (
                 <motion.li
                   initial={{ opacity: 0, x: -20 }}
                   key={idx}
                   transition={{ delay: 0.1 * idx, duration: 0.4 }}
                   viewport={{ once: true }}
-                  whileInView={{ opacity: 1, x: 0 }}>
+                  whileInView={{ opacity: 1, x: 0 }}
+                >
                   <FooterLink
-                    href={link.id.startsWith("#") ? link.id : `#${link.id}`}>
+                    href={
+                      linkBase +
+                      (link.id.startsWith("#") ? link.id : `#${link.id}`)
+                    }
+                  >
                     {link.name}
                   </FooterLink>
                 </motion.li>
@@ -319,7 +342,8 @@ export const FooterSection = () => {
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
-            whileInView={{ opacity: 1, y: 0 }}>
+            whileInView={{ opacity: 1, y: 0 }}
+          >
             <h3 className="text-cyan-400 font-bold mb-6 text-lg">
               Get In Touch
             </h3>
@@ -330,7 +354,8 @@ export const FooterSection = () => {
                 rel="noopener noreferrer"
                 target="_blank"
                 transition={{ duration: 0.2 }}
-                whileHover={{ x: 4 }}>
+                whileHover={{ x: 4 }}
+              >
                 <Phone className="h-5 w-5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm">Call us</p>
@@ -341,12 +366,14 @@ export const FooterSection = () => {
               <motion.div
                 className="flex items-start gap-3 text-gray-400"
                 transition={{ duration: 0.2 }}
-                whileHover={{ x: 4 }}>
+                whileHover={{ x: 4 }}
+              >
                 <svg
                   className="h-5 w-5 text-cyan-400 mt-0.5 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24">
+                  viewBox="0 0 24 24"
+                >
                   <path
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     strokeLinecap="round"
@@ -358,7 +385,8 @@ export const FooterSection = () => {
                   <p className="text-sm">Email us</p>
                   <p
                     className="text-white cursor-pointer"
-                    onClick={() => (window.location.href = MAILTO_URL)}>
+                    onClick={() => (window.location.href = MAILTO_URL)}
+                  >
                     {EMAIL}
                   </p>
                 </div>
@@ -369,11 +397,12 @@ export const FooterSection = () => {
 
         {/* Bottom Bar */}
         <motion.div
-          className="pt-8 border-t-2 border-emerald-400/20"
+          className="pt-8 border-t border-white/10"
           initial={{ opacity: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}
           viewport={{ once: true }}
-          whileInView={{ opacity: 1 }}>
+          whileInView={{ opacity: 1 }}
+        >
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-sm">
               © {currentYear} NEXUS by TEH Group. All rights reserved.
@@ -384,7 +413,8 @@ export const FooterSection = () => {
               <motion.span
                 animate={{ scale: [1, 1.2, 1] }}
                 className="text-red-500"
-                transition={{ duration: 1, repeat: Infinity }}>
+                transition={{ duration: 1, repeat: Infinity }}
+              >
                 ❤️
               </motion.span>
             </div>
@@ -393,27 +423,23 @@ export const FooterSection = () => {
       </div>
 
       {/* Scroll to Top Button */}
-      <motion.button
-        animate={{ opacity: 1, y: 0 }}
-        aria-label="Scroll to top"
-        className="fixed right-5 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] w-12 h-12 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center shadow-xl z-50 group sm:right-8"
-        initial={{ opacity: 0, y: 20 }}
-        onClick={scrollToTop}
-        transition={{ delay: 1 }}
-        whileHover={{
-          scale: 1.15,
-          boxShadow: "0 0 40px rgba(16, 185, 129, 0.6)",
-        }}
-        whileTap={{ scale: 0.9 }}>
-        <ArrowUp className="h-6 w-6 text-blue-950" />
-
-        <motion.span
-          className="absolute inset-0 rounded-full bg-emerald-400"
-          initial={{ opacity: 0, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          whileHover={{ opacity: 0.3, scale: 1.5 }}
-        />
-      </motion.button>
+      {showScrollTop && (
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed right-5 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-50 sm:right-8"
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ delay: 1 }}
+        >
+          <GlassButton
+            aria-label="Scroll to top"
+            className="h-12 w-12 justify-center rounded-full"
+            onClick={scrollToTop}
+            tone="emerald"
+          >
+            <ArrowUp className="h-6 w-6 text-white" />
+          </GlassButton>
+        </motion.div>
+      )}
     </footer>
   );
 };

@@ -2,6 +2,14 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Sparkles, Target, TrendingUp, Globe, Award } from "lucide-react";
 
+import {
+  MaskedLine,
+  useSectionEntry,
+} from "../components/common/ui/SectionEntry";
+import { GlowField } from "../components/common/ui/GlowField";
+import { CursorSpotlight } from "../components/common/ui/CursorSpotlight";
+import { DotFieldInteraction } from "../components/common/ui/DotFieldInteraction";
+
 const whyReasons = [
   {
     icon: Target,
@@ -35,51 +43,52 @@ const whyReasons = [
 
 const Card = ({ reason, index }) => {
   const cardRef = useRef(null);
-  const isInView = useInView(cardRef, { once: false, amount: 0.3 });
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.8, 1],
-    [0.8, 1, 1, 0.8]
-  );
-  const rotate = useTransform(scrollYProgress, [0, 1], [-5, 5]);
+  const isInView = useInView(cardRef, { once: true, amount: 0.3 });
 
   const Icon = reason.icon;
 
   return (
     <motion.div
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       className="relative group"
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
       ref={cardRef}
-      style={{ y, opacity, scale, rotate }}
       transition={{
-        duration: 0.8,
+        duration: 0.85,
         delay: reason.delay,
-        ease: [0.21, 0.47, 0.32, 0.98],
-      }}>
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
+        ease: [0.16, 1, 0.3, 1],
+      }}
+    >
+      {/* Colored field the frost refracts: sits just behind the glass edge */}
+      <div
+        className={`absolute -inset-2 bg-gradient-to-br ${reason.gradient} rounded-[2rem] opacity-20 blur-2xl`}
+      />
 
+      {/* Glass panel */}
       <motion.div
-        className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl p-8 rounded-3xl border border-emerald-500/20 hover:border-emerald-400/60 overflow-hidden group cursor-pointer"
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        whileHover={{ y: -10 }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-cyan-500/0 group-hover:from-emerald-500/10 group-hover:to-cyan-500/10 transition-all duration-500" />
-
-        <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-emerald-500/20 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+        className="nx-glass-pane relative overflow-hidden p-8 cursor-pointer group-hover:border-white/30 transition-colors duration-300"
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        whileHover={{ y: -10 }}
+      >
+        {/* Refracted bloom inside the glass */}
+        <div
+          className={`absolute -top-24 -right-24 w-56 h-56 bg-gradient-to-br ${reason.gradient} rounded-full blur-3xl opacity-20`}
+        />
+        {/* Sheen along the top edge of the pane */}
+        <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
 
         <div className="relative z-10">
           <motion.div
-            className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${reason.gradient} p-3 mb-6 shadow-lg`}
-            transition={{ duration: 0.6 }}
-            whileHover={{ rotate: 360, scale: 1.1 }}>
-            <Icon className="w-full h-full text-white" />
+            className="nx-glass-icon relative w-16 h-16 flex items-center justify-center mb-6 overflow-hidden"
+            transition={{ duration: 0.4 }}
+            whileHover={{ scale: 1.08 }}
+          >
+            {/* Faint tint of the card's gradient keeps each icon's identity */}
+            <div
+              className={`absolute inset-0 rounded-[inherit] bg-gradient-to-br ${reason.gradient} opacity-25`}
+            />
+            <Icon className="relative w-full h-full p-3 text-white" />
           </motion.div>
 
           <motion.div
@@ -89,22 +98,15 @@ const Card = ({ reason, index }) => {
             transition={{ duration: 0.6, delay: reason.delay + 0.3 }}
           />
 
-          <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-emerald-400 transition-colors duration-300">
+          <h3 className="text-2xl font-bold mb-4 text-white transition-colors duration-300">
             {reason.title}
           </h3>
 
-          <p className="text-gray-300 leading-relaxed group-hover:text-gray-100 transition-colors duration-300">
+          <p className="text-white/70 leading-relaxed group-hover:text-white/90 transition-colors duration-300">
             {reason.desc}
           </p>
-
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-cyan-500"
-            initial={{ scaleX: 0 }}
-            style={{ originX: 0 }}
-            transition={{ duration: 0.3 }}
-            whileHover={{ scaleX: 1 }}
-          />
         </div>
+        <CursorSpotlight above />
       </motion.div>
     </motion.div>
   );
@@ -112,59 +114,82 @@ const Card = ({ reason, index }) => {
 
 export const WhySponsorSection = () => {
   const containerRef = useRef(null);
+  const entry = useSectionEntry();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
 
-  const headerY = useTransform(scrollYProgress, [0, 0.5], [100, 0]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   return (
     <section
-      className="relative min-h-screen flex items-center justify-center py-32 px-4 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center py-32 px-4"
       id="why"
-      ref={containerRef}>
-      <motion.div
-        className="absolute inset-0 opacity-30"
-        style={{ y: backgroundY }}>
-        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-3xl" />
-      </motion.div>
+      ref={containerRef}
+    >
+      <DotFieldInteraction />
+      {/* Pooled color fields the glass needs behind the grid — the bottom
+          purple pool straddles into the audience section's light */}
+      <GlowField
+        className="opacity-55"
+        style={{ y: backgroundY }}
+        blobs={[
+          {
+            className:
+              "top-1/3 left-[10%] w-[380px] h-[380px] bg-emerald-500/40",
+          },
+          {
+            className: "top-1/3 right-[8%] w-[420px] h-[420px] bg-cyan-500/30",
+          },
+          {
+            className:
+              "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[620px] h-[480px] bg-purple-500/25",
+          },
+          {
+            className:
+              "bottom-[12%] left-[22%] w-[300px] h-[300px] bg-orange-500/20",
+          },
+          {
+            // Straddles the bottom seam into the audience section.
+            className:
+              "-bottom-48 left-[38%] w-[520px] h-[440px] bg-purple-500/20",
+          },
+          {
+            // Receives the teal light arriving from the tour section above.
+            className:
+              "-top-40 right-[18%] w-[420px] h-[420px] bg-emerald-500/25",
+          },
+        ]}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
-        <motion.div
-          className="text-center mb-20"
-          style={{ y: headerY, opacity: headerOpacity }}>
+        <div className="text-center mb-20">
           <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-6"
-            initial={{ scale: 0 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-            whileInView={{ scale: 1 }}>
+            className="nx-glass-chip inline-flex items-center gap-2 px-4 py-2 mb-6"
+            {...entry.fade(0, 14, 0.6)}
+          >
             <Sparkles className="w-5 h-5 text-emerald-400" />
-            <span className="text-emerald-400 font-semibold">
+            <span className="text-emerald-300 font-semibold">
               Premium Benefits
             </span>
           </motion.div>
 
-          <motion.h2
-            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent"
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            whileInView={{ opacity: 1, y: 0 }}>
-            Why Sponsor Nexus?
-          </motion.h2>
+          <h2 className="text-5xl md:text-7xl font-bold mb-6">
+            <MaskedLine delay={0.1}>
+              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+                Why Sponsor Nexus?
+              </span>
+            </MaskedLine>
+          </h2>
 
           <motion.p
             className="text-xl text-gray-400 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            whileInView={{ opacity: 1 }}>
+            {...entry.fade(0.24, 16)}
+          >
             Unlock unprecedented opportunities and maximize your brands impact
           </motion.p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {whyReasons.map((reason, idx) => (
