@@ -49,7 +49,7 @@ export const NEXUS_2027_EVENTS = [
     date: "February 11, 2027",
     gradient: "from-yellow-500 to-orange-600",
     pattern: "/images/pattern/manila.webp",
-    url: "",
+    url: "https://ph.nexus-apac.com",
   },
   {
     city: "Indonesia",
